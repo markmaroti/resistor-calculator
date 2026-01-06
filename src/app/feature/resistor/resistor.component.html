@@ -1,0 +1,78 @@
+<h1>Resistor Color Code Calculator</h1>
+
+<label>
+  Bands
+  <select #sb (change)="onBandCountChange(sb.value)">
+    <option [value]="4">4-band</option>
+    <option [value]="5">5-band</option>
+    <option [value]="6">6-band</option>
+  </select>
+</label>
+
+<label>
+  Band 1 (Digit)
+  <select #sb1 [value]="store.digit1()" (change)="onColorChange(store.digit1.set, sb1.value)">
+    @for (color of digitColors; track color) {
+        <option [value]="color" [selected]="store.digit1() === color">{{ color }}</option>
+    }
+  </select>
+</label>
+
+<label>
+  Band 2 (Digit)
+  <select #sb2 [value]="store.digit2()" (change)="onColorChange(store.digit2.set, sb2.value)">
+    @for (color of digitColors; track color) {
+        <option [value]="color" [selected]="store.digit2() === color">{{ color }}</option>
+    }
+  </select>
+</label>
+
+@if (store.bandCount() !== 4) {
+<label>
+  Band 3 (Digit)
+  <select #sb3 [value]="store.digit3()" (change)="onColorChange(store.digit3.set, sb3.value)">
+    @for (color of digitColors; track color) {
+        <option [value]="color" [selected]="store.digit3() === color">{{ color }}</option>
+    }
+  </select>
+</label>
+}
+
+<label>
+  Multiplier
+  <select #sm [value]="store.multiplier()" (change)="onColorChange(store.multiplier.set, sm.value)">
+    @for (color of multiplierColors; track color) {
+        <option [value]="color" [selected]="store.multiplier() === color">{{ color }}</option>
+    }
+  </select>
+</label>
+
+<label>
+  Tolerance
+  <select #st [value]="store.tolerance()" (change)="onColorChange(store.tolerance.set, st.value)">
+    @for (color of toleranceColors; track color) {
+        <option [value]="color" [selected]="store.tolerance() === color">{{ color }}</option>
+    }
+  </select>
+</label>
+
+@if (store.bandCount() === 6) {
+<label>
+  TCR (ppm/°C)
+  <select #stcr [value]="store.tcr()" (change)="onColorChange(store.tcr.set, stcr.value)">
+    @for (color of tcrColors; track color) {
+        <option [value]="color" [selected]="store.tcr() === color">{{ color }}</option>
+    }
+  </select>
+</label>
+}
+
+<p>
+  @if (store.resistance().ohms > 0) { Resistance:
+  <strong>{{ store.resistance().ohms }} Ω</strong>
+  @if (store.resistance().tolerancePct !== null) {
+  <span> ± {{ store.resistance().tolerancePct }}%</span>
+  } @if (store.resistance().tcrPpm !== null) {
+  <span> ({{ store.resistance().tcrPpm }} ppm/°C)</span>
+  } }
+</p>
