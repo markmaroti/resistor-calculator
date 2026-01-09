@@ -11,15 +11,17 @@ import {
 @Component({
   selector: 'app-resistor',
   imports: [],
+  providers: [ResistorStore],
   templateUrl: './resistor.component.html',
   styleUrl: './resistor.component.scss',
 })
 export class ResistorComponent {
-  store = new ResistorStore();
   digitColors = (Object.keys(DIGIT_BY_COLOR) as Color[]).filter((c) => DIGIT_BY_COLOR[c] !== null);
   multiplierColors = Object.keys(MULTIPLIER_BY_COLOR) as Color[];
   toleranceColors = Object.keys(TOLERANCE_BY_COLOR) as Color[];
   tcrColors = Object.keys(TCR_BY_COLOR) as Color[];
+
+  constructor(public store: ResistorStore) {}
 
   public onColorChange(setter: (v: Color) => void, value: string) {
     setter(value as Color);

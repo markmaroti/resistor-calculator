@@ -1,7 +1,8 @@
-import { signal, computed } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { calculateResistanceFromBands } from './resistor.utils';
 import { Color } from './resistor.model';
 
+@Injectable()
 export class ResistorStore {
   bandCount = signal<4 | 5 | 6>(4);
   digit1 = signal<Color>(Color.Brown);
