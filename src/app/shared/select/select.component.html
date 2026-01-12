@@ -1,0 +1,8 @@
+<label>
+  {{ label() }}
+  <select (change)="valueChange.emit($any($event.target).value)">
+    @for (option of options(); track option) {
+    <option [value]="option" [selected]="value() === option">{{ option }}</option>
+    }
+  </select>
+</label>

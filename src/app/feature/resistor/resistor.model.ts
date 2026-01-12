@@ -64,3 +64,6 @@ export const TCR_BY_COLOR: Partial<Record<Color, number>> = {
   [Color.Blue]: 10,
   [Color.Violet]: 5,
 };
+
+export const BAND_COUNTS = [4, 5, 6] as const;
+export type BandCount = (typeof BAND_COUNTS)[number];
