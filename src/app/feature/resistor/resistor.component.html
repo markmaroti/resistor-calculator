@@ -66,7 +66,7 @@
 
 <p>
   @if (store.resistance().ohms > 0) { Resistance:
-  <strong>{{ store.resistance().ohms }} Ω</strong>
+  <strong>{{ store.resistance().ohms | ohms}}</strong>
   @if (store.resistance().tolerancePct !== null) {
   <span> ± {{ store.resistance().tolerancePct }}%</span>
   } @if (store.resistance().tcrPpm !== null) {

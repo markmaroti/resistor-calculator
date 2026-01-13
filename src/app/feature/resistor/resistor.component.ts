@@ -10,12 +10,13 @@ import {
   TOLERANCE_BY_COLOR,
 } from './resistor.model';
 import { SelectComponent } from '../../shared/select/select.component';
+import { OhmsPipe } from './pipes/ohms-pipe';
 
 @Component({
   selector: 'app-resistor',
   templateUrl: './resistor.component.html',
   styleUrl: './resistor.component.scss',
-  imports: [SelectComponent],
+  imports: [SelectComponent, OhmsPipe],
   providers: [ResistorStore],
 })
 export class ResistorComponent {
