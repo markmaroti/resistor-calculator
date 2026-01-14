@@ -65,11 +65,11 @@
 </ul>
 
 <p>
-  @if (store.resistance().ohms > 0) { Resistance:
-  <strong>{{ store.resistance().ohms | ohms}}</strong>
-  @if (store.resistance().tolerancePct !== null) {
-  <span> ± {{ store.resistance().tolerancePct }}%</span>
-  } @if (store.resistance().tcrPpm !== null) {
-  <span> ({{ store.resistance().tcrPpm }} ppm/°C)</span>
+  @if (viewModel().ohms > 0) { Resistance:
+  <strong>{{ viewModel().ohms | ohms}}</strong>
+  @if (viewModel().tolerancePct !== null) {
+  <span> ± {{ viewModel().tolerancePct }}%</span>
+  } @if (viewModel().tcrPpm !== null) {
+  <span> ({{ viewModel().tcrPpm }} ppm/°C)</span>
   } }
 </p>

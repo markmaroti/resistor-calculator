@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { ResistorStore } from './resistor.store';
 import {
   BAND_COUNTS,
@@ -27,6 +27,21 @@ export class ResistorComponent {
   public readonly toleranceColors = Object.keys(TOLERANCE_BY_COLOR) as Color[];
   public readonly tcrColors = Object.keys(TCR_BY_COLOR) as Color[];
   public readonly bandCounts = BAND_COUNTS;
+
+  public viewModel = computed(() => {
+    const resistance = this.store.resistance();
+    const bandCount = this.store.bandCount();
+
+    return {
+      bandCount: bandCount,
+      ohms: resistance.ohms,
+      tolerancePct: resistance.tolerancePct,
+      tcrPpm: resistance.tcrPpm,
+      showDigit3: bandCount !== 4,
+      showTcr: bandCount === 6,
+      hasValue: resistance.ohms > 0,
+    };
+  });
 
   constructor(public readonly store: ResistorStore) {}
 
