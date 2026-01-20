@@ -1,0 +1,32 @@
+.resistor-preview {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0 32px;
+}
+
+.resistor-svg {
+  width: min(100%, 720px);
+  height: auto;
+}
+
+.lead {
+  stroke: url(#leadGradient);
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+
+.body {
+  fill: url(#bodyGradient);
+  stroke: #a98263;
+  stroke-width: 2;
+}
+
+.body-shadow {
+  fill: rgba(0, 0, 0, 0.08);
+}
+
+.band {
+  stroke: rgba(15, 15, 15, 0.55);
+  stroke-width: 1.5;
+  rx: 4px;
+}

@@ -65,5 +65,20 @@ export const TCR_BY_COLOR: Partial<Record<Color, number>> = {
   [Color.Violet]: 5,
 };
 
+export const COLOR_HEX: Record<Color, string> = {
+  [Color.Black]: '#1f1f1f',
+  [Color.Brown]: '#7a4b2a',
+  [Color.Red]: '#c43b2f',
+  [Color.Orange]: '#d9791f',
+  [Color.Yellow]: '#e2c233',
+  [Color.Green]: '#2f7f4f',
+  [Color.Blue]: '#2f5fa8',
+  [Color.Violet]: '#6d4aa8',
+  [Color.Gray]: '#8a8f98',
+  [Color.White]: '#f1f1f1',
+  [Color.Gold]: '#c7a24b',
+  [Color.Silver]: '#b7bcc4',
+};
+
 export const BAND_COUNTS = [4, 5, 6] as const;
 export type BandCount = (typeof BAND_COUNTS)[number];

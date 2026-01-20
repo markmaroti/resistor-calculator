@@ -1,5 +1,15 @@
 <h1>Resistor Color Code Calculator</h1>
-<ul>
+<app-resistor-preview
+  [bandCount]="viewModel().bandCount"
+  [digit1]="store.digit1()"
+  [digit2]="store.digit2()"
+  [digit3]="store.digit3()"
+  [multiplier]="store.multiplier()"
+  [tolerance]="store.tolerance()"
+  [tcr]="store.tcr()"
+/>
+
+<ul class="resistor-controls">
   <li>
     <app-select
       label="Bands"
