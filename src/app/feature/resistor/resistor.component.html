@@ -74,12 +74,19 @@
   }
 </ul>
 
-<p>
-  @if (viewModel().ohms > 0) { Resistance:
-  <strong>{{ viewModel().ohms | ohms}}</strong>
-  @if (viewModel().tolerancePct !== null) {
-  <span> ± {{ viewModel().tolerancePct }}%</span>
-  } @if (viewModel().tcrPpm !== null) {
-  <span> ({{ viewModel().tcrPpm }} ppm/°C)</span>
-  } }
-</p>
+<section class="resistor-result" aria-live="polite">
+  @if (viewModel().ohms > 0) {
+  <div class="result-label">Resistance</div>
+  <div class="result-value">
+    <span class="result-ohms">{{ viewModel().ohms | ohms}}</span>
+    @if (viewModel().tolerancePct !== null) {
+    <span class="result-meta">± {{ viewModel().tolerancePct }}%</span>
+    }
+    @if (viewModel().tcrPpm !== null) {
+    <span class="result-meta">({{ viewModel().tcrPpm }} ppm/°C)</span>
+    }
+  </div>
+  } @else {
+  <div class="result-empty">Select bands to calculate resistance.</div>
+  }
+</section>
