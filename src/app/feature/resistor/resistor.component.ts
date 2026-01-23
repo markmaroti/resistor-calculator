@@ -46,10 +46,6 @@ export class ResistorComponent {
 
   constructor(public readonly store: ResistorStore) {}
 
-  public onColorChange(setter: (v: Color) => void, value: string) {
-    setter(value as Color);
-  }
-
   public onBandCountChange(value: BandCount | string) {
     this.store.bandCount.set(Number(value) as BandCount);
   }
