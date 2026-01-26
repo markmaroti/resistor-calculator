@@ -11,4 +11,12 @@ export class SelectComponent<T> {
   readonly value = input.required<T>();
 
   readonly valueChange = output<T>();
+
+  public onChange(selectedIndex: string) {
+    const index = Number(selectedIndex);
+    const option = this.options()[index];
+    if (option !== undefined) {
+      this.valueChange.emit(option);
+    }
+  }
 }

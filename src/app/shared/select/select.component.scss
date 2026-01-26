@@ -5,21 +5,21 @@ label {
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #5d4a3c;
+  color: var(--label-text);
 }
 
 select {
   appearance: none;
-  background-color: #fff;
-  border: 1px solid #d8c9bb;
+  background-color: var(--select-bg);
+  border: 1px solid var(--select-border);
   border-radius: 10px;
   padding: 10px 36px 10px 12px;
   font-size: 1rem;
-  color: #2e241e;
+  color: var(--select-text);
   background-image:
-    linear-gradient(45deg, transparent 50%, #6e5b4a 50%),
-    linear-gradient(135deg, #6e5b4a 50%, transparent 50%),
-    linear-gradient(to right, #e8ddd0, #e8ddd0);
+    linear-gradient(45deg, transparent 50%, var(--select-chevron) 50%),
+    linear-gradient(135deg, var(--select-chevron) 50%, transparent 50%),
+    linear-gradient(to right, var(--select-track), var(--select-track));
   background-position:
     calc(100% - 18px) 50%,
     calc(100% - 12px) 50%,
@@ -35,11 +35,11 @@ select {
 }
 
 select:hover {
-  border-color: #bfae9e;
+  border-color: var(--select-border-hover);
 }
 
 select:focus-visible {
   outline: none;
-  border-color: #8a6e58;
+  border-color: var(--select-border-focus);
   box-shadow: 0 0 0 3px rgba(138, 110, 88, 0.2);
 }

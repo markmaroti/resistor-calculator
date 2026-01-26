@@ -82,3 +82,21 @@ export const COLOR_HEX: Record<Color, string> = {
 
 export const BAND_COUNTS = [4, 5, 6] as const;
 export type BandCount = (typeof BAND_COUNTS)[number];
+
+export type BandColorKey = 'digit1' | 'digit2' | 'digit3' | 'multiplier' | 'tolerance' | 'tcr';
+
+export const BAND_LAYOUTS: Record<BandCount, { xs: number[]; width: number }> = {
+  4: { xs: [200, 250, 330, 425], width: 28 },
+  5: { xs: [190, 230, 270, 340, 430], width: 26 },
+  6: { xs: [185, 220, 255, 305, 360, 430], width: 24 },
+};
+
+export const BAND_COLOR_KEYS: Record<BandCount, readonly BandColorKey[]> = {
+  4: ['digit1', 'digit2', 'multiplier', 'tolerance'],
+  5: ['digit1', 'digit2', 'digit3', 'multiplier', 'tolerance'],
+  6: ['digit1', 'digit2', 'digit3', 'multiplier', 'tolerance', 'tcr'],
+};
+
+export function buildBandColors(count: BandCount, colors: Record<BandColorKey, Color>): Color[] {
+  return BAND_COLOR_KEYS[count].map((key) => colors[key]);
+}

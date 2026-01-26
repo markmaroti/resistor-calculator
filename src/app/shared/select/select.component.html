@@ -1,8 +1,12 @@
 <label>
   {{ label() }}
-  <select (change)="valueChange.emit($any($event.target).value)">
-    @for (option of options(); track option) {
-    <option [value]="option" [selected]="value() === option">{{ option }}</option>
+  @let optionList = options();
+  <select #select (change)="onChange(select.value)">
+    @for (option of optionList; track option; let index = $index) {
+    <option [value]="index" [selected]="value() === option">{{ option }}</option>
+    }
+    @empty {
+    <option disabled>No options available</option>
     }
   </select>
 </label>

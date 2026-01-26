@@ -1,1 +1,30 @@
 /* You can add global styles to this file, and also import other style files */
+
+:root {
+  font-family: monospace;
+  --surface-1: #f7f2ec;
+  --surface-2: #f2e8dc;
+  --surface-3: #fff7ec;
+  --surface-4: #f1dcc6;
+  --border-1: #e2d5c7;
+  --border-2: #d1b499;
+  --text-accent: #8a5d3a;
+  --text-strong: #2a1e16;
+  --text-muted: #6b4a34;
+  --text-subtle: #786457;
+  --label-text: #5d4a3c;
+  --select-bg: #fff;
+  --select-border: #d8c9bb;
+  --select-text: #2e241e;
+  --select-chevron: #6e5b4a;
+  --select-track: #e8ddd0;
+  --select-border-hover: #bfae9e;
+  --select-border-focus: #8a6e58;
+  --resistor-body-stroke: #a98263;
+}
+
+*,
+*::before,
+*::after {
+  font-family: inherit;
+}

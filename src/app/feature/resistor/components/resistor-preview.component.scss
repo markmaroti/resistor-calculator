@@ -17,7 +17,7 @@
 
 .body {
   fill: url(#bodyGradient);
-  stroke: #a98263;
+  stroke: var(--resistor-body-stroke);
   stroke-width: 2;
 }
 

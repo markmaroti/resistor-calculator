@@ -29,7 +29,7 @@ export function calculateResistanceFromBands(input: BandsInput) {
 
   const ohms = significantValue * MULTIPLIER_BY_COLOR[input.multiplier];
   const tolerancePct = TOLERANCE_BY_COLOR[input.tolerance] ?? null;
-  const tcrPpm = input.bandCount === 6 ? TCR_BY_COLOR[input.tcr] ?? null : null;
+  const tcrPpm = input.bandCount === 6 ? (TCR_BY_COLOR[input.tcr] ?? null) : null;
 
   return { ohms, tolerancePct, tcrPpm };
 }
@@ -38,7 +38,7 @@ function calculateSignificantValue(
   bandCount: 4 | 5 | 6,
   digit1: number,
   digit2: number,
-  digit3: number | null
+  digit3: number | null,
 ): number {
   if (bandCount === 4) {
     return digit1 * 10 + digit2;

@@ -1,6 +1,7 @@
+@let vm = viewModel();
 <h1>Resistor Color Code Calculator</h1>
 <app-resistor-preview
-  [bandCount]="viewModel().bandCount"
+  [bandCount]="vm.bandCount"
   [digit1]="store.digit1()"
   [digit2]="store.digit2()"
   [digit3]="store.digit3()"
@@ -34,7 +35,7 @@
       (valueChange)="store.digit2.set($event)"
     />
   </li>
-  @if (store.bandCount() !== 4) {
+  @if (vm.showDigit3) {
   <li>
     <app-select
       label="Band 3 (Digit)"
@@ -62,7 +63,7 @@
     />
   </li>
 
-  @if (store.bandCount() === 6) {
+  @if (vm.showTcr) {
   <li>
     <app-select
       label="TCR (ppm/°C)"
@@ -75,15 +76,15 @@
 </ul>
 
 <section class="resistor-result" aria-live="polite">
-  @if (viewModel().ohms > 0) {
+  @if (vm.ohms > 0) {
   <div class="result-label">Resistance</div>
   <div class="result-value">
-    <span class="result-ohms">{{ viewModel().ohms | ohms}}</span>
-    @if (viewModel().tolerancePct !== null) {
-    <span class="result-meta">± {{ viewModel().tolerancePct }}%</span>
+    <span class="result-ohms">{{ vm.ohms | ohms}}</span>
+    @if (vm.tolerancePct !== null) {
+    <span class="result-meta">± {{ vm.tolerancePct }}%</span>
     }
-    @if (viewModel().tcrPpm !== null) {
-    <span class="result-meta">({{ viewModel().tcrPpm }} ppm/°C)</span>
+    @if (vm.tcrPpm !== null) {
+    <span class="result-meta">({{ vm.tcrPpm }} ppm/°C)</span>
     }
   </div>
   } @else {

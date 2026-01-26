@@ -20,24 +20,15 @@
     <rect class="body" x="140" y="65" width="360" height="90" rx="42" />
     <rect class="body-shadow" x="150" y="74" width="340" height="72" rx="36" />
 
-    @if (bandCount() === 4) {
-    <rect class="band" x="200" y="60" width="28" height="100" [attr.fill]="colorHex[digit1()]" />
-    <rect class="band" x="250" y="60" width="28" height="100" [attr.fill]="colorHex[digit2()]" />
-    <rect class="band" x="330" y="60" width="28" height="100" [attr.fill]="colorHex[multiplier()]" />
-    <rect class="band" x="425" y="60" width="28" height="100" [attr.fill]="colorHex[tolerance()]" />
-    } @else if (bandCount() === 5) {
-    <rect class="band" x="190" y="60" width="26" height="100" [attr.fill]="colorHex[digit1()]" />
-    <rect class="band" x="230" y="60" width="26" height="100" [attr.fill]="colorHex[digit2()]" />
-    <rect class="band" x="270" y="60" width="26" height="100" [attr.fill]="colorHex[digit3()]" />
-    <rect class="band" x="340" y="60" width="26" height="100" [attr.fill]="colorHex[multiplier()]" />
-    <rect class="band" x="430" y="60" width="26" height="100" [attr.fill]="colorHex[tolerance()]" />
-    } @else {
-    <rect class="band" x="185" y="60" width="24" height="100" [attr.fill]="colorHex[digit1()]" />
-    <rect class="band" x="220" y="60" width="24" height="100" [attr.fill]="colorHex[digit2()]" />
-    <rect class="band" x="255" y="60" width="24" height="100" [attr.fill]="colorHex[digit3()]" />
-    <rect class="band" x="305" y="60" width="24" height="100" [attr.fill]="colorHex[multiplier()]" />
-    <rect class="band" x="360" y="60" width="24" height="100" [attr.fill]="colorHex[tolerance()]" />
-    <rect class="band" x="430" y="60" width="24" height="100" [attr.fill]="colorHex[tcr()]" />
+    @for (band of bands(); track $index) {
+    <rect
+      class="band"
+      y="60"
+      height="100"
+      [attr.x]="band.x"
+      [attr.width]="band.width"
+      [attr.fill]="colorHex[band.color]"
+    />
     }
   </svg>
 </section>
