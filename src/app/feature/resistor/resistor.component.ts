@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { ResistorStore } from './resistor.store';
 import {
   BAND_COUNTS,
@@ -22,6 +22,7 @@ import { OhmsPipe } from './pipes/ohms-pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResistorComponent {
+  public readonly showHelp = signal(false);
   public readonly digitColors = (Object.keys(DIGIT_BY_COLOR) as Color[]).filter(
     (c) => DIGIT_BY_COLOR[c] !== null,
   );
@@ -48,5 +49,9 @@ export class ResistorComponent {
 
   public onBandCountChange(value: BandCount | string) {
     this.store.bandCount.set(Number(value) as BandCount);
+  }
+
+  public toggleHelp() {
+    this.showHelp.update((value) => !value);
   }
 }
