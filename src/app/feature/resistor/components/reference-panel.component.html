@@ -1,0 +1,42 @@
+<section class="reference-section">
+  <h3>Reference data</h3>
+  <p class="reference-detail">
+    This panel lists common E-series values and the tolerance/TCR color mappings used in standard
+    resistor identification.
+  </p>
+  @if (reference.isLoading()) {
+  <p class="reference-state">Loading reference data…</p>
+  } @else if (reference.error()) {
+  <p class="reference-state">Unable to load reference data.</p>
+  } @else {
+  <div class="reference-grid">
+    <div class="reference-group">
+      <h4>E-series</h4>
+      @for (series of reference.value().eSeries; track series.name) {
+      <div class="reference-row">
+        <span class="reference-label">{{ series.name }}</span>
+        <span class="reference-values">{{ series.values.join(', ') }}</span>
+      </div>
+      }
+    </div>
+    <div class="reference-group">
+      <h4>Tolerances</h4>
+      @for (item of reference.value().tolerances; track item.color) {
+      <div class="reference-row">
+        <span class="reference-label">{{ item.color }}</span>
+        <span class="reference-values">± {{ item.pct }}%</span>
+      </div>
+      }
+    </div>
+    <div class="reference-group">
+      <h4>TCR</h4>
+      @for (item of reference.value().tcr; track item.color) {
+      <div class="reference-row">
+        <span class="reference-label">{{ item.color }}</span>
+        <span class="reference-values">{{ item.ppm }} ppm/°C</span>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</section>

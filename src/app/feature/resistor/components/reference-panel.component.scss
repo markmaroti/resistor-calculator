@@ -1,0 +1,56 @@
+.reference-section {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-1);
+}
+
+.reference-section h3 {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-accent);
+}
+
+.reference-detail {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.reference-state {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-subtle);
+}
+
+.reference-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.reference-group h4 {
+  margin: 0 0 6px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-strong);
+}
+
+.reference-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.reference-label {
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.reference-values {
+  text-align: right;
+}

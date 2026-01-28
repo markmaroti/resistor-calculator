@@ -11,13 +11,14 @@ import {
 } from './resistor.model';
 import { SelectComponent } from '../../shared/select/select.component';
 import { ResistorPreviewComponent } from './components/resistor-preview.component';
+import { ReferencePanelComponent } from './components/reference-panel.component';
 import { OhmsPipe } from './pipes/ohms-pipe';
 
 @Component({
   selector: 'app-resistor',
   templateUrl: './resistor.component.html',
   styleUrl: './resistor.component.scss',
-  imports: [SelectComponent, ResistorPreviewComponent, OhmsPipe],
+  imports: [SelectComponent, ResistorPreviewComponent, ReferencePanelComponent, OhmsPipe],
   providers: [ResistorStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

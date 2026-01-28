@@ -1,0 +1,31 @@
+{
+  "eSeries": [
+    { "name": "E6", "values": [10, 15, 22, 33, 47, 68] },
+    { "name": "E12", "values": [10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82] },
+    {
+      "name": "E24",
+      "values": [
+        10, 11, 12, 13, 15, 16, 18, 20, 22, 24, 27, 30, 33, 36, 39, 43, 47, 51, 56, 62, 68, 75, 82,
+        91
+      ]
+    }
+  ],
+  "tolerances": [
+    { "color": "Brown", "pct": 1 },
+    { "color": "Red", "pct": 2 },
+    { "color": "Green", "pct": 0.5 },
+    { "color": "Blue", "pct": 0.25 },
+    { "color": "Violet", "pct": 0.1 },
+    { "color": "Gray", "pct": 0.05 },
+    { "color": "Gold", "pct": 5 },
+    { "color": "Silver", "pct": 10 }
+  ],
+  "tcr": [
+    { "color": "Brown", "ppm": 100 },
+    { "color": "Red", "ppm": 50 },
+    { "color": "Orange", "ppm": 15 },
+    { "color": "Yellow", "ppm": 25 },
+    { "color": "Blue", "ppm": 10 },
+    { "color": "Violet", "ppm": 5 }
+  ]
+}
