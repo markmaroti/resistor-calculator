@@ -4,9 +4,9 @@
   border-top: 1px dashed var(--border-1);
 }
 
-.reference-section h3 {
+.reference-section h2 {
   margin: 0 0 6px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--text-accent);
@@ -36,6 +36,7 @@
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--text-strong);
+  border-bottom: 1px dashed var(--border-1);
 }
 
 .reference-row {
