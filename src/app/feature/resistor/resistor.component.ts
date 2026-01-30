@@ -9,6 +9,7 @@ import {
   TCR_BY_COLOR,
   TOLERANCE_BY_COLOR,
 } from './resistor.model';
+import { RouterLink } from '@angular/router';
 import { SelectComponent } from '../../shared/select/select.component';
 import { ResistorPreviewComponent } from './components/resistor-preview.component';
 import { ReferencePanelComponent } from './components/reference-panel.component';
@@ -18,7 +19,13 @@ import { OhmsPipe } from './pipes/ohms-pipe';
   selector: 'app-resistor',
   templateUrl: './resistor.component.html',
   styleUrl: './resistor.component.scss',
-  imports: [SelectComponent, ResistorPreviewComponent, ReferencePanelComponent, OhmsPipe],
+  imports: [
+    RouterLink,
+    SelectComponent,
+    ResistorPreviewComponent,
+    ReferencePanelComponent,
+    OhmsPipe,
+  ],
   providers: [ResistorStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

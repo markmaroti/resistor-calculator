@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { ResistorComponent } from './feature/resistor/resistor.component';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [ResistorComponent],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

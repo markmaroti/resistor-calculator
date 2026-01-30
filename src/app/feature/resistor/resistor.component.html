@@ -93,14 +93,17 @@
 </section>
 
 <section class="resistor-help" aria-live="polite">
-  <button
-    class="help-trigger"
-    type="button"
-    (click)="toggleHelp()"
-    [attr.aria-expanded]="showHelp()"
-  >
-    {{ showHelp() ? 'Hide how it works' : 'Show how it works' }}
-  </button>
+  <div class="help-actions">
+    <button
+      class="help-trigger"
+      type="button"
+      (click)="toggleHelp()"
+      [attr.aria-expanded]="showHelp()"
+    >
+      {{ showHelp() ? 'Hide how it works' : 'Show how it works' }}
+    </button>
+    <a class="help-link" routerLink="/guide">Open guide</a>
+  </div>
   @defer (when showHelp()) {
   @if (showHelp()) {
   <div class="help-card">

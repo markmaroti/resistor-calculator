@@ -1,0 +1,49 @@
+<section class="guide">
+  <header class="guide-header">
+    <div>
+      <p class="guide-eyebrow">Resistor Color Code Guide</p>
+      <h1>Decode bands with confidence</h1>
+      <p class="guide-lead">
+        This quick guide explains how each band contributes to the final resistance and which
+        values are commonly used in practice.
+      </p>
+    </div>
+    <a class="guide-link" routerLink="/">Back to calculator</a>
+  </header>
+
+  <div class="guide-grid">
+    <article class="guide-card">
+      <h2>Band meaning</h2>
+      <ol>
+        <li>First bands = significant digits.</li>
+        <li>Next band = multiplier (power of ten).</li>
+        <li>Final band(s) = tolerance, and optional TCR.</li>
+      </ol>
+    </article>
+
+    <article class="guide-card">
+      <h2>E-series</h2>
+      <p>
+        E-series values are preferred numbers used to standardize resistor inventories. The
+        calculator always outputs the exact value from the chosen bands.
+      </p>
+      <p class="guide-note">Tip: E12 is common, E24 is a tighter tolerance set.</p>
+    </article>
+
+    <article class="guide-card">
+      <h2>Practical tolerances</h2>
+      <p>
+        For general electronics, ±5% (gold) is common. Precision circuits often use ±1% (brown) or
+        tighter.
+      </p>
+    </article>
+
+    <article class="guide-card">
+      <h2>Temperature coefficient</h2>
+      <p>
+        TCR (ppm/°C) indicates how much the resistance changes with temperature. Lower values are
+        more stable.
+      </p>
+    </article>
+  </div>
+</section>
