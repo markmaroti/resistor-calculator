@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { ResistorStore } from './resistor.store';
+import { ResistorStore } from './state/resistor.store';
 import {
   BAND_COUNTS,
   BandCount,
