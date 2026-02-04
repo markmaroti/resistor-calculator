@@ -1,14 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { ResistorStore } from './state/resistor.store';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import {
   BAND_COUNTS,
-  BandCount,
   Color,
   DIGIT_BY_COLOR,
   MULTIPLIER_BY_COLOR,
   TCR_BY_COLOR,
   TOLERANCE_BY_COLOR,
 } from './resistor.model';
+import { ResistorStore } from './state/resistor.store';
 import { RouterLink } from '@angular/router';
 import { SelectComponent } from '../../shared/select/select.component';
 import { ResistorPreviewComponent } from './components/resistor-preview.component';
@@ -20,6 +20,7 @@ import { OhmsPipe } from './pipes/ohms-pipe';
   templateUrl: './resistor.component.html',
   styleUrl: './resistor.component.scss',
   imports: [
+    ReactiveFormsModule,
     RouterLink,
     SelectComponent,
     ResistorPreviewComponent,
@@ -30,6 +31,10 @@ import { OhmsPipe } from './pipes/ohms-pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResistorComponent {
+  private readonly store = inject(ResistorStore);
+  public readonly form = this.store.form;
+  public readonly viewModel = this.store.viewModel;
+  public readonly validationMessage = this.store.validationMessage;
   public readonly showHelp = signal(false);
   public readonly digitColors = (Object.keys(DIGIT_BY_COLOR) as Color[]).filter(
     (c) => DIGIT_BY_COLOR[c] !== null,
@@ -38,26 +43,6 @@ export class ResistorComponent {
   public readonly toleranceColors = Object.keys(TOLERANCE_BY_COLOR) as Color[];
   public readonly tcrColors = Object.keys(TCR_BY_COLOR) as Color[];
   public readonly bandCounts = BAND_COUNTS;
-
-  public viewModel = computed(() => {
-    const resistance = this.store.resistance();
-    const bandCount = this.store.bandCount();
-
-    return {
-      bandCount: bandCount,
-      ohms: resistance.ohms,
-      tolerancePct: resistance.tolerancePct,
-      tcrPpm: resistance.tcrPpm,
-      showDigit3: bandCount !== 4,
-      showTcr: bandCount === 6,
-    };
-  });
-
-  constructor(public readonly store: ResistorStore) {}
-
-  public onBandCountChange(value: BandCount | string) {
-    this.store.bandCount.set(Number(value) as BandCount);
-  }
 
   public toggleHelp() {
     this.showHelp.update((value) => !value);

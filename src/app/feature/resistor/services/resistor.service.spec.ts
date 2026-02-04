@@ -1,11 +1,11 @@
 import { BandCount, Color } from '../resistor.model';
-import { ResistorDomainService } from './resistor.service';
+import { ResistorService } from './resistor.service';
 
-describe('ResistorDomainService', () => {
-  const service = new ResistorDomainService();
+describe('ResistorService', () => {
+  const service = new ResistorService();
 
   const buildInput = (
-    overrides: Partial<Parameters<ResistorDomainService['calculateResistanceFromBands']>[0]> = {},
+    overrides: Partial<Parameters<ResistorService['calculateResistanceFromBands']>[0]> = {},
   ) => ({
     bandCount: 4 as BandCount,
     digit1: Color.Brown,

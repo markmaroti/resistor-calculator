@@ -2,30 +2,15 @@ import { Injectable } from '@angular/core';
 import {
   DIGIT_BY_COLOR,
   MULTIPLIER_BY_COLOR,
+  ResistanceResult,
+  ResistorBandsInput,
   TCR_BY_COLOR,
   TOLERANCE_BY_COLOR,
   type BandCount,
-  type Color,
 } from '../resistor.model';
 
-export type ResistorBandsInput = {
-  bandCount: BandCount;
-  digit1: Color;
-  digit2: Color;
-  digit3: Color;
-  multiplier: Color;
-  tolerance: Color;
-  tcr: Color;
-};
-
-export type ResistanceResult = {
-  ohms: number;
-  tolerancePct: number | null;
-  tcrPpm: number | null;
-};
-
 @Injectable({ providedIn: 'root' })
-export class ResistorDomainService {
+export class ResistorService {
   public calculateResistanceFromBands(input: ResistorBandsInput): ResistanceResult {
     const digit1 = DIGIT_BY_COLOR[input.digit1];
     const digit2 = DIGIT_BY_COLOR[input.digit2];

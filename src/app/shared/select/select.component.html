@@ -1,9 +1,9 @@
 <label>
   {{ label() }}
   @let optionList = options();
-  <select #select (change)="onChange(select.value)">
+  <select #select (change)="onChange(select.value)" (blur)="onTouched()" [disabled]="isDisabled">
     @for (option of optionList; track option; let index = $index) {
-    <option [value]="index" [selected]="value() === option">{{ option }}</option>
+    <option [value]="index" [selected]="selectedValue === option">{{ option }}</option>
     }
     @empty {
     <option disabled>No options available</option>

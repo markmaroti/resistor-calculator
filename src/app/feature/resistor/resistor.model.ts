@@ -100,3 +100,21 @@ export const BAND_COLOR_KEYS: Record<BandCount, readonly BandColorKey[]> = {
 export function buildBandColors(count: BandCount, colors: Record<BandColorKey, Color>): Color[] {
   return BAND_COLOR_KEYS[count].map((key) => colors[key]);
 }
+
+export const DEFAULT_BAND_COUNT = 4;
+
+export type ResistorBandsInput = {
+  bandCount: BandCount;
+  digit1: Color;
+  digit2: Color;
+  digit3: Color;
+  multiplier: Color;
+  tolerance: Color;
+  tcr: Color;
+};
+
+export type ResistanceResult = {
+  ohms: number;
+  tolerancePct: number | null;
+  tcrPpm: number | null;
+};

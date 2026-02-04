@@ -2,37 +2,34 @@
 <h1>Resistor Color Code Calculator</h1>
 <app-resistor-preview
   [bandCount]="vm.bandCount"
-  [digit1]="store.digit1()"
-  [digit2]="store.digit2()"
-  [digit3]="store.digit3()"
-  [multiplier]="store.multiplier()"
-  [tolerance]="store.tolerance()"
-  [tcr]="store.tcr()"
+  [digit1]="vm.digit1"
+  [digit2]="vm.digit2"
+  [digit3]="vm.digit3"
+  [multiplier]="vm.multiplier"
+  [tolerance]="vm.tolerance"
+  [tcr]="vm.tcr"
 />
 
-<ul class="resistor-controls">
+<ul class="resistor-controls" [formGroup]="form">
   <li>
     <app-select
       label="Bands"
       [options]="bandCounts"
-      [value]="store.bandCount()"
-      (valueChange)="onBandCountChange($event)"
+      formControlName="bandCount"
     />
   </li>
   <li>
     <app-select
       label="Band 1 (Digit)"
       [options]="digitColors"
-      [value]="store.digit1()"
-      (valueChange)="store.digit1.set($event)"
+      formControlName="digit1"
     />
   </li>
   <li>
     <app-select
       label="Band 2 (Digit)"
       [options]="digitColors"
-      [value]="store.digit2()"
-      (valueChange)="store.digit2.set($event)"
+      formControlName="digit2"
     />
   </li>
   @if (vm.showDigit3) {
@@ -40,8 +37,7 @@
     <app-select
       label="Band 3 (Digit)"
       [options]="digitColors"
-      [value]="store.digit3()"
-      (valueChange)="store.digit3.set($event)"
+      formControlName="digit3"
     />
   </li>
   }
@@ -49,8 +45,7 @@
     <app-select
       label="Multiplier"
       [options]="multiplierColors"
-      [value]="store.multiplier()"
-      (valueChange)="store.multiplier.set($event)"
+      formControlName="multiplier"
     />
   </li>
 
@@ -58,8 +53,7 @@
     <app-select
       label="Tolerance"
       [options]="toleranceColors"
-      [value]="store.tolerance()"
-      (valueChange)="store.tolerance.set($event)"
+      formControlName="tolerance"
     />
   </li>
 
@@ -68,12 +62,15 @@
     <app-select
       label="TCR (ppm/°C)"
       [options]="tcrColors"
-      [value]="store.tcr()"
-      (valueChange)="store.tcr.set($event)"
+      formControlName="tcr"
     />
   </li>
   }
 </ul>
+
+@if (validationMessage()) {
+<div class="result-empty">{{ validationMessage() }}</div>
+}
 
 <section class="resistor-result" aria-live="polite">
   @if (vm.ohms > 0) {
@@ -105,15 +102,15 @@
     <a class="help-link" routerLink="/guide">Open guide</a>
   </div>
   @defer (when showHelp()) {
-  @if (showHelp()) {
-  <div class="help-card">
-    <h2>How it works</h2>
-    <p>
-      Each color band encodes a digit, a multiplier, and an optional tolerance/TCR value. Changing
-      the bands updates the calculated resistance instantly.
-    </p>
-    <app-reference-panel />
-  </div>
-  }
+    @if (showHelp()) {
+    <div class="help-card">
+      <h2>How it works</h2>
+      <p>
+        Each color band encodes a digit, a multiplier, and an optional tolerance/TCR value. Changing
+        the bands updates the calculated resistance instantly.
+      </p>
+      <app-reference-panel />
+    </div>
+    }
   }
 </section>
