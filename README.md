@@ -4,6 +4,8 @@
 
 # Resistor Calculator
 
+<img width="1036" height="620" alt="image" src="https://github.com/user-attachments/assets/c1f22acc-7d59-486c-bf42-14fe0ae1f099" />
+
 A simple Angular application that calculates resistor values based on standard resistor color codes.
 
 The app allows users to select color bands and instantly computes the corresponding resistance value according to industry standards.
