@@ -1,7 +1,6 @@
 ![Angular](https://img.shields.io/badge/Angular-21-red)
 ![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen)
 
-
 # Resistor Calculator
 
 <img width="1036" height="620" alt="image" src="https://github.com/user-attachments/assets/c1f22acc-7d59-486c-bf42-14fe0ae1f099" />
@@ -32,7 +31,6 @@ If you are using **nvm**, you can switch to the required Node.js version with:
 nvm use
 ```
 
-
 ## Project Setup
 
 Clone the repository and install the required dependencies.
@@ -45,19 +43,17 @@ npm install
 
 This will install all necessary packages listed in package.json.
 
-
 ## Development Server
 
 To start a local development server, run:
 
 ```bash
-ng serve 
+ng serve
 # or
 npm run start
 ```
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
 
 ## Running Unit Tests
 
@@ -68,7 +64,6 @@ ng test
 ```
 
 Test results will be displayed in the terminal.
-
 
 ## Build
 

@@ -1,8 +1,6 @@
 <section class="resistor-preview">
-  <svg
-    class="resistor-svg"
-    viewBox="0 0 640 220"
-  >
+  <!-- prettier-ignore -->
+  <svg class="resistor-svg" viewBox="0 0 640 220">
     <title>Resistor preview</title>
     <defs>
       <linearGradient id="bodyGradient" x1="0" x2="1" y1="0" y2="0">
@@ -21,14 +19,14 @@
     <rect class="body-shadow" x="150" y="74" width="340" height="72" rx="36" />
 
     @for (band of bands(); track $index) {
-    <rect
-      class="band"
-      y="60"
-      height="100"
-      [attr.x]="band.x"
-      [attr.width]="band.width"
-      [attr.fill]="colorHex[band.color]"
-    />
+      <rect
+        class="band"
+        y="60"
+        height="100"
+        [attr.x]="band.x"
+        [attr.width]="band.width"
+        [attr.fill]="colorHex[band.color]"
+      />
     }
   </svg>
 </section>

@@ -19,7 +19,7 @@ export class SelectComponent<T> implements ControlValueAccessor {
   public readonly value = input<T | null>(null);
 
   public readonly valueChange = output<T>();
-  
+
   public isDisabled = false;
   private cvaValue: T | null = null;
   private onCvaChange: (value: T) => void = () => {};

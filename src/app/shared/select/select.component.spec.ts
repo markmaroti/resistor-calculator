@@ -17,7 +17,7 @@ describe('SelectComponent', () => {
     fixture.componentRef.setInput('label', 'Label');
     fixture.componentRef.setInput('options', ['a', 'b', 'c']);
     fixture.componentRef.setInput('value', 'a');
-    
+
     await fixture.whenStable();
   });
 

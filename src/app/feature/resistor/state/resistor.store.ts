@@ -1,4 +1,4 @@
-import { Injectable, computed } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { map } from 'rxjs';
@@ -13,6 +13,8 @@ import {
 
 @Injectable()
 export class ResistorStore {
+  private readonly service = inject(ResistorService);
+
   private readonly formGroup = new FormGroup(
     {
       bandCount: new FormControl<BandCount>(DEFAULT_BAND_COUNT, {
@@ -109,6 +111,4 @@ export class ResistorStore {
     }
     return '';
   });
-
-  constructor(private readonly service: ResistorService) {}
 }

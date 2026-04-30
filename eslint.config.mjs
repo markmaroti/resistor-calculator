@@ -8,7 +8,11 @@ export default tseslint.config(
   },
   {
     files: ['**/*.ts'],
-    extends: [eslint.configs.recommended, ...tseslint.configs.recommended, ...angular.configs.tsRecommended],
+    extends: [
+      eslint.configs.recommended,
+      ...tseslint.configs.recommended,
+      ...angular.configs.tsRecommended,
+    ],
     processor: angular.processInlineTemplates,
     rules: {
       '@angular-eslint/directive-selector': [
@@ -27,7 +31,6 @@ export default tseslint.config(
           style: 'kebab-case',
         },
       ],
-      '@angular-eslint/prefer-inject': 'off',
     },
   },
   {

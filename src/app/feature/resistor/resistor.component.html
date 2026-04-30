@@ -10,7 +10,10 @@
   [tcr]="vm.tcr"
 />
 
-<ul class="resistor-controls" [formGroup]="form">
+<ul
+  class="resistor-controls"
+  [formGroup]="form"
+>
   <li>
     <app-select
       label="Bands"
@@ -33,13 +36,13 @@
     />
   </li>
   @if (vm.showDigit3) {
-  <li>
-    <app-select
-      label="Band 3 (Digit)"
-      [options]="digitColors"
-      formControlName="digit3"
-    />
-  </li>
+    <li>
+      <app-select
+        label="Band 3 (Digit)"
+        [options]="digitColors"
+        formControlName="digit3"
+      />
+    </li>
   }
   <li>
     <app-select
@@ -58,38 +61,44 @@
   </li>
 
   @if (vm.showTcr) {
-  <li>
-    <app-select
-      label="TCR (ppm/°C)"
-      [options]="tcrColors"
-      formControlName="tcr"
-    />
-  </li>
+    <li>
+      <app-select
+        label="TCR (ppm/°C)"
+        [options]="tcrColors"
+        formControlName="tcr"
+      />
+    </li>
   }
 </ul>
 
 @if (validationMessage()) {
-<div class="result-empty">{{ validationMessage() }}</div>
+  <div class="result-empty">{{ validationMessage() }}</div>
 }
 
-<section class="resistor-result" aria-live="polite">
+<section
+  class="resistor-result"
+  aria-live="polite"
+>
   @if (vm.ohms > 0) {
-  <div class="result-label">Resistance</div>
-  <div class="result-value">
-    <span class="result-ohms">{{ vm.ohms | ohms}}</span>
-    @if (vm.tolerancePct !== null) {
-    <span class="result-meta">± {{ vm.tolerancePct }}%</span>
-    }
-    @if (vm.tcrPpm !== null) {
-    <span class="result-meta">({{ vm.tcrPpm }} ppm/°C)</span>
-    }
-  </div>
+    <div class="result-label">Resistance</div>
+    <div class="result-value">
+      <span class="result-ohms">{{ vm.ohms | ohms }}</span>
+      @if (vm.tolerancePct !== null) {
+        <span class="result-meta">± {{ vm.tolerancePct }}%</span>
+      }
+      @if (vm.tcrPpm !== null) {
+        <span class="result-meta">({{ vm.tcrPpm }} ppm/°C)</span>
+      }
+    </div>
   } @else {
-  <div class="result-empty">Select bands to calculate resistance.</div>
+    <div class="result-empty">Select bands to calculate resistance.</div>
   }
 </section>
 
-<section class="resistor-help" aria-live="polite">
+<section
+  class="resistor-help"
+  aria-live="polite"
+>
   <div class="help-actions">
     <button
       class="help-trigger"
@@ -99,18 +108,22 @@
     >
       {{ showHelp() ? 'Hide how it works' : 'Show how it works' }}
     </button>
-    <a class="help-link" routerLink="/guide">Open guide</a>
+    <a
+      class="help-link"
+      routerLink="/guide"
+      >Open guide</a
+    >
   </div>
   @defer (when showHelp()) {
     @if (showHelp()) {
-    <div class="help-card">
-      <h2>How it works</h2>
-      <p>
-        Each color band encodes a digit, a multiplier, and an optional tolerance/TCR value. Changing
-        the bands updates the calculated resistance instantly.
-      </p>
-      <app-reference-panel />
-    </div>
+      <div class="help-card">
+        <h2>How it works</h2>
+        <p>
+          Each color band encodes a digit, a multiplier, and an optional tolerance/TCR value.
+          Changing the bands updates the calculated resistance instantly.
+        </p>
+        <app-reference-panel />
+      </div>
     }
   }
 </section>
