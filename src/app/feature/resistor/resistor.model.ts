@@ -118,3 +118,22 @@ export type ResistanceResult = {
   tolerancePct: number | null;
   tcrPpm: number | null;
 };
+
+export type ServiceError<TCode extends string> = {
+  code: TCode;
+  message: string;
+};
+
+export type ServiceResult<TData, TCode extends string> = {
+  data: TData;
+  error: ServiceError<TCode> | null;
+};
+
+export const ResistanceErrorCode = {
+  InvalidDigitColor: 'INVALID_DIGIT_COLOR',
+  InvalidThirdDigitColor: 'INVALID_THIRD_DIGIT_COLOR',
+} as const;
+
+export type ResistanceErrorCode = (typeof ResistanceErrorCode)[keyof typeof ResistanceErrorCode];
+
+export type ResistanceCalculationResult = ServiceResult<ResistanceResult, ResistanceErrorCode>;

@@ -8,6 +8,7 @@ import {
   Color,
   DEFAULT_BAND_COUNT,
   DIGIT_BY_COLOR,
+  ResistanceErrorCode,
   ResistorBandsInput,
 } from '../resistor.model';
 
@@ -81,7 +82,7 @@ export class ResistorStore {
 
   public readonly viewModel = computed(() => {
     const value = this.formValue();
-    const resistance = this.service.calculateResistanceFromBands(value);
+    const resistanceResult = this.service.calculateResistance(value);
     const bandCount = value.bandCount;
 
     return {
@@ -92,9 +93,10 @@ export class ResistorStore {
       multiplier: value.multiplier,
       tolerance: value.tolerance,
       tcr: value.tcr,
-      ohms: resistance.ohms,
-      tolerancePct: resistance.tolerancePct,
-      tcrPpm: resistance.tcrPpm,
+      ohms: resistanceResult.data.ohms,
+      tolerancePct: resistanceResult.data.tolerancePct,
+      tcrPpm: resistanceResult.data.tcrPpm,
+      calculationError: resistanceResult.error,
       showDigit3: bandCount !== 4,
       showTcr: bandCount === 6,
     };
@@ -102,13 +104,17 @@ export class ResistorStore {
 
   public readonly validationMessage = computed(() => {
     this.formStatus();
-    const errors = this.form.errors;
-    if (errors?.['invalidDigits']) {
-      return 'Digit bands must be a valid color (not Gold/Silver).';
+    const calculationError = this.viewModel().calculationError;
+    if (!calculationError) {
+      return '';
     }
-    if (errors?.['invalidDigit3']) {
-      return 'Band 3 must be a valid digit color for 5- and 6-band resistors.';
+
+    switch (calculationError.code) {
+      case ResistanceErrorCode.InvalidDigitColor:
+      case ResistanceErrorCode.InvalidThirdDigitColor:
+        return calculationError.message;
+      default:
+        return '';
     }
-    return '';
   });
 }

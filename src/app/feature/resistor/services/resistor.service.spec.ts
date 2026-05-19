@@ -1,4 +1,4 @@
-import { BandCount, Color } from '../resistor.model';
+import { BandCount, Color, ResistanceErrorCode } from '../resistor.model';
 import { ResistorService } from './resistor.service';
 
 describe('ResistorService', () => {
@@ -76,5 +76,34 @@ describe('ResistorService', () => {
     );
 
     expect(result).toEqual({ ohms: 0, tolerancePct: null, tcrPpm: null });
+  });
+
+  it('returns explicit error when digit colors are invalid', () => {
+    const result = service.calculateResistance(
+      buildInput({
+        digit1: Color.Gold,
+      }),
+    );
+
+    expect(result.data).toEqual({ ohms: 0, tolerancePct: null, tcrPpm: null });
+    expect(result.error).toEqual({
+      code: ResistanceErrorCode.InvalidDigitColor,
+      message: 'Digit bands must be a valid color (not Gold/Silver).',
+    });
+  });
+
+  it('returns explicit error when third digit is invalid for 5-band', () => {
+    const result = service.calculateResistance(
+      buildInput({
+        bandCount: 5,
+        digit3: Color.Gold,
+      }),
+    );
+
+    expect(result.data).toEqual({ ohms: 0, tolerancePct: null, tcrPpm: null });
+    expect(result.error).toEqual({
+      code: ResistanceErrorCode.InvalidThirdDigitColor,
+      message: 'Band 3 must be a valid digit color for 5- and 6-band resistors.',
+    });
   });
 });

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import {
   DIGIT_BY_COLOR,
   MULTIPLIER_BY_COLOR,
+  ResistanceCalculationResult,
+  ResistanceErrorCode,
   ResistanceResult,
   ResistorBandsInput,
   TCR_BY_COLOR,
@@ -11,13 +13,29 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class ResistorService {
-  public calculateResistanceFromBands(input: ResistorBandsInput): ResistanceResult {
+  public calculateResistance(input: ResistorBandsInput): ResistanceCalculationResult {
     const digit1 = DIGIT_BY_COLOR[input.digit1];
     const digit2 = DIGIT_BY_COLOR[input.digit2];
     const digit3 = DIGIT_BY_COLOR[input.digit3];
 
     if (digit1 === null || digit2 === null) {
-      return { ohms: 0, tolerancePct: null, tcrPpm: null };
+      return {
+        data: this.emptyResistanceResult(),
+        error: {
+          code: ResistanceErrorCode.InvalidDigitColor,
+          message: 'Digit bands must be a valid color (not Gold/Silver).',
+        },
+      };
+    }
+
+    if (input.bandCount !== 4 && digit3 === null) {
+      return {
+        data: this.emptyResistanceResult(),
+        error: {
+          code: ResistanceErrorCode.InvalidThirdDigitColor,
+          message: 'Band 3 must be a valid digit color for 5- and 6-band resistors.',
+        },
+      };
     }
 
     const significantValue = this.calculateSignificantValue(
@@ -31,7 +49,18 @@ export class ResistorService {
     const tolerancePct = TOLERANCE_BY_COLOR[input.tolerance] ?? null;
     const tcrPpm = input.bandCount === 6 ? (TCR_BY_COLOR[input.tcr] ?? null) : null;
 
-    return { ohms, tolerancePct, tcrPpm };
+    return {
+      data: { ohms, tolerancePct, tcrPpm },
+      error: null,
+    };
+  }
+
+  public calculateResistanceFromBands(input: ResistorBandsInput): ResistanceResult {
+    return this.calculateResistance(input).data;
+  }
+
+  private emptyResistanceResult(): ResistanceResult {
+    return { ohms: 0, tolerancePct: null, tcrPpm: null };
   }
 
   private calculateSignificantValue(
