@@ -3,11 +3,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { map } from 'rxjs';
 import { ResistorService } from '../services/resistor.service';
+import { resistorBandsValidator } from './resistor.validators';
 import {
   BandCount,
   Color,
   DEFAULT_BAND_COUNT,
-  DIGIT_BY_COLOR,
   ResistanceErrorCode,
   ResistorBandsInput,
 } from '../resistor.model';
@@ -48,24 +48,7 @@ export class ResistorStore {
       }),
     },
     {
-      validators: [
-        (control) => {
-          const value = control.value as ResistorBandsInput;
-          const digit1 = DIGIT_BY_COLOR[value.digit1];
-          const digit2 = DIGIT_BY_COLOR[value.digit2];
-          const digit3 = DIGIT_BY_COLOR[value.digit3];
-
-          if (digit1 === null || digit2 === null) {
-            return { invalidDigits: true };
-          }
-
-          if (value.bandCount !== 4 && digit3 === null) {
-            return { invalidDigit3: true };
-          }
-
-          return null;
-        },
-      ],
+      validators: [resistorBandsValidator],
     },
   );
 
