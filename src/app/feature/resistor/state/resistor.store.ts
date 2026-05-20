@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { map } from 'rxjs';
 import { ResistorService } from '../services/resistor.service';
+import { toResistorInput, toViewModel } from './resistor.mappers';
 import { resistorBandsValidator } from './resistor.validators';
 import {
   BandCount,
@@ -55,8 +56,10 @@ export class ResistorStore {
   public readonly form = this.formGroup;
 
   private readonly formValue = toSignal(
-    this.form.valueChanges.pipe(map(() => this.form.getRawValue() as ResistorBandsInput)),
-    { initialValue: this.form.getRawValue() as ResistorBandsInput },
+    this.form.valueChanges.pipe(
+      map(() => toResistorInput(this.form.getRawValue() as ResistorBandsInput)),
+    ),
+    { initialValue: toResistorInput(this.form.getRawValue() as ResistorBandsInput) },
   );
 
   private readonly formStatus = toSignal(this.form.statusChanges, {
@@ -64,25 +67,10 @@ export class ResistorStore {
   });
 
   public readonly viewModel = computed(() => {
-    const value = this.formValue();
-    const resistanceResult = this.service.calculateResistance(value);
-    const bandCount = value.bandCount;
+    const input = toResistorInput(this.formValue());
+    const resistanceResult = this.service.calculateResistance(input);
 
-    return {
-      bandCount: bandCount,
-      digit1: value.digit1,
-      digit2: value.digit2,
-      digit3: value.digit3,
-      multiplier: value.multiplier,
-      tolerance: value.tolerance,
-      tcr: value.tcr,
-      ohms: resistanceResult.data.ohms,
-      tolerancePct: resistanceResult.data.tolerancePct,
-      tcrPpm: resistanceResult.data.tcrPpm,
-      calculationError: resistanceResult.error,
-      showDigit3: bandCount !== 4,
-      showTcr: bandCount === 6,
-    };
+    return toViewModel(input, resistanceResult);
   });
 
   public readonly validationMessage = computed(() => {
