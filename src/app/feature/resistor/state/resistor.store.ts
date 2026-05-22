@@ -4,14 +4,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { map } from 'rxjs';
 import { ResistorService } from '../services/resistor.service';
 import { toResistorInput, toViewModel } from './resistor.mappers';
+import { getResistanceValidationMessage } from './validation-messages';
 import { resistorBandsValidator } from './resistor.validators';
-import {
-  BandCount,
-  Color,
-  DEFAULT_BAND_COUNT,
-  ResistanceErrorCode,
-  ResistorBandsInput,
-} from '../resistor.model';
+import { Color, DEFAULT_BAND_COUNT, ResistorBandsInput, type BandCount } from '../resistor.model';
 
 @Injectable()
 export class ResistorStore {
@@ -80,12 +75,6 @@ export class ResistorStore {
       return '';
     }
 
-    switch (calculationError.code) {
-      case ResistanceErrorCode.InvalidDigitColor:
-      case ResistanceErrorCode.InvalidThirdDigitColor:
-        return calculationError.message;
-      default:
-        return '';
-    }
+    return getResistanceValidationMessage(calculationError.code);
   });
 }

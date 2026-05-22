@@ -10,6 +10,7 @@ import {
   TOLERANCE_BY_COLOR,
   type BandCount,
 } from '../resistor.model';
+import { getResistanceValidationMessage } from '../state/validation-messages';
 
 @Injectable({ providedIn: 'root' })
 export class ResistorService {
@@ -23,7 +24,7 @@ export class ResistorService {
         data: this.emptyResistanceResult(),
         error: {
           code: ResistanceErrorCode.InvalidDigitColor,
-          message: 'Digit bands must be a valid color (not Gold/Silver).',
+          message: getResistanceValidationMessage(ResistanceErrorCode.InvalidDigitColor),
         },
       };
     }
@@ -33,7 +34,7 @@ export class ResistorService {
         data: this.emptyResistanceResult(),
         error: {
           code: ResistanceErrorCode.InvalidThirdDigitColor,
-          message: 'Band 3 must be a valid digit color for 5- and 6-band resistors.',
+          message: getResistanceValidationMessage(ResistanceErrorCode.InvalidThirdDigitColor),
         },
       };
     }
