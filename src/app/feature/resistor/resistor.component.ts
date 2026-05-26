@@ -35,6 +35,7 @@ export class ResistorComponent {
   public readonly form = this.store.form;
   public readonly viewModel = this.store.viewModel;
   public readonly validationMessage = this.store.validationMessage;
+  public readonly isAtDefaults = this.store.isAtDefaults;
   public readonly showHelp = signal(false);
   public readonly digitColors = (Object.keys(DIGIT_BY_COLOR) as Color[]).filter(
     (c) => DIGIT_BY_COLOR[c] !== null,
@@ -46,5 +47,9 @@ export class ResistorComponent {
 
   public toggleHelp() {
     this.showHelp.update((value) => !value);
+  }
+
+  public resetToDefaults(): void {
+    this.store.resetToDefaults();
   }
 }

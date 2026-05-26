@@ -101,6 +101,14 @@
 >
   <div class="help-actions">
     <button
+      class="help-reset"
+      type="button"
+      (click)="resetToDefaults()"
+      [disabled]="isAtDefaults()"
+    >
+      Reset to defaults
+    </button>
+    <button
       class="help-trigger"
       type="button"
       (click)="toggleHelp()"

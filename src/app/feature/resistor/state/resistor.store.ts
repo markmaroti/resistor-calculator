@@ -12,33 +12,43 @@ import { Color, DEFAULT_BAND_COUNT, ResistorBandsInput, type BandCount } from '.
 export class ResistorStore {
   private readonly service = inject(ResistorService);
 
+  private readonly defaultBandsInput: ResistorBandsInput = {
+    bandCount: DEFAULT_BAND_COUNT,
+    digit1: Color.Brown,
+    digit2: Color.Black,
+    digit3: Color.Black,
+    multiplier: Color.Black,
+    tolerance: Color.Gold,
+    tcr: Color.Brown,
+  };
+
   private readonly formGroup = new FormGroup(
     {
-      bandCount: new FormControl<BandCount>(DEFAULT_BAND_COUNT, {
+      bandCount: new FormControl<BandCount>(this.defaultBandsInput.bandCount, {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      digit1: new FormControl<Color>(Color.Brown, {
+      digit1: new FormControl<Color>(this.defaultBandsInput.digit1, {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      digit2: new FormControl<Color>(Color.Black, {
+      digit2: new FormControl<Color>(this.defaultBandsInput.digit2, {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      digit3: new FormControl<Color>(Color.Black, {
+      digit3: new FormControl<Color>(this.defaultBandsInput.digit3, {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      multiplier: new FormControl<Color>(Color.Black, {
+      multiplier: new FormControl<Color>(this.defaultBandsInput.multiplier, {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      tolerance: new FormControl<Color>(Color.Gold, {
+      tolerance: new FormControl<Color>(this.defaultBandsInput.tolerance, {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      tcr: new FormControl<Color>(Color.Brown, {
+      tcr: new FormControl<Color>(this.defaultBandsInput.tcr, {
         nonNullable: true,
         validators: [Validators.required],
       }),
@@ -77,4 +87,24 @@ export class ResistorStore {
 
     return getResistanceValidationMessage(calculationError.code);
   });
+
+  public readonly isAtDefaults = computed(() => {
+    const value = this.formValue();
+
+    return (
+      value.bandCount === this.defaultBandsInput.bandCount &&
+      value.digit1 === this.defaultBandsInput.digit1 &&
+      value.digit2 === this.defaultBandsInput.digit2 &&
+      value.digit3 === this.defaultBandsInput.digit3 &&
+      value.multiplier === this.defaultBandsInput.multiplier &&
+      value.tolerance === this.defaultBandsInput.tolerance &&
+      value.tcr === this.defaultBandsInput.tcr
+    );
+  });
+
+  public resetToDefaults(): void {
+    this.form.reset(this.defaultBandsInput);
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+  }
 }
