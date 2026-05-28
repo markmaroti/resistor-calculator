@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   BAND_COUNTS,
@@ -14,6 +14,10 @@ import { SelectComponent } from '../../shared/select/select.component';
 import { ResistorPreviewComponent } from './components/resistor-preview.component';
 import { ReferencePanelComponent } from './components/reference-panel.component';
 import { OhmsPipe } from './pipes/ohms-pipe';
+import { buildResistanceCopyText } from './utils/resistance-copy-text.util';
+import { copyTextToClipboard } from '../../shared/utils/clipboard.util';
+
+type CopyState = 'idle' | 'success' | 'error';
 
 @Component({
   selector: 'app-resistor',
@@ -37,6 +41,8 @@ export class ResistorComponent {
   public readonly validationMessage = this.store.validationMessage;
   public readonly isAtDefaults = this.store.isAtDefaults;
   public readonly showHelp = signal(false);
+  public readonly copyState = signal<CopyState>('idle');
+  public readonly isCopyEnabled = computed(() => this.viewModel().ohms > 0);
   public readonly digitColors = (Object.keys(DIGIT_BY_COLOR) as Color[]).filter(
     (c) => DIGIT_BY_COLOR[c] !== null,
   );
@@ -51,5 +57,22 @@ export class ResistorComponent {
 
   public resetToDefaults(): void {
     this.store.resetToDefaults();
+  }
+
+  public async copyResult(): Promise<void> {
+    if (!this.isCopyEnabled()) {
+      return;
+    }
+
+    const vm = this.viewModel();
+    const textToCopy = buildResistanceCopyText({
+      ohms: vm.ohms,
+      tolerancePct: vm.tolerancePct,
+      tcrPpm: vm.tcrPpm,
+    });
+
+    const copied = await copyTextToClipboard(textToCopy);
+    this.copyState.set(copied ? 'success' : 'error');
+    setTimeout(() => this.copyState.set('idle'), 1500);
   }
 }

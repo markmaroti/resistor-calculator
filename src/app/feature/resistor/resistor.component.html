@@ -93,6 +93,26 @@
   } @else {
     <div class="result-empty">Select bands to calculate resistance.</div>
   }
+  <div class="result-actions">
+    <button
+      class="copy-trigger"
+      type="button"
+      (click)="copyResult()"
+      [disabled]="!isCopyEnabled()"
+    >
+      Copy result
+    </button>
+    <span
+      class="copy-feedback"
+      aria-live="polite"
+    >
+      @if (copyState() === 'success') {
+        Copied to clipboard.
+      } @else if (copyState() === 'error') {
+        Copy failed.
+      }
+    </span>
+  </div>
 </section>
 
 <section

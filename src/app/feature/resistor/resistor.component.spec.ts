@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
+import { vi } from 'vitest';
 
 import { ResistorComponent } from './resistor.component';
 import { Color } from './resistor.model';
@@ -18,6 +19,10 @@ describe('ResistorComponent', () => {
     fixture = TestBed.createComponent(ResistorComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('should create', () => {
@@ -91,5 +96,59 @@ describe('ResistorComponent', () => {
 
     expect(component.isAtDefaults()).toBe(true);
     expect(resetButtonEl.disabled).toBe(true);
+  });
+
+  it('disables copy button when there is no valid resistance', async () => {
+    component.form.patchValue({ digit1: Color.Gold });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const copyButtonEl = fixture.debugElement.query(By.css('.copy-trigger')).nativeElement as HTMLButtonElement;
+    expect(copyButtonEl.disabled).toBe(true);
+  });
+
+  it('enables copy button when resistance is valid', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const copyButtonEl = fixture.debugElement.query(By.css('.copy-trigger')).nativeElement as HTMLButtonElement;
+    expect(copyButtonEl.disabled).toBe(false);
+  });
+
+  it('shows success feedback when copy succeeds', async () => {
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: vi.fn().mockResolvedValue(undefined),
+      },
+    });
+    fixture.detectChanges();
+
+    await component.copyResult();
+    fixture.detectChanges();
+
+    expect(component.copyState()).toBe('success');
+    const feedback = fixture.debugElement.query(By.css('.copy-feedback')).nativeElement as HTMLElement;
+    expect(feedback.textContent?.trim()).toBe('Copied to clipboard.');
+  });
+
+  it('shows error feedback when copy fails', async () => {
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: vi.fn().mockRejectedValue(new Error('copy failed')),
+      },
+    });
+    Object.defineProperty(document, 'execCommand', {
+      value: vi.fn().mockReturnValue(false),
+      configurable: true,
+      writable: true,
+    });
+    fixture.detectChanges();
+
+    await component.copyResult();
+    fixture.detectChanges();
+
+    expect(component.copyState()).toBe('error');
+    const feedback = fixture.debugElement.query(By.css('.copy-feedback')).nativeElement as HTMLElement;
+    expect(feedback.textContent?.trim()).toBe('Copy failed.');
   });
 });
