@@ -1,11 +1,21 @@
 import { describe, expect, it } from 'vitest';
 import {
   Color,
+  ReverseErrorCode,
+  ReverseFormValue,
+  ReverseMode,
+  ReverseResult,
   ResistanceCalculationResult,
   ResistanceErrorCode,
   ResistorBandsInput,
 } from '../resistor.model';
-import { toResistorInput, toViewModel } from './resistor.mappers';
+import { parseResistanceValue } from '../utils/reverse-value.util';
+import {
+  toResistorInput,
+  toReverseInput,
+  toReverseViewModel,
+  toViewModel,
+} from './resistor.mappers';
 
 const input: ResistorBandsInput = {
   bandCount: 6,
@@ -15,6 +25,14 @@ const input: ResistorBandsInput = {
   multiplier: Color.Brown,
   tolerance: Color.Brown,
   tcr: Color.Violet,
+};
+
+const reverseFormValue: ReverseFormValue = {
+  targetInput: '4.7k',
+  bandCount: 4,
+  tolerancePct: null,
+  tcrPpm: null,
+  mode: ReverseMode.Exact,
 };
 
 describe('resistor mappers', () => {
@@ -58,5 +76,49 @@ describe('resistor mappers', () => {
     const vm = toViewModel(input, result);
 
     expect(vm.calculationError).toEqual(result.error);
+  });
+
+  it('toReverseInput maps reverse form value to service input', () => {
+    const mapped = toReverseInput(reverseFormValue, 4_700);
+
+    expect(mapped).toEqual({
+      bandCount: 4,
+      targetOhms: 4_700,
+      tolerancePct: null,
+      tcrPpm: null,
+      mode: ReverseMode.Exact,
+    });
+  });
+
+  it('toReverseViewModel maps parse and service success into reverse vm', () => {
+    const parsed = parseResistanceValue(reverseFormValue.targetInput);
+    const serviceResult: ReverseResult = {
+      data: { candidates: [] },
+      error: null,
+    };
+
+    const vm = toReverseViewModel(reverseFormValue, parsed, serviceResult);
+
+    expect(vm.targetInput).toBe('4.7k');
+    expect(vm.targetOhms).toBe(4_700);
+    expect(vm.isValidTarget).toBe(true);
+    expect(vm.parseErrorCode).toBeNull();
+    expect(vm.serviceErrorCode).toBeNull();
+    expect(vm.showTcr).toBe(false);
+  });
+
+  it('toReverseViewModel keeps service error code', () => {
+    const parsed = parseResistanceValue(reverseFormValue.targetInput);
+    const serviceResult: ReverseResult = {
+      data: { candidates: [] },
+      error: {
+        code: ReverseErrorCode.NoCandidates,
+        message: 'No matching resistor bands found for the selected input.',
+      },
+    };
+
+    const vm = toReverseViewModel(reverseFormValue, parsed, serviceResult);
+
+    expect(vm.serviceErrorCode).toBe(ReverseErrorCode.NoCandidates);
   });
 });

@@ -1,9 +1,14 @@
 import {
+  ReverseFormValue,
+  ReverseInput,
+  ReverseResult,
+  ReverseErrorCode,
   ResistanceCalculationResult,
   ResistorBandsInput,
   ServiceError,
   ResistanceErrorCode,
 } from '../resistor.model';
+import { ParseReverseValueResult, ReverseValueErrorCode } from '../utils/reverse-value.util';
 
 export type ResistorViewModel = {
   bandCount: ResistorBandsInput['bandCount'];
@@ -18,6 +23,20 @@ export type ResistorViewModel = {
   tcrPpm: number | null;
   calculationError: ServiceError<ResistanceErrorCode> | null;
   showDigit3: boolean;
+  showTcr: boolean;
+};
+
+export type ReverseViewModel = {
+  targetInput: string;
+  targetOhms: number;
+  bandCount: ReverseFormValue['bandCount'];
+  tolerancePct: ReverseFormValue['tolerancePct'];
+  tcrPpm: ReverseFormValue['tcrPpm'];
+  mode: ReverseFormValue['mode'];
+  isValidTarget: boolean;
+  parseErrorCode: ReverseValueErrorCode | null;
+  serviceErrorCode: ReverseErrorCode | null;
+  candidates: ReverseResult['data']['candidates'];
   showTcr: boolean;
 };
 
@@ -51,5 +70,37 @@ export function toViewModel(
     calculationError: result.error,
     showDigit3: input.bandCount !== 4,
     showTcr: input.bandCount === 6,
+  };
+}
+
+export function toReverseInput(formValue: ReverseFormValue, targetOhms: number): ReverseInput {
+  return {
+    bandCount: formValue.bandCount,
+    targetOhms,
+    tolerancePct: formValue.tolerancePct,
+    tcrPpm: formValue.tcrPpm,
+    mode: formValue.mode,
+  };
+}
+
+export function toReverseViewModel(
+  formValue: ReverseFormValue,
+  parsedValue: ParseReverseValueResult,
+  reverseResult: ReverseResult,
+): ReverseViewModel {
+  const parseErrorCode = parsedValue.error?.code ?? null;
+  const serviceErrorCode = reverseResult.error?.code ?? null;
+  return {
+    targetInput: formValue.targetInput,
+    targetOhms: parsedValue.data.normalizedOhms,
+    bandCount: formValue.bandCount,
+    tolerancePct: formValue.tolerancePct,
+    tcrPpm: formValue.tcrPpm,
+    mode: formValue.mode,
+    isValidTarget: parseErrorCode === null,
+    parseErrorCode,
+    serviceErrorCode,
+    candidates: reverseResult.data.candidates,
+    showTcr: formValue.bandCount === 6,
   };
 }

@@ -1,157 +1,321 @@
 @let vm = viewModel();
 <h1>Resistor Color Code Calculator</h1>
-<app-resistor-preview
-  [bandCount]="vm.bandCount"
-  [digit1]="vm.digit1"
-  [digit2]="vm.digit2"
-  [digit3]="vm.digit3"
-  [multiplier]="vm.multiplier"
-  [tolerance]="vm.tolerance"
-  [tcr]="vm.tcr"
-/>
 
-<ul
-  class="resistor-controls"
-  [formGroup]="form"
->
-  <li>
-    <app-select
-      label="Bands"
-      [options]="bandCounts"
-      formControlName="bandCount"
-    />
-  </li>
-  <li>
-    <app-select
-      label="Band 1 (Digit)"
-      [options]="digitColors"
-      formControlName="digit1"
-    />
-  </li>
-  <li>
-    <app-select
-      label="Band 2 (Digit)"
-      [options]="digitColors"
-      formControlName="digit2"
-    />
-  </li>
-  @if (vm.showDigit3) {
-    <li>
-      <app-select
-        label="Band 3 (Digit)"
-        [options]="digitColors"
-        formControlName="digit3"
-      />
-    </li>
-  }
-  <li>
-    <app-select
-      label="Multiplier"
-      [options]="multiplierColors"
-      formControlName="multiplier"
-    />
-  </li>
-
-  <li>
-    <app-select
-      label="Tolerance"
-      [options]="toleranceColors"
-      formControlName="tolerance"
-    />
-  </li>
-
-  @if (vm.showTcr) {
-    <li>
-      <app-select
-        label="TCR (ppm/°C)"
-        [options]="tcrColors"
-        formControlName="tcr"
-      />
-    </li>
-  }
-</ul>
-
-@if (validationMessage()) {
-  <div class="result-empty">{{ validationMessage() }}</div>
-}
-
-<section
-  class="resistor-result"
-  aria-live="polite"
->
-  @if (vm.ohms > 0) {
-    <div class="result-label">Resistance</div>
-    <div class="result-value">
-      <span class="result-ohms">{{ vm.ohms | ohms }}</span>
-      @if (vm.tolerancePct !== null) {
-        <span class="result-meta">± {{ vm.tolerancePct }}%</span>
-      }
-      @if (vm.tcrPpm !== null) {
-        <span class="result-meta">({{ vm.tcrPpm }} ppm/°C)</span>
-      }
-    </div>
-  } @else {
-    <div class="result-empty">Select bands to calculate resistance.</div>
-  }
-  <div class="result-actions">
-    <button
-      class="copy-trigger"
-      type="button"
-      (click)="copyResult()"
-      [disabled]="!isCopyEnabled()"
-    >
-      Copy result
-    </button>
-    <span
-      class="copy-feedback"
-      aria-live="polite"
-    >
-      @if (copyState() === 'success') {
-        Copied to clipboard.
-      } @else if (copyState() === 'error') {
-        Copy failed.
-      }
-    </span>
+<section class="calculator-mode">
+  <div
+    class="mode-toggle"
+    role="tablist"
+    aria-label="Calculator mode"
+  >
+    @for (calculatorMode of calculatorModes; track calculatorMode.key) {
+      <button
+        type="button"
+        class="mode-button"
+        [class.is-active]="mode() === calculatorMode.key"
+        [attr.aria-selected]="mode() === calculatorMode.key"
+        [attr.aria-pressed]="mode() === calculatorMode.key"
+        (click)="setMode(calculatorMode.key)"
+      >
+        {{ calculatorMode.label }}
+      </button>
+    }
   </div>
 </section>
 
-<section
-  class="resistor-help"
-  aria-live="polite"
->
-  <div class="help-actions">
-    <button
-      class="help-reset"
-      type="button"
-      (click)="resetToDefaults()"
-      [disabled]="isAtDefaults()"
+@if (mode() === 'forward') {
+  <section class="forward-mode">
+    <app-resistor-preview
+      [bandCount]="vm.bandCount"
+      [digit1]="vm.digit1"
+      [digit2]="vm.digit2"
+      [digit3]="vm.digit3"
+      [multiplier]="vm.multiplier"
+      [tolerance]="vm.tolerance"
+      [tcr]="vm.tcr"
+    />
+
+    <ul
+      class="resistor-controls"
+      [formGroup]="form"
     >
-      Reset to defaults
-    </button>
-    <button
-      class="help-trigger"
-      type="button"
-      (click)="toggleHelp()"
-      [attr.aria-expanded]="showHelp()"
-    >
-      {{ showHelp() ? 'Hide how it works' : 'Show how it works' }}
-    </button>
-    <a
-      class="help-link"
-      routerLink="/guide"
-      >Open guide</a
-    >
-  </div>
-  @defer (when showHelp()) {
-    @if (showHelp()) {
-      <div class="help-card">
-        <h2>How it works</h2>
-        <p>
-          Each color band encodes a digit, a multiplier, and an optional tolerance/TCR value.
-          Changing the bands updates the calculated resistance instantly.
-        </p>
-        <app-reference-panel />
+      <li>
+        <app-select
+          label="Bands"
+          [options]="bandCounts"
+          formControlName="bandCount"
+        />
+      </li>
+      <li>
+        <app-select
+          label="Band 1 (Digit)"
+          [options]="digitColors"
+          formControlName="digit1"
+        />
+      </li>
+      <li>
+        <app-select
+          label="Band 2 (Digit)"
+          [options]="digitColors"
+          formControlName="digit2"
+        />
+      </li>
+      @if (vm.showDigit3) {
+        <li>
+          <app-select
+            label="Band 3 (Digit)"
+            [options]="digitColors"
+            formControlName="digit3"
+          />
+        </li>
+      }
+      <li>
+        <app-select
+          label="Multiplier"
+          [options]="multiplierColors"
+          formControlName="multiplier"
+        />
+      </li>
+
+      <li>
+        <app-select
+          label="Tolerance"
+          [options]="toleranceColors"
+          formControlName="tolerance"
+        />
+      </li>
+
+      @if (vm.showTcr) {
+        <li>
+          <app-select
+            label="TCR (ppm/°C)"
+            [options]="tcrColors"
+            formControlName="tcr"
+          />
+        </li>
+      }
+    </ul>
+
+    @if (applyFeedback()) {
+      <div
+        class="apply-feedback"
+        aria-live="polite"
+      >
+        {{ applyFeedback() }}
       </div>
     }
-  }
-</section>
+
+    @if (validationMessage()) {
+      <div class="result-empty">{{ validationMessage() }}</div>
+    }
+
+    <section
+      class="resistor-result"
+      aria-live="polite"
+    >
+      @if (vm.ohms > 0) {
+        <div class="result-label">Resistance</div>
+        <div class="result-value">
+          <span class="result-ohms">{{ vm.ohms | ohms }}</span>
+          @if (vm.tolerancePct !== null) {
+            <span class="result-meta">± {{ vm.tolerancePct }}%</span>
+          }
+          @if (vm.tcrPpm !== null) {
+            <span class="result-meta">({{ vm.tcrPpm }} ppm/°C)</span>
+          }
+        </div>
+      } @else {
+        <div class="result-empty">Select bands to calculate resistance.</div>
+      }
+      <div class="result-actions">
+        <button
+          class="copy-trigger"
+          type="button"
+          (click)="copyResult()"
+          [disabled]="!isCopyEnabled()"
+        >
+          Copy result
+        </button>
+        <span
+          class="copy-feedback"
+          aria-live="polite"
+        >
+          @if (copyState() === 'success') {
+            Copied to clipboard.
+          } @else if (copyState() === 'error') {
+            Copy failed.
+          }
+        </span>
+      </div>
+    </section>
+
+    <section
+      class="resistor-help"
+      aria-live="polite"
+    >
+      <div class="help-actions">
+        <button
+          class="help-reset"
+          type="button"
+          (click)="resetToDefaults()"
+          [disabled]="isAtDefaults()"
+        >
+          Reset to defaults
+        </button>
+        <button
+          class="help-trigger"
+          type="button"
+          (click)="toggleHelp()"
+          [attr.aria-expanded]="showHelp()"
+        >
+          {{ showHelp() ? 'Hide how it works' : 'Show how it works' }}
+        </button>
+        <a
+          class="help-link"
+          routerLink="/guide"
+          >Open guide</a
+        >
+      </div>
+      @defer (when showHelp()) {
+        @if (showHelp()) {
+          <div class="help-card">
+            <h2>How it works</h2>
+            <p>
+              Each color band encodes a digit, a multiplier, and an optional tolerance/TCR value.
+              Changing the bands updates the calculated resistance instantly.
+            </p>
+            <app-reference-panel />
+          </div>
+        }
+      }
+    </section>
+  </section>
+} @else {
+  @let reverseVm = reverseViewModel();
+  <section class="reverse-shell">
+    <h2>Value -> Band</h2>
+    <p>
+      Reverse calculator mode is enabled. In this mode, you can provide a resistance value and get
+      matching band combinations.
+    </p>
+
+    <ul
+      class="reverse-controls"
+      [formGroup]="reverseForm"
+    >
+      <li>
+        <label>
+          Target resistance
+          <span
+            id="reverse-target-help"
+            class="reverse-help"
+            >Examples: 4.7k, 330, 1M</span
+          >
+          <input
+            class="reverse-input"
+            type="text"
+            formControlName="targetInput"
+            placeholder="e.g. 4.7k"
+            autocomplete="off"
+            [attr.aria-invalid]="hasReverseError()"
+            [attr.aria-describedby]="
+              hasReverseError()
+                ? 'reverse-target-help reverse-error-message'
+                : 'reverse-target-help'
+            "
+          />
+        </label>
+      </li>
+      <li>
+        <app-select
+          label="Bands"
+          [options]="bandCounts"
+          formControlName="bandCount"
+        />
+      </li>
+      <li>
+        <app-select
+          label="Mode"
+          [options]="reverseModes"
+          formControlName="mode"
+        />
+      </li>
+    </ul>
+
+    @if (hasReverseError()) {
+      <div
+        id="reverse-error-message"
+        class="reverse-state reverse-state-error"
+        role="alert"
+        aria-live="assertive"
+      >
+        {{ reverseValidationMessage() }}
+      </div>
+    } @else if (hasReverseNoCandidates()) {
+      <div
+        class="reverse-state reverse-state-empty"
+        aria-live="polite"
+      >
+        No matching candidates found for the current reverse input. Adjust value or options.
+      </div>
+    }
+
+    @if (!hasReverseError() && reverseVm.candidates.length > 0) {
+      <p
+        class="sr-only"
+        aria-live="polite"
+      >
+        {{ reverseVm.candidates.length }} candidates found. Use Tab and Enter to apply one.
+      </p>
+      <ul class="reverse-candidates">
+        @for (candidate of reverseVm.candidates; track $index) {
+          <li>
+            <button
+              type="button"
+              class="candidate-item"
+              (click)="applyCandidate(candidate)"
+              [attr.aria-label]="'Apply candidate ' + (candidate.ohms | ohms)"
+            >
+              <div class="candidate-main">
+                <span class="candidate-ohms">{{ candidate.ohms | ohms }}</span>
+                @if (candidate.tolerancePct !== null) {
+                  <span class="candidate-meta">±{{ candidate.tolerancePct }}%</span>
+                }
+                @if (candidate.tcrPpm !== null) {
+                  <span class="candidate-meta">{{ candidate.tcrPpm }} ppm/°C</span>
+                }
+              </div>
+              <div class="candidate-bands">
+                {{ candidate.bands.digit1 }} - {{ candidate.bands.digit2 }}
+                @if (candidate.bands.bandCount !== 4) {
+                  - {{ candidate.bands.digit3 }}
+                }
+                - {{ candidate.bands.multiplier }} - {{ candidate.bands.tolerance }}
+                @if (candidate.bands.bandCount === 6) {
+                  - {{ candidate.bands.tcr }}
+                }
+              </div>
+              <div class="candidate-meta">
+                Delta: {{ candidate.deltaOhms | ohms }} ({{ candidate.deltaPct.toFixed(3) }}%)
+              </div>
+            </button>
+          </li>
+        }
+      </ul>
+    } @else if (!hasReverseError() && !hasReverseNoCandidates()) {
+      <div
+        class="reverse-state reverse-state-info"
+        aria-live="polite"
+      >
+        Enter a valid resistance value to generate candidate bands.
+      </div>
+    }
+
+    <p class="reverse-shell-note">
+      @if (reverseVm.targetOhms > 0) {
+        Parsed target: {{ reverseVm.targetOhms | ohms }}
+      } @else {
+        Enter a valid resistance value to generate candidate bands.
+      }
+    </p>
+  </section>
+}

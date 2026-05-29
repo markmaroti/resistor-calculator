@@ -137,3 +137,49 @@ export const ResistanceErrorCode = {
 export type ResistanceErrorCode = (typeof ResistanceErrorCode)[keyof typeof ResistanceErrorCode];
 
 export type ResistanceCalculationResult = ServiceResult<ResistanceResult, ResistanceErrorCode>;
+
+export const ReverseMode = {
+  Exact: 'EXACT',
+  Nearest: 'NEAREST',
+} as const;
+
+export type ReverseMode = (typeof ReverseMode)[keyof typeof ReverseMode];
+
+export type ReverseInput = {
+  bandCount: BandCount;
+  targetOhms: number;
+  tolerancePct: number | null;
+  tcrPpm: number | null;
+  mode: ReverseMode;
+};
+
+export type ReverseFormValue = {
+  targetInput: string;
+  bandCount: BandCount;
+  tolerancePct: number | null;
+  tcrPpm: number | null;
+  mode: ReverseMode;
+};
+
+export type ReverseCandidate = {
+  bands: ResistorBandsInput;
+  ohms: number;
+  tolerancePct: number | null;
+  tcrPpm: number | null;
+  deltaOhms: number;
+  deltaPct: number;
+};
+
+export const ReverseErrorCode = {
+  InvalidTargetOhms: 'INVALID_TARGET_OHMS',
+  UnsupportedBandCount: 'UNSUPPORTED_BAND_COUNT',
+  NoCandidates: 'NO_CANDIDATES',
+} as const;
+
+export type ReverseErrorCode = (typeof ReverseErrorCode)[keyof typeof ReverseErrorCode];
+
+export type ReverseResultData = {
+  candidates: ReverseCandidate[];
+};
+
+export type ReverseResult = ServiceResult<ReverseResultData, ReverseErrorCode>;

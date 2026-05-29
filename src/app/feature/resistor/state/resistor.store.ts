@@ -3,10 +3,25 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { map } from 'rxjs';
 import { ResistorService } from '../services/resistor.service';
-import { toResistorInput, toViewModel } from './resistor.mappers';
-import { getResistanceValidationMessage } from './validation-messages';
-import { resistorBandsValidator } from './resistor.validators';
-import { Color, DEFAULT_BAND_COUNT, ResistorBandsInput, type BandCount } from '../resistor.model';
+import {
+  toResistorInput,
+  toReverseInput,
+  toReverseViewModel,
+  toViewModel,
+} from './resistor.mappers';
+import { getResistanceValidationMessage, getReverseValidationMessage } from './validation-messages';
+import { resistorBandsValidator, reverseValueValidator } from './resistor.validators';
+import {
+  Color,
+  DEFAULT_BAND_COUNT,
+  ResistorBandsInput,
+  ReverseCandidate,
+  ReverseFormValue,
+  ReverseMode,
+  ReverseResult,
+  type BandCount,
+} from '../resistor.model';
+import { parseResistanceValue } from '../utils/reverse-value.util';
 
 @Injectable()
 export class ResistorStore {
@@ -60,6 +75,38 @@ export class ResistorStore {
 
   public readonly form = this.formGroup;
 
+  private readonly defaultReverseFormValue: ReverseFormValue = {
+    targetInput: '1k',
+    bandCount: DEFAULT_BAND_COUNT,
+    tolerancePct: null,
+    tcrPpm: null,
+    mode: ReverseMode.Exact,
+  };
+
+  private readonly reverseFormGroup = new FormGroup(
+    {
+      targetInput: new FormControl<string>(this.defaultReverseFormValue.targetInput, {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      bandCount: new FormControl<BandCount>(this.defaultReverseFormValue.bandCount, {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      tolerancePct: new FormControl<number | null>(this.defaultReverseFormValue.tolerancePct),
+      tcrPpm: new FormControl<number | null>(this.defaultReverseFormValue.tcrPpm),
+      mode: new FormControl<ReverseMode>(this.defaultReverseFormValue.mode, {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+    },
+    {
+      validators: [reverseValueValidator],
+    },
+  );
+
+  public readonly reverseForm = this.reverseFormGroup;
+
   private readonly formValue = toSignal(
     this.form.valueChanges.pipe(
       map(() => toResistorInput(this.form.getRawValue() as ResistorBandsInput)),
@@ -69,6 +116,17 @@ export class ResistorStore {
 
   private readonly formStatus = toSignal(this.form.statusChanges, {
     initialValue: this.form.status,
+  });
+
+  private readonly reverseFormValue = toSignal(
+    this.reverseForm.valueChanges.pipe(
+      map(() => this.reverseForm.getRawValue() as ReverseFormValue),
+    ),
+    { initialValue: this.reverseForm.getRawValue() as ReverseFormValue },
+  );
+
+  private readonly reverseFormStatus = toSignal(this.reverseForm.statusChanges, {
+    initialValue: this.reverseForm.status,
   });
 
   public readonly viewModel = computed(() => {
@@ -86,6 +144,32 @@ export class ResistorStore {
     }
 
     return getResistanceValidationMessage(calculationError.code);
+  });
+
+  public readonly reverseViewModel = computed(() => {
+    const value = this.reverseFormValue();
+    const parsed = parseResistanceValue(value.targetInput);
+
+    if (parsed.error) {
+      return toReverseViewModel(value, parsed, this.emptyReverseResult());
+    }
+
+    const reverseInput = toReverseInput(value, parsed.data.normalizedOhms);
+    const result = this.service.calculateBandsFromResistance(reverseInput);
+    return toReverseViewModel(value, parsed, result);
+  });
+
+  public readonly reverseValidationMessage = computed(() => {
+    this.reverseFormStatus();
+    const vm = this.reverseViewModel();
+    if (vm.parseErrorCode) {
+      return getReverseValidationMessage(vm.parseErrorCode);
+    }
+    if (vm.serviceErrorCode) {
+      return getReverseValidationMessage(vm.serviceErrorCode);
+    }
+
+    return '';
   });
 
   public readonly isAtDefaults = computed(() => {
@@ -106,5 +190,17 @@ export class ResistorStore {
     this.form.reset(this.defaultBandsInput);
     this.form.markAsPristine();
     this.form.markAsUntouched();
+  }
+
+  public applyCandidate(candidate: ReverseCandidate): void {
+    this.form.patchValue(candidate.bands);
+    this.form.markAsDirty();
+  }
+
+  private emptyReverseResult(): ReverseResult {
+    return {
+      data: { candidates: [] },
+      error: null,
+    };
   }
 }

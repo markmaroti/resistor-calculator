@@ -1,7 +1,7 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { describe, expect, it } from 'vitest';
 import { BandCount, Color, ResistorBandsInput } from '../resistor.model';
-import { validateResistorBands } from './resistor.validators';
+import { validateResistorBands, validateReverseValue } from './resistor.validators';
 
 function buildValue(overrides: Partial<ResistorBandsInput> = {}): ResistorBandsInput {
   return {
@@ -39,5 +39,19 @@ describe('validateResistorBands', () => {
     const control = new FormGroup({});
 
     expect(validateResistorBands(control)).toBeNull();
+  });
+});
+
+describe('validateReverseValue', () => {
+  it('returns null for parseable reverse target input', () => {
+    const control = new FormControl({ targetInput: '4.7k' });
+
+    expect(validateReverseValue(control)).toBeNull();
+  });
+
+  it('returns reverseTarget error code for invalid reverse target input', () => {
+    const control = new FormControl({ targetInput: '' });
+
+    expect(validateReverseValue(control)).toEqual({ reverseTarget: 'EMPTY_INPUT' });
   });
 });
