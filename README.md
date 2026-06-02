@@ -9,6 +9,12 @@ A simple Angular application that calculates resistor values based on standard r
 
 The app allows users to select color bands and instantly computes the corresponding resistance value according to industry standards.
 
+## Features
+
+Pick resistor bands and get the value instantly — works with 4, 5, and 6 band resistors. You can also go the other way: type in a resistance like `4.7k` or `330` and it'll find the closest band combinations for you.
+
+There's a live SVG preview that updates as you play with the bands, a one-click copy button for the result, and a reset to get everything back to defaults. A built-in guide page covers band meanings, E-series, tolerances, and TCR if you need a refresher.
+
 ---
 
 ## Installation Requirements
@@ -72,3 +78,23 @@ To build the project for production, run:
 ```bash
 ng build
 ```
+
+## Project Structure
+
+```
+src/app/
+├── feature/
+│   ├── resistor/          # The main calculator
+│   │   ├── components/    # Preview SVG, reference panel
+│   │   ├── pipes/         # OhmsPipe — formats raw ohms to human-readable
+│   │   ├── services/      # Calculation logic (forward + reverse)
+│   │   ├── state/         # Store, mappers, validators
+│   │   └── utils/         # Formatting, value parsing, clipboard
+│   └── guide/             # Color code reference page
+├── shared/
+│   ├── select/            # Reusable dropdown component
+│   └── utils/             # Clipboard helper
+└── app.routes.ts          # All routes, lazy-loaded
+```
+
+Everything's built with standalone components and Angular signals. No zones — uses zoneless change detection. State lives in a `ResistorStore` with computed values and pure functions for mapping and validation.
