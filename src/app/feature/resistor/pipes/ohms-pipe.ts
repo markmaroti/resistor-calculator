@@ -5,7 +5,7 @@ import { formatOhms } from '../utils/ohms-format.util';
   name: 'ohms',
 })
 export class OhmsPipe implements PipeTransform {
-  transform(value: number): string {
-    return formatOhms(value);
+  transform(value: number | null | undefined): string {
+    return formatOhms(value ?? 0);
   }
 }

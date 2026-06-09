@@ -12,6 +12,11 @@ export const appRoutes: Routes = [
       import('./feature/guide/resistor-guide.component').then((m) => m.ResistorGuideComponent),
   },
   {
+    path: 'tools',
+    loadComponent: () =>
+      import('./feature/circuit/circuit-tools.component').then((m) => m.CircuitToolsComponent),
+  },
+  {
     path: '**',
     redirectTo: '',
   },
