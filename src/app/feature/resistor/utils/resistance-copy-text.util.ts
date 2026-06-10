@@ -1,4 +1,4 @@
-import { formatOhms } from './ohms-format.util';
+import { formatOhms } from '../../../shared/utils/format-value.util';
 
 type ResistanceCopyTextInput = {
   ohms: number;

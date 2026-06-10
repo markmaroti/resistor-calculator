@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { OhmsPipe } from './ohms-pipe';
+import { OhmsPipe } from './ohms.pipe';
 
 describe('OhmsPipe', () => {
   let pipe: OhmsPipe;

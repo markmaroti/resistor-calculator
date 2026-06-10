@@ -24,7 +24,7 @@ import { RouterLink } from '@angular/router';
 import { SelectComponent } from '../../shared/select/select.component';
 import { ResistorPreviewComponent } from './components/resistor-preview.component';
 import { ReferencePanelComponent } from './components/reference-panel.component';
-import { OhmsPipe } from './pipes/ohms-pipe';
+import { OhmsPipe } from '../../shared/pipes/ohms.pipe';
 import { buildResistanceCopyText } from './utils/resistance-copy-text.util';
 import { copyTextToClipboard } from '../../shared/utils/clipboard.util';
 
