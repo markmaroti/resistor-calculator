@@ -1,0 +1,40 @@
+<header
+  class="app-header"
+  [class.menu-open]="isMenuOpen()"
+>
+  <div class="header-inner">
+    <span class="app-logo">Resistor Calculator</span>
+    <button
+      class="hamburger"
+      aria-label="Menu"
+      [attr.aria-expanded]="isMenuOpen()"
+      (click)="toggleMenu()"
+    >
+      <span class="hamburger-icon"></span>
+    </button>
+    <nav
+      role="navigation"
+      aria-label="Main navigation"
+    >
+      <a
+        routerLink="/"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        #rla1="routerLinkActive"
+        [attr.aria-current]="rla1.isActive ? 'page' : null"
+        (click)="closeMenu()"
+      >
+        Calculator
+      </a>
+      <a
+        routerLink="/tools"
+        routerLinkActive="active-link"
+        #rla2="routerLinkActive"
+        [attr.aria-current]="rla2.isActive ? 'page' : null"
+        (click)="closeMenu()"
+      >
+        Circuit Tools
+      </a>
+    </nav>
+  </div>
+</header>
