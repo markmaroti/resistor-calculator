@@ -1,0 +1,20 @@
+<section class="calculator-mode">
+  <div
+    class="mode-toggle"
+    role="tablist"
+    aria-label="Calculator mode"
+  >
+    @for (mode of modes(); track mode.key) {
+      <button
+        type="button"
+        class="mode-button"
+        [class.is-active]="activeMode() === mode.key"
+        [attr.aria-selected]="activeMode() === mode.key"
+        [attr.aria-pressed]="activeMode() === mode.key"
+        (click)="modeChange.emit(mode.key)"
+      >
+        {{ mode.label }}
+      </button>
+    }
+  </div>
+</section>

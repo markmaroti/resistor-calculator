@@ -9,26 +9,25 @@ import {
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
-  BAND_COUNTS,
   Color,
   DIGIT_BY_COLOR,
   MULTIPLIER_BY_COLOR,
-  ReverseCandidate,
-  ReverseErrorCode,
-  ReverseMode,
   TCR_BY_COLOR,
   TOLERANCE_BY_COLOR,
+  BAND_COUNTS,
+  ReverseMode,
+  ReverseErrorCode,
+  ReverseCandidate,
 } from './resistor.model';
 import { ResistorStore } from './state/resistor.store';
-import { RouterLink } from '@angular/router';
-import { SelectComponent } from '../../shared/select/select.component';
-import { ResistorPreviewComponent } from './components/resistor-preview.component';
-import { ReferencePanelComponent } from './components/reference-panel.component';
-import { OhmsPipe } from '../../shared/pipes/ohms.pipe';
-import { buildResistanceCopyText } from './utils/resistance-copy-text.util';
 import { copyTextToClipboard } from '../../shared/utils/clipboard.util';
+import { buildResistanceCopyText } from './utils/resistance-copy-text.util';
+import { ModeToggleComponent } from './components/mode-toggle/mode-toggle.component';
+import { ForwardFormComponent } from './components/forward-form/forward-form.component';
+import { ResultCardComponent, CopyState } from './components/result-card/result-card.component';
+import { HelpSectionComponent } from './components/help-section/help-section.component';
+import { ReverseShellComponent } from './components/reverse-shell/reverse-shell.component';
 
-type CopyState = 'idle' | 'success' | 'error';
 type CalculatorMode = 'forward' | 'reverse';
 
 @Component({
@@ -37,11 +36,11 @@ type CalculatorMode = 'forward' | 'reverse';
   styleUrl: './resistor.component.scss',
   imports: [
     ReactiveFormsModule,
-    RouterLink,
-    SelectComponent,
-    ResistorPreviewComponent,
-    ReferencePanelComponent,
-    OhmsPipe,
+    ModeToggleComponent,
+    ForwardFormComponent,
+    ResultCardComponent,
+    HelpSectionComponent,
+    ReverseShellComponent,
   ],
   providers: [ResistorStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,6 +49,7 @@ export class ResistorComponent implements OnDestroy {
   private readonly store = inject(ResistorStore);
   private readonly hostElement = inject(ElementRef<HTMLElement>);
   private applyFeedbackTimer: ReturnType<typeof setTimeout> | null = null;
+
   public readonly form = this.store.form;
   public readonly viewModel = this.store.viewModel;
   public readonly validationMessage = this.store.validationMessage;
@@ -57,15 +57,19 @@ export class ResistorComponent implements OnDestroy {
   public readonly reverseViewModel = this.store.reverseViewModel;
   public readonly reverseValidationMessage = this.store.reverseValidationMessage;
   public readonly isAtDefaults = this.store.isAtDefaults;
+
   public readonly showHelp = signal(false);
   public readonly copyState = signal<CopyState>('idle');
   public readonly applyFeedback = signal('');
   public readonly mode = signal<CalculatorMode>('forward');
+
   public readonly calculatorModes: ReadonlyArray<{ key: CalculatorMode; label: string }> = [
     { key: 'forward', label: 'Band -> Value' },
     { key: 'reverse', label: 'Value -> Band' },
   ];
+
   public readonly isCopyEnabled = computed(() => this.viewModel().ohms > 0);
+
   public readonly digitColors = (Object.keys(DIGIT_BY_COLOR) as Color[]).filter(
     (c) => DIGIT_BY_COLOR[c] !== null,
   );
@@ -74,6 +78,7 @@ export class ResistorComponent implements OnDestroy {
   public readonly tcrColors = Object.keys(TCR_BY_COLOR) as Color[];
   public readonly bandCounts = BAND_COUNTS;
   public readonly reverseModes = [ReverseMode.Exact, ReverseMode.Nearest] as const;
+
   public readonly hasReverseError = computed(() => {
     const vm = this.reverseViewModel();
     return vm.parseErrorCode !== null || vm.serviceErrorCode === ReverseErrorCode.InvalidTargetOhms;
@@ -90,8 +95,8 @@ export class ResistorComponent implements OnDestroy {
     this.showHelp.update((value) => !value);
   }
 
-  public setMode(mode: CalculatorMode): void {
-    this.mode.set(mode);
+  public setMode(mode: string): void {
+    this.mode.set(mode as CalculatorMode);
     if (mode === 'reverse') {
       this.applyFeedback.set('');
     }

@@ -1,0 +1,43 @@
+@if (validationMessage()) {
+  <div class="result-empty">{{ validationMessage() }}</div>
+}
+
+<section
+  class="resistor-result"
+  aria-live="polite"
+>
+  @if (ohms() > 0) {
+    <div class="result-label">Resistance</div>
+    <div class="result-value">
+      <span class="result-ohms">{{ ohms() | ohms }}</span>
+      @if (tolerancePct() !== null) {
+        <span class="result-meta">± {{ tolerancePct() }}%</span>
+      }
+      @if (tcrPpm() !== null) {
+        <span class="result-meta">({{ tcrPpm() }} ppm/°C)</span>
+      }
+    </div>
+  } @else {
+    <div class="result-empty">Select bands to calculate resistance.</div>
+  }
+  <div class="result-actions">
+    <button
+      class="copy-trigger"
+      type="button"
+      (click)="copyResult.emit()"
+      [disabled]="!isCopyEnabled()"
+    >
+      Copy result
+    </button>
+    <span
+      class="copy-feedback"
+      aria-live="polite"
+    >
+      @if (copyState() === 'success') {
+        Copied to clipboard.
+      } @else if (copyState() === 'error') {
+        Copy failed.
+      }
+    </span>
+  </div>
+</section>

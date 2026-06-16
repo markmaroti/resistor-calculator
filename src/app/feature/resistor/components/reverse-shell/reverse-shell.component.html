@@ -1,0 +1,128 @@
+@let reverseVm = reverseViewModel();
+<section class="reverse-shell">
+  <h2>Value -> Band</h2>
+  <p>
+    Reverse calculator mode is enabled. In this mode, you can provide a resistance value and get
+    matching band combinations.
+  </p>
+
+  <ul
+    class="reverse-controls"
+    [formGroup]="reverseForm()"
+  >
+    <li>
+      <label>
+        Target resistance
+        <span
+          id="reverse-target-help"
+          class="reverse-help"
+          >Examples: 4.7k, 330, 1M</span
+        >
+        <input
+          class="reverse-input"
+          type="text"
+          formControlName="targetInput"
+          placeholder="e.g. 4.7k"
+          autocomplete="off"
+          [attr.aria-invalid]="hasReverseError()"
+          [attr.aria-describedby]="
+            hasReverseError()
+              ? 'reverse-target-help reverse-error-message'
+              : 'reverse-target-help'
+          "
+        />
+      </label>
+    </li>
+    <li>
+      <app-select
+        label="Bands"
+        [options]="bandCounts()"
+        formControlName="bandCount"
+      />
+    </li>
+    <li>
+      <app-select
+        label="Mode"
+        [options]="reverseModes()"
+        formControlName="mode"
+      />
+    </li>
+  </ul>
+
+  @if (hasReverseError()) {
+    <div
+      id="reverse-error-message"
+      class="reverse-state reverse-state-error"
+      role="alert"
+      aria-live="assertive"
+    >
+      {{ reverseValidationMessage() }}
+    </div>
+  } @else if (hasReverseNoCandidates()) {
+    <div
+      class="reverse-state reverse-state-empty"
+      aria-live="polite"
+    >
+      No matching candidates found for the current reverse input. Adjust value or options.
+    </div>
+  }
+
+  @if (!hasReverseError() && reverseVm.candidates.length > 0) {
+    <p
+      class="sr-only"
+      aria-live="polite"
+    >
+      {{ reverseVm.candidates.length }} candidates found. Use Tab and Enter to apply one.
+    </p>
+    <ul class="reverse-candidates">
+      @for (candidate of reverseVm.candidates; track $index) {
+        <li>
+          <button
+            type="button"
+            class="candidate-item"
+            (click)="applyCandidate.emit(candidate)"
+            [attr.aria-label]="'Apply candidate ' + (candidate.ohms | ohms)"
+          >
+            <div class="candidate-main">
+              <span class="candidate-ohms">{{ candidate.ohms | ohms }}</span>
+              @if (candidate.tolerancePct !== null) {
+                <span class="candidate-meta">±{{ candidate.tolerancePct }}%</span>
+              }
+              @if (candidate.tcrPpm !== null) {
+                <span class="candidate-meta">{{ candidate.tcrPpm }} ppm/°C</span>
+              }
+            </div>
+            <div class="candidate-bands">
+              {{ candidate.bands.digit1 }} - {{ candidate.bands.digit2 }}
+              @if (candidate.bands.bandCount !== 4) {
+                - {{ candidate.bands.digit3 }}
+              }
+              - {{ candidate.bands.multiplier }} - {{ candidate.bands.tolerance }}
+              @if (candidate.bands.bandCount === 6) {
+                - {{ candidate.bands.tcr }}
+              }
+            </div>
+            <div class="candidate-meta">
+              Delta: {{ candidate.deltaOhms | ohms }} ({{ candidate.deltaPct.toFixed(3) }}%)
+            </div>
+          </button>
+        </li>
+      }
+    </ul>
+  } @else if (!hasReverseError() && !hasReverseNoCandidates()) {
+    <div
+      class="reverse-state reverse-state-info"
+      aria-live="polite"
+    >
+      Enter a valid resistance value to generate candidate bands.
+    </div>
+  }
+
+  <p class="reverse-shell-note">
+    @if (reverseVm.targetOhms > 0) {
+      Parsed target: {{ reverseVm.targetOhms | ohms }}
+    } @else {
+      Enter a valid resistance value to generate candidate bands.
+    }
+  </p>
+</section>

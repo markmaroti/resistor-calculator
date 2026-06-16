@@ -1,0 +1,80 @@
+@let vm = viewModel();
+<section class="forward-mode">
+  <app-resistor-preview
+    [bandCount]="vm.bandCount"
+    [digit1]="vm.digit1"
+    [digit2]="vm.digit2"
+    [digit3]="vm.digit3"
+    [multiplier]="vm.multiplier"
+    [tolerance]="vm.tolerance"
+    [tcr]="vm.tcr"
+  />
+
+  <ul
+    class="resistor-controls"
+    [formGroup]="form()"
+  >
+    <li>
+      <app-select
+        label="Bands"
+        [options]="bandCounts()"
+        formControlName="bandCount"
+      />
+    </li>
+    <li>
+      <app-select
+        label="Band 1 (Digit)"
+        [options]="digitColors()"
+        formControlName="digit1"
+      />
+    </li>
+    <li>
+      <app-select
+        label="Band 2 (Digit)"
+        [options]="digitColors()"
+        formControlName="digit2"
+      />
+    </li>
+    @if (vm.showDigit3) {
+      <li>
+        <app-select
+          label="Band 3 (Digit)"
+          [options]="digitColors()"
+          formControlName="digit3"
+        />
+      </li>
+    }
+    <li>
+      <app-select
+        label="Multiplier"
+        [options]="multiplierColors()"
+        formControlName="multiplier"
+      />
+    </li>
+    <li>
+      <app-select
+        label="Tolerance"
+        [options]="toleranceColors()"
+        formControlName="tolerance"
+      />
+    </li>
+    @if (vm.showTcr) {
+      <li>
+        <app-select
+          label="TCR (ppm/°C)"
+          [options]="tcrColors()"
+          formControlName="tcr"
+        />
+      </li>
+    }
+  </ul>
+
+  @if (applyFeedback()) {
+    <div
+      class="apply-feedback"
+      aria-live="polite"
+    >
+      {{ applyFeedback() }}
+    </div>
+  }
+</section>

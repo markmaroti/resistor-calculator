@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { BAND_LAYOUTS, BandCount, buildBandColors, Color, COLOR_HEX } from '../resistor.model';
+import { BAND_LAYOUTS, BandCount, buildBandColors, Color, COLOR_HEX } from '../../resistor.model';
 
 @Component({
   selector: 'app-resistor-preview',
