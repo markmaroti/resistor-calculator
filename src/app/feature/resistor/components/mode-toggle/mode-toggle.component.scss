@@ -1,3 +1,5 @@
+@use '../../../../../styles/buttons' as buttons;
+
 .calculator-mode {
   margin: 14px 0 0;
 }
@@ -7,21 +9,19 @@
   flex-wrap: wrap;
   gap: 8px;
   padding: 6px;
-  border-radius: 999px;
+  @include buttons.button-pill-shape;
   border: 1px solid var(--border-1);
   background: linear-gradient(145deg, var(--surface-2), var(--surface-1));
 }
 
 .mode-button {
   border: 1px solid transparent;
-  border-radius: 999px;
+  @include buttons.button-pill-shape;
   padding: 8px 14px;
   background: transparent;
   color: var(--text-muted);
   font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
+  @include buttons.button-pill-typography;
   transition:
     color 140ms ease,
     background-color 140ms ease,
@@ -43,7 +43,5 @@
 }
 
 .mode-button:focus-visible {
-  outline: none;
-  border-color: var(--select-border-focus);
-  box-shadow: 0 0 0 3px rgba(138, 110, 88, 0.2);
+  @include buttons.button-focus-visible;
 }

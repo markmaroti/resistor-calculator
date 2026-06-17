@@ -98,3 +98,8 @@ src/app/
 ```
 
 Everything's built with standalone components and Angular signals. No zones — uses zoneless change detection. State lives in a `ResistorStore` with computed values and pure functions for mapping and validation.
+
+## Styling Conventions
+
+- Component SCSS should reuse shared button/interactive mixins from `src/styles/_buttons.scss` via `@use`.
+- Prefer centralizing repeated `hover`, `focus-visible`, and `disabled` styles in shared mixins instead of duplicating declarations across component styles.

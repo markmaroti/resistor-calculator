@@ -1,0 +1,64 @@
+@mixin button-pill-shape {
+  border-radius: 999px;
+}
+
+@mixin button-pill-typography {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+@mixin button-surface {
+  border: 1px solid var(--border-1);
+  @include button-pill-shape;
+  background: linear-gradient(140deg, var(--surface-2), var(--surface-1));
+  color: var(--text-strong);
+  text-decoration: none;
+}
+
+@mixin button-transition {
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+@mixin button-transition-with-opacity {
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease,
+    opacity 160ms ease;
+}
+
+@mixin button-hover-lift {
+  @include interactive-hover-lift;
+}
+
+@mixin button-focus-visible {
+  @include interactive-focus-ring;
+}
+
+@mixin interactive-hover-lift(
+  $border-color: var(--select-border-hover),
+  $shadow: 0 6px 14px -12px rgba(44, 31, 20, 0.4),
+  $translate-y: -1px
+) {
+  border-color: $border-color;
+  box-shadow: $shadow;
+  transform: translateY($translate-y);
+}
+
+@mixin interactive-focus-ring(
+  $border-color: var(--select-border-focus),
+  $ring: 0 0 0 3px rgba(138, 110, 88, 0.2)
+) {
+  outline: none;
+  border-color: $border-color;
+  box-shadow: $ring;
+}
+
+@mixin button-disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

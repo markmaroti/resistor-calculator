@@ -1,3 +1,5 @@
+@use '../../../../../styles/buttons' as buttons;
+
 .reverse-shell {
   margin-top: 18px;
   padding: 18px 20px;
@@ -109,9 +111,9 @@
 }
 
 .candidate-item:hover {
-  border-color: var(--select-border-hover);
-  box-shadow: 0 8px 14px -14px rgba(44, 31, 20, 0.45);
-  transform: translateY(-1px);
+  @include buttons.interactive-hover-lift(
+    $shadow: 0 8px 14px -14px rgba(44, 31, 20, 0.45)
+  );
 }
 
 .candidate-main {
@@ -153,7 +155,5 @@
 
 .reverse-input:focus-visible,
 .candidate-item:focus-visible {
-  outline: none;
-  border-color: var(--select-border-focus);
-  box-shadow: 0 0 0 3px rgba(138, 110, 88, 0.2);
+  @include buttons.interactive-focus-ring;
 }

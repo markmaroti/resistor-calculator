@@ -1,3 +1,5 @@
+@use '../../../../../styles/buttons' as buttons;
+
 .resistor-result {
   margin: 24px 0 0;
   padding: 20px 22px;
@@ -58,36 +60,21 @@
 }
 
 .copy-trigger {
-  border: 1px solid var(--border-1);
-  border-radius: 999px;
-  background: linear-gradient(140deg, var(--surface-2), var(--surface-1));
-  color: var(--text-strong);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  text-decoration: none;
+  @include buttons.button-surface;
+  @include buttons.button-pill-typography;
   padding: 8px 14px;
   font-size: 0.72rem;
-  transition:
-    border-color 160ms ease,
-    box-shadow 160ms ease,
-    transform 160ms ease,
-    opacity 160ms ease;
+  @include buttons.button-transition-with-opacity;
 }
 
 .copy-trigger:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
+  @include buttons.button-disabled;
 }
 
 .copy-trigger:hover:not(:disabled) {
-  border-color: var(--select-border-hover);
-  box-shadow: 0 6px 14px -12px rgba(44, 31, 20, 0.4);
-  transform: translateY(-1px);
+  @include buttons.button-hover-lift;
 }
 
 .copy-trigger:focus-visible {
-  outline: none;
-  border-color: var(--select-border-focus);
-  box-shadow: 0 0 0 3px rgba(138, 110, 88, 0.2);
+  @include buttons.button-focus-visible;
 }
