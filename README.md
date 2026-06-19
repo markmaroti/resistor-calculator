@@ -11,9 +11,12 @@ The app allows users to select color bands and instantly computes the correspond
 
 ## Features
 
-Pick resistor bands and get the value instantly — works with 4, 5, and 6 band resistors. You can also go the other way: type in a resistance like `4.7k` or `330` and it'll find the closest band combinations for you.
-
-There's a live SVG preview that updates as you play with the bands, a one-click copy button for the result, and a reset to get everything back to defaults. A built-in guide page covers band meanings, E-series, tolerances, and TCR if you need a refresher.
+- Forward calculator (4/5/6 band): color bands -> resistance value
+- Reverse calculator: typed value (`4.7k`, `330`, `1M`) -> candidate band combinations
+- Circuit tools page: series, parallel, and voltage divider calculators
+- Shared navigation and responsive mobile menu
+- Live SVG resistor preview, copy result action, reset defaults
+- Built-in guide page with band meanings, E-series, tolerance, and TCR reference
 
 ---
 
@@ -54,8 +57,6 @@ This will install all necessary packages listed in package.json.
 To start a local development server, run:
 
 ```bash
-ng serve
-# or
 npm run start
 ```
 
@@ -66,38 +67,64 @@ Once the server is running, open your browser and navigate to `http://localhost:
 To execute unit tests with the [Vitest](https://vitest.dev/), run:
 
 ```bash
-ng test
+npm run test
 ```
 
 Test results will be displayed in the terminal.
+
+## Lint
+
+To check lint rules, run:
+
+```bash
+npm run lint
+```
 
 ## Build
 
 To build the project for production, run:
 
 ```bash
-ng build
+npm run build
 ```
 
 ## Project Structure
 
 ```
 src/app/
+├── app.config.ts
+├── app.routes.ts
+├── layout/
+│   └── header.component.*
 ├── feature/
-│   ├── resistor/          # The main calculator
-│   │   ├── components/    # Preview SVG, reference panel
-│   │   ├── pipes/         # OhmsPipe — formats raw ohms to human-readable
-│   │   ├── services/      # Calculation logic (forward + reverse)
-│   │   ├── state/         # Store, mappers, validators
-│   │   └── utils/         # Formatting, value parsing, clipboard
-│   └── guide/             # Color code reference page
-├── shared/
-│   ├── select/            # Reusable dropdown component
-│   └── utils/             # Clipboard helper
-└── app.routes.ts          # All routes, lazy-loaded
+│   ├── resistor/
+│   │   ├── components/
+│   │   │   ├── mode-toggle/
+│   │   │   ├── forward-form/
+│   │   │   ├── result-card/
+│   │   │   ├── help-section/
+│   │   │   ├── reverse-shell/
+│   │   │   ├── resistor-preview/
+│   │   │   └── reference-panel/
+│   │   ├── services/
+│   │   ├── state/
+│   │   └── utils/
+│   ├── circuit/
+│   │   ├── services/
+│   │   └── state/
+│   └── guide/
+└── shared/
+    ├── pipes/             # ohms/volts/amps formatting
+    ├── select/
+    └── utils/
 ```
 
-Everything's built with standalone components and Angular signals. No zones — uses zoneless change detection. State lives in a `ResistorStore` with computed values and pure functions for mapping and validation.
+Everything is built with standalone components and Angular signals. The app uses zoneless change detection. State is feature-scoped stores (`ResistorStore`, `CircuitStore`) with computed view models and pure mapper/validator utilities.
+
+## Import Conventions
+
+- Cross-folder imports use TypeScript path aliases: `@app/*`, `@shared/*`, `@resistor/*`, `@circuit/*`.
+- Same-folder imports stay relative (`./...`).
 
 ## Styling Conventions
 
