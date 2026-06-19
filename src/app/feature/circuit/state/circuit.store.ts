@@ -2,8 +2,13 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { map } from 'rxjs';
-import { CircuitService } from '../services/circuit.service';
-import { CircuitTab, DividerFormValue, ParallelFormValue, SeriesFormValue } from '../circuit.model';
+import { CircuitService } from '@circuit/services/circuit.service';
+import {
+  CircuitTab,
+  DividerFormValue,
+  ParallelFormValue,
+  SeriesFormValue,
+} from '@circuit/circuit.model';
 import {
   toDividerInput,
   toDividerViewModel,

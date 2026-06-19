@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { ReverseShellComponent } from './reverse-shell.component';
-import { ReverseErrorCode, ReverseCandidate } from '../../resistor.model';
-import { ReverseViewModel } from '../../state/resistor.mappers';
-import { ReverseValueErrorCode } from '../../utils/reverse-value.util';
+import { ReverseErrorCode, ReverseCandidate } from '@resistor/resistor.model';
+import { ReverseViewModel } from '@resistor/state/resistor.mappers';
+import { ReverseValueErrorCode } from '@resistor/utils/reverse-value.util';
 
 const mockCandidates: ReverseCandidate[] = [
   {
@@ -51,13 +51,16 @@ describe('ReverseShellComponent', () => {
     fixture = TestBed.createComponent(ReverseShellComponent);
     component = fixture.componentInstance;
 
-    fixture.componentRef.setInput('reverseForm', new FormGroup({
-      targetInput: new FormControl('', { nonNullable: true }),
-      bandCount: new FormControl(4, { nonNullable: true }),
-      tolerancePct: new FormControl<number | null>(null),
-      tcrPpm: new FormControl<number | null>(null),
-      mode: new FormControl('EXACT', { nonNullable: true }),
-    }));
+    fixture.componentRef.setInput(
+      'reverseForm',
+      new FormGroup({
+        targetInput: new FormControl('', { nonNullable: true }),
+        bandCount: new FormControl(4, { nonNullable: true }),
+        tolerancePct: new FormControl<number | null>(null),
+        tcrPpm: new FormControl<number | null>(null),
+        mode: new FormControl('EXACT', { nonNullable: true }),
+      }),
+    );
     fixture.componentRef.setInput('reverseViewModel', defaultVm);
     fixture.componentRef.setInput('reverseValidationMessage', '');
     fixture.componentRef.setInput('bandCounts', [4, 5, 6]);

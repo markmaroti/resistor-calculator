@@ -8,8 +8,8 @@ import {
   ResistanceCalculationResult,
   ResistanceErrorCode,
   ResistorBandsInput,
-} from '../resistor.model';
-import { parseResistanceValue } from '../utils/reverse-value.util';
+} from '@resistor/resistor.model';
+import { parseResistanceValue } from '@resistor/utils/reverse-value.util';
 import {
   toResistorInput,
   toReverseInput,

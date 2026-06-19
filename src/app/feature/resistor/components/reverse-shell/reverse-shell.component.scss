@@ -111,9 +111,7 @@
 }
 
 .candidate-item:hover {
-  @include buttons.interactive-hover-lift(
-    $shadow: 0 8px 14px -14px rgba(44, 31, 20, 0.45)
-  );
+  @include buttons.interactive-hover-lift($shadow: 0 8px 14px -14px rgba(44, 31, 20, 0.45));
 }
 
 .candidate-main {

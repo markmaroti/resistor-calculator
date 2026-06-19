@@ -1,4 +1,4 @@
-import { ServiceResult } from '../resistor.model';
+import { ServiceResult } from '@resistor/resistor.model';
 
 export const ReverseValueUnit = {
   Ohm: 'Ω',

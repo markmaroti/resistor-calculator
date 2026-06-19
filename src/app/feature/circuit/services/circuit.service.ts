@@ -7,7 +7,7 @@ import {
   ParallelResult,
   SeriesInput,
   SeriesResult,
-} from '../circuit.model';
+} from '@circuit/circuit.model';
 
 @Injectable({ providedIn: 'root' })
 export class CircuitService {

@@ -1,4 +1,4 @@
-import { CircuitErrorCode, CircuitValidationError } from '../circuit.model';
+import { CircuitErrorCode, CircuitValidationError } from '@circuit/circuit.model';
 
 export const CIRCUIT_VALIDATION_MESSAGES: Record<CircuitValidationError, string> = {
   [CircuitValidationError.EmptyInput]: 'Resistor value is required.',

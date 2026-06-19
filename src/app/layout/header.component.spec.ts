@@ -4,7 +4,7 @@ import { provideRouter, Router } from '@angular/router';
 import { vi } from 'vitest';
 
 import { HeaderComponent } from './header.component';
-import { appRoutes } from '../app.routes';
+import { appRoutes } from '@app/app.routes';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;

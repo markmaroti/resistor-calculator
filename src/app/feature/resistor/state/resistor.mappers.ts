@@ -7,8 +7,8 @@ import {
   ResistorBandsInput,
   ServiceError,
   ResistanceErrorCode,
-} from '../resistor.model';
-import { ParseReverseValueResult, ReverseValueErrorCode } from '../utils/reverse-value.util';
+} from '@resistor/resistor.model';
+import { ParseReverseValueResult, ReverseValueErrorCode } from '@resistor/utils/reverse-value.util';
 
 export type ResistorViewModel = {
   bandCount: ResistorBandsInput['bandCount'];

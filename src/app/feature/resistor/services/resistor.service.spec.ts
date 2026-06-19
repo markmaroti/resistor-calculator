@@ -5,7 +5,7 @@ import {
   ReverseErrorCode,
   ReverseInput,
   ReverseMode,
-} from '../resistor.model';
+} from '@resistor/resistor.model';
 import { ResistorService } from './resistor.service';
 
 describe('ResistorService', () => {

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
-import { ReverseMode } from '../resistor.model';
+import { ReverseMode } from '@resistor/resistor.model';
 import { ResistorStore } from './resistor.store';
 
 describe('ResistorStore', () => {

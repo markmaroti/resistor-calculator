@@ -15,8 +15,8 @@ import {
   TCR_BY_COLOR,
   TOLERANCE_BY_COLOR,
   type BandCount,
-} from '../resistor.model';
-import { getResistanceValidationMessage } from '../state/validation-messages';
+} from '@resistor/resistor.model';
+import { getResistanceValidationMessage } from '@resistor/state/validation-messages';
 
 @Injectable({ providedIn: 'root' })
 export class ResistorService {

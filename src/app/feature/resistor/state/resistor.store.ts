@@ -2,7 +2,7 @@ import { Injectable, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { map } from 'rxjs';
-import { ResistorService } from '../services/resistor.service';
+import { ResistorService } from '@resistor/services/resistor.service';
 import {
   toResistorInput,
   toReverseInput,
@@ -20,8 +20,8 @@ import {
   ReverseMode,
   ReverseResult,
   type BandCount,
-} from '../resistor.model';
-import { parseResistanceValue } from '../utils/reverse-value.util';
+} from '@resistor/resistor.model';
+import { parseResistanceValue } from '@resistor/utils/reverse-value.util';
 
 @Injectable()
 export class ResistorStore {

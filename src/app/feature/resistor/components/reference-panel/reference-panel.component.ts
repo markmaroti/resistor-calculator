@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { httpResource } from '@angular/common/http';
-import { Color } from '../../resistor.model';
+import { Color } from '@resistor/resistor.model';
 
 type ResistorReference = {
   eSeries: { name: string; values: number[] }[];

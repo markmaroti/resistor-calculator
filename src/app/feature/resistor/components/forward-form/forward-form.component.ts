@@ -1,19 +1,15 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Color } from '../../resistor.model';
-import { ResistorViewModel } from '../../state/resistor.mappers';
-import { SelectComponent } from '../../../../shared/select/select.component';
-import { ResistorPreviewComponent } from '../resistor-preview/resistor-preview.component';
+import { Color } from '@resistor/resistor.model';
+import { ResistorViewModel } from '@resistor/state/resistor.mappers';
+import { SelectComponent } from '@shared/select/select.component';
+import { ResistorPreviewComponent } from '@resistor/components/resistor-preview/resistor-preview.component';
 
 @Component({
   selector: 'app-forward-form',
   templateUrl: './forward-form.component.html',
   styleUrl: './forward-form.component.scss',
-  imports: [
-    ReactiveFormsModule,
-    SelectComponent,
-    ResistorPreviewComponent,
-  ],
+  imports: [ReactiveFormsModule, SelectComponent, ResistorPreviewComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForwardFormComponent {

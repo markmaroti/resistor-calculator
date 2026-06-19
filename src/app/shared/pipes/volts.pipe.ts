@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { formatVolts } from '../utils/format-value.util';
+import { formatVolts } from '@shared/utils/format-value.util';
 
 @Pipe({
   name: 'volts',
