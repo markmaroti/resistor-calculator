@@ -30,12 +30,20 @@ describe('parseResistanceValue', () => {
     expect(result.data.unit).toBe(ResistanceValueUnit.MegaOhm);
   });
 
-  it('parses giga-ohm input with symbol', () => {
-    const result = parseResistanceValue('2.2 GΩ');
+  it('parses giga-ohm shorthand input', () => {
+    const result = parseResistanceValue('2.2G');
 
     expect(result.error).toBeNull();
     expect(result.data.normalizedOhms).toBe(2_200_000_000);
     expect(result.data.unit).toBe(ResistanceValueUnit.GigaOhm);
+  });
+
+  it('parses explicit ohm symbol suffix input', () => {
+    const result = parseResistanceValue('330 Ω');
+
+    expect(result.error).toBeNull();
+    expect(result.data.normalizedOhms).toBe(330);
+    expect(result.data.unit).toBe(ResistanceValueUnit.Ohm);
   });
 
   it('parses ohm alias input', () => {
@@ -72,7 +80,13 @@ describe('parseResistanceValue', () => {
     expect(negative.error?.code).toBe(ResistanceValueErrorCode.NonPositiveValue);
   });
 
-  it('returns INVALID_FORMAT for Infinity input', () => {
+  it('returns INVALID_FORMAT for NaN input', () => {
+    const result = parseResistanceValue('NaN');
+
+    expect(result.error?.code).toBe(ResistanceValueErrorCode.InvalidFormat);
+  });
+
+  it('returns INVALID_FORMAT for Infinity string input', () => {
     const result = parseResistanceValue('Infinity');
 
     expect(result.error?.code).toBe(ResistanceValueErrorCode.InvalidFormat);

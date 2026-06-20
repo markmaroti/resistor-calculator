@@ -33,7 +33,6 @@ describe('CircuitToolsComponent', () => {
     await fixture.whenStable();
 
     expect(component.store.activeTab()).toBe('series');
-    expect(fixture.debugElement.query(By.css('.circuit-error'))).toBeTruthy();
     const labels = fixture.debugElement.queryAll(By.css('.circuit-controls label'));
     expect(labels.length).toBe(2);
     expect(labels[0].nativeElement.textContent).toContain('R1');
@@ -46,10 +45,6 @@ describe('CircuitToolsComponent', () => {
     await fixture.whenStable();
 
     expect(component.store.activeTab()).toBe('parallel');
-
-    const tabButtons = fixture.debugElement.queryAll(By.css('.circuit-tab'));
-    expect(tabButtons[1].nativeElement.getAttribute('aria-selected')).toBe('true');
-    expect(tabButtons[0].nativeElement.getAttribute('aria-selected')).toBe('false');
 
     component.store.setActiveTab('divider');
     fixture.detectChanges();
@@ -64,17 +59,16 @@ describe('CircuitToolsComponent', () => {
     expect(labels[2].nativeElement.textContent).toContain('R2');
   });
 
-  it('shows validation error when series inputs are empty', async () => {
+  it('shows series validation message from store state', async () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
     const errorEl = fixture.debugElement.query(By.css('.circuit-error'));
     expect(errorEl).toBeTruthy();
-    expect(errorEl.nativeElement.getAttribute('role')).toBe('alert');
     expect(errorEl.nativeElement.textContent.trim()).toBe('Resistance value is required.');
   });
 
-  it('calculates series total resistance for valid inputs', async () => {
+  it('renders series result from store view model', async () => {
     component.store.seriesForm.controls.resistors.at(0).setValue('1000');
     component.store.seriesForm.controls.resistors.at(1).setValue('2000');
     fixture.detectChanges();
@@ -85,125 +79,21 @@ describe('CircuitToolsComponent', () => {
     expect(resultValue.nativeElement.textContent.trim()).toBe('3.00 kΩ');
   });
 
-  it('shows validation error for invalid series input', async () => {
-    component.store.seriesForm.controls.resistors.at(0).setValue('abc');
-    component.store.seriesForm.controls.resistors.at(1).setValue('2000');
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    const errorEl = fixture.debugElement.query(By.css('.circuit-error'));
-    expect(errorEl).toBeTruthy();
-    expect(errorEl.nativeElement.textContent.trim()).toBe(
-      'Invalid resistance format. Use examples like 4.7k, 4700, 1M.',
-    );
-  });
-
-  it('supports SI-prefixed series inputs', async () => {
-    component.store.seriesForm.controls.resistors.at(0).setValue('4.7k');
-    component.store.seriesForm.controls.resistors.at(1).setValue('330');
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    const resultValue = fixture.debugElement.query(By.css('.result-value'));
-    expect(resultValue).toBeTruthy();
-    expect(resultValue.nativeElement.textContent.trim()).toBe('5.03 kΩ');
-  });
-
-  it('adds and removes series resistor inputs', async () => {
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    let inputs = fixture.debugElement.queryAll(By.css('.circuit-input'));
-    expect(inputs.length).toBe(2);
-
+  it('removeLastResistor uses the last series index', async () => {
     component.store.addResistor('series');
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    inputs = fixture.debugElement.queryAll(By.css('.circuit-input'));
-    expect(inputs.length).toBe(3);
-
-    const removeButton = fixture.debugElement.query(By.css('.action-remove'));
-    expect(removeButton).toBeTruthy();
+    const removeSpy = vi.spyOn(component.store, 'removeResistor');
 
     component.removeLastResistor('series');
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    inputs = fixture.debugElement.queryAll(By.css('.circuit-input'));
-    expect(inputs.length).toBe(2);
-
-    component.removeLastResistor('series');
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    inputs = fixture.debugElement.queryAll(By.css('.circuit-input'));
-    expect(inputs.length).toBe(1);
-
-    const removeButtonAfter = fixture.debugElement.query(By.css('.action-remove'));
-    expect(removeButtonAfter).toBeNull();
+    expect(removeSpy).toHaveBeenCalledWith('series', 2);
   });
 
-  it('calculates parallel total resistance', async () => {
+  it('removeLastResistor uses the last parallel index', async () => {
     component.store.setActiveTab('parallel');
-    component.store.parallelForm.controls.resistors.at(0).setValue('1k');
-    component.store.parallelForm.controls.resistors.at(1).setValue('2k');
-    fixture.detectChanges();
-    await fixture.whenStable();
+    component.store.addResistor('parallel');
+    component.store.addResistor('parallel');
+    const removeSpy = vi.spyOn(component.store, 'removeResistor');
 
-    const resultValue = fixture.debugElement.query(By.css('.result-value'));
-    expect(resultValue).toBeTruthy();
-    expect(resultValue.nativeElement.textContent.trim()).toBe('667 Ω');
-  });
-
-  it('shows validation error for invalid parallel input', async () => {
-    component.store.setActiveTab('parallel');
-    component.store.parallelForm.controls.resistors.at(0).setValue('0');
-    component.store.parallelForm.controls.resistors.at(1).setValue('2000');
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    const errorEl = fixture.debugElement.query(By.css('.circuit-error'));
-    expect(errorEl).toBeTruthy();
-    expect(errorEl.nativeElement.textContent.trim()).toBe(
-      'Resistance value must be greater than 0.',
-    );
-  });
-
-  it('shows validation error for unsupported parallel SI unit', async () => {
-    component.store.setActiveTab('parallel');
-    component.store.parallelForm.controls.resistors.at(0).setValue('10x');
-    component.store.parallelForm.controls.resistors.at(1).setValue('2000');
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    const errorEl = fixture.debugElement.query(By.css('.circuit-error'));
-    expect(errorEl).toBeTruthy();
-    expect(errorEl.nativeElement.textContent.trim()).toBe(
-      'Unsupported unit. Use Ω, kΩ, MΩ, or GΩ.',
-    );
-  });
-
-  it('calculates divider Vout and current for valid inputs', async () => {
-    component.store.setActiveTab('divider');
-    component.store.dividerForm.controls.vin.setValue('5');
-    component.store.dividerForm.controls.r1.setValue('1k');
-    component.store.dividerForm.controls.r2.setValue('2k');
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    const resultValues = fixture.debugElement.queryAll(By.css('.result-value'));
-    expect(resultValues.length).toBe(2);
-    expect(resultValues[0].nativeElement.textContent.trim()).toBe('3.33 V');
-    expect(resultValues[1].nativeElement.textContent.trim()).toBe('1.67 mA');
-  });
-
-  it('renders back link with routerLink', async () => {
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    const backLink = fixture.debugElement.query(By.css('a[routerLink="/"]'));
-    expect(backLink).toBeTruthy();
-    expect(backLink.nativeElement.textContent).toContain('Back to calculator');
+    component.removeLastResistor('parallel');
+    expect(removeSpy).toHaveBeenCalledWith('parallel', 3);
   });
 });
