@@ -71,9 +71,7 @@ describe('CircuitToolsComponent', () => {
     const errorEl = fixture.debugElement.query(By.css('.circuit-error'));
     expect(errorEl).toBeTruthy();
     expect(errorEl.nativeElement.getAttribute('role')).toBe('alert');
-    expect(errorEl.nativeElement.textContent.trim()).toBe(
-      'All resistor values must be valid numbers greater than 0.',
-    );
+    expect(errorEl.nativeElement.textContent.trim()).toBe('Resistance value is required.');
   });
 
   it('calculates series total resistance for valid inputs', async () => {
@@ -96,8 +94,19 @@ describe('CircuitToolsComponent', () => {
     const errorEl = fixture.debugElement.query(By.css('.circuit-error'));
     expect(errorEl).toBeTruthy();
     expect(errorEl.nativeElement.textContent.trim()).toBe(
-      'All resistor values must be valid numbers greater than 0.',
+      'Invalid resistance format. Use examples like 4.7k, 4700, 1M.',
     );
+  });
+
+  it('supports SI-prefixed series inputs', async () => {
+    component.store.seriesForm.controls.resistors.at(0).setValue('4.7k');
+    component.store.seriesForm.controls.resistors.at(1).setValue('330');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const resultValue = fixture.debugElement.query(By.css('.result-value'));
+    expect(resultValue).toBeTruthy();
+    expect(resultValue.nativeElement.textContent.trim()).toBe('5.03 kΩ');
   });
 
   it('adds and removes series resistor inputs', async () => {
@@ -137,8 +146,8 @@ describe('CircuitToolsComponent', () => {
 
   it('calculates parallel total resistance', async () => {
     component.store.setActiveTab('parallel');
-    component.store.parallelForm.controls.resistors.at(0).setValue('1000');
-    component.store.parallelForm.controls.resistors.at(1).setValue('2000');
+    component.store.parallelForm.controls.resistors.at(0).setValue('1k');
+    component.store.parallelForm.controls.resistors.at(1).setValue('2k');
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -157,15 +166,29 @@ describe('CircuitToolsComponent', () => {
     const errorEl = fixture.debugElement.query(By.css('.circuit-error'));
     expect(errorEl).toBeTruthy();
     expect(errorEl.nativeElement.textContent.trim()).toBe(
-      'All resistor values must be valid numbers greater than 0.',
+      'Resistance value must be greater than 0.',
+    );
+  });
+
+  it('shows validation error for unsupported parallel SI unit', async () => {
+    component.store.setActiveTab('parallel');
+    component.store.parallelForm.controls.resistors.at(0).setValue('10x');
+    component.store.parallelForm.controls.resistors.at(1).setValue('2000');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const errorEl = fixture.debugElement.query(By.css('.circuit-error'));
+    expect(errorEl).toBeTruthy();
+    expect(errorEl.nativeElement.textContent.trim()).toBe(
+      'Unsupported unit. Use Ω, kΩ, MΩ, or GΩ.',
     );
   });
 
   it('calculates divider Vout and current for valid inputs', async () => {
     component.store.setActiveTab('divider');
     component.store.dividerForm.controls.vin.setValue('5');
-    component.store.dividerForm.controls.r1.setValue('1000');
-    component.store.dividerForm.controls.r2.setValue('2000');
+    component.store.dividerForm.controls.r1.setValue('1k');
+    component.store.dividerForm.controls.r2.setValue('2k');
     fixture.detectChanges();
     await fixture.whenStable();
 

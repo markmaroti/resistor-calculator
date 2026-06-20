@@ -9,7 +9,7 @@ import {
   ResistanceErrorCode,
   ResistorBandsInput,
 } from '@resistor/resistor.model';
-import { parseResistanceValue } from '@resistor/utils/reverse-value.util';
+import { parseResistanceValue } from '@shared/utils/resistance-value.util';
 import {
   toResistorInput,
   toReverseInput,

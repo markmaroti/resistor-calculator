@@ -11,6 +11,7 @@ import {
   SeriesInput,
   SeriesResult,
 } from '@circuit/circuit.model';
+import { parseResistanceValue } from '@shared/utils/resistance-value.util';
 
 export type SeriesViewModel = {
   resistors: string[];
@@ -35,21 +36,21 @@ export type DividerViewModel = {
 
 export function toSeriesInput(value: SeriesFormValue): SeriesInput {
   return {
-    resistors: value.resistors.map((r) => parseFloat(r)),
+    resistors: value.resistors.map((r) => parseResistanceToOhms(r)),
   };
 }
 
 export function toParallelInput(value: ParallelFormValue): ParallelInput {
   return {
-    resistors: value.resistors.map((r) => parseFloat(r)),
+    resistors: value.resistors.map((r) => parseResistanceToOhms(r)),
   };
 }
 
 export function toDividerInput(value: DividerFormValue): DividerInput {
   return {
     vin: parseFloat(value.vin),
-    r1: parseFloat(value.r1),
-    r2: parseFloat(value.r2),
+    r1: parseResistanceToOhms(value.r1),
+    r2: parseResistanceToOhms(value.r2),
   };
 }
 
@@ -84,4 +85,9 @@ export function toDividerViewModel(
     current: result.error ? null : result.data.current,
     error: result.error,
   };
+}
+
+function parseResistanceToOhms(value: string): number {
+  const parsed = parseResistanceValue(value);
+  return parsed.data.normalizedOhms;
 }

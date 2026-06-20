@@ -1,5 +1,6 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { CircuitValidationError } from '@circuit/circuit.model';
+import { parseResistanceValue } from '@shared/utils/resistance-value.util';
 
 export function validateCircuitResistorValue(control: AbstractControl): ValidationErrors | null {
   const value = control.value as string;
@@ -7,12 +8,29 @@ export function validateCircuitResistorValue(control: AbstractControl): Validati
     return null;
   }
 
+  const parsed = parseResistanceValue(value);
+  if (parsed.error) {
+    return { circuitResistor: parsed.error.code };
+  }
+
+  return null;
+}
+
+export function validateCircuitNumberValue(control: AbstractControl): ValidationErrors | null {
+  const value = control.value as string;
+  if (!value || value.trim() === '') {
+    return null;
+  }
+
   const parsed = parseFloat(value);
+  if (Number.isNaN(parsed)) {
+    return { circuitNumber: CircuitValidationError.InvalidFormat };
+  }
   if (!Number.isFinite(parsed)) {
-    return { circuitResistor: CircuitValidationError.InvalidFormat };
+    return { circuitNumber: CircuitValidationError.NonFiniteValue };
   }
   if (parsed <= 0) {
-    return { circuitResistor: CircuitValidationError.NonPositiveValue };
+    return { circuitNumber: CircuitValidationError.NonPositiveValue };
   }
 
   return null;
@@ -20,3 +38,5 @@ export function validateCircuitResistorValue(control: AbstractControl): Validati
 
 export const circuitResistorValidator: ValidatorFn = (control) =>
   validateCircuitResistorValue(control);
+
+export const circuitNumberValidator: ValidatorFn = (control) => validateCircuitNumberValue(control);

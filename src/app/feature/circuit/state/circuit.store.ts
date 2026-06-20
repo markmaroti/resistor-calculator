@@ -4,11 +4,13 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { map } from 'rxjs';
 import { CircuitService } from '@circuit/services/circuit.service';
 import {
+  CircuitValidationError,
   CircuitTab,
   DividerFormValue,
   ParallelFormValue,
   SeriesFormValue,
 } from '@circuit/circuit.model';
+import { ResistanceValueErrorCode } from '@shared/utils/resistance-value.util';
 import {
   toDividerInput,
   toDividerViewModel,
@@ -17,8 +19,11 @@ import {
   toSeriesInput,
   toSeriesViewModel,
 } from './circuit.mappers';
-import { circuitResistorValidator } from './circuit.validators';
-import { getCircuitValidationMessage } from './validation-messages';
+import { circuitNumberValidator, circuitResistorValidator } from './circuit.validators';
+import {
+  getCircuitResistorValidationMessage,
+  getCircuitValidationMessage,
+} from './validation-messages';
 
 @Injectable()
 export class CircuitStore {
@@ -50,7 +55,7 @@ export class CircuitStore {
   readonly dividerForm = new FormGroup({
     vin: new FormControl<string>('', {
       nonNullable: true,
-      validators: [Validators.required, circuitResistorValidator],
+      validators: [Validators.required, circuitNumberValidator],
     }),
     r1: new FormControl<string>('', {
       nonNullable: true,
@@ -116,18 +121,46 @@ export class CircuitStore {
 
   readonly seriesValidationMessage = computed(() => {
     this.seriesFormStatus();
+    this.seriesFormValue();
+    const formMessage = this.getResistorFormValidationMessage(this.seriesForm.controls.resistors);
+    if (formMessage) {
+      return formMessage;
+    }
+
     const error = this.seriesViewModel().error;
     return error ? getCircuitValidationMessage(error.code) : '';
   });
 
   readonly parallelValidationMessage = computed(() => {
     this.parallelFormStatus();
+    this.parallelFormValue();
+    const formMessage = this.getResistorFormValidationMessage(this.parallelForm.controls.resistors);
+    if (formMessage) {
+      return formMessage;
+    }
+
     const error = this.parallelViewModel().error;
     return error ? getCircuitValidationMessage(error.code) : '';
   });
 
   readonly dividerValidationMessage = computed(() => {
     this.dividerFormStatus();
+    this.dividerFormValue();
+    const vinMessage = this.getNumberValidationMessage(this.dividerForm.controls.vin);
+    if (vinMessage) {
+      return vinMessage;
+    }
+
+    const r1Message = this.getResistorValidationMessage(this.dividerForm.controls.r1);
+    if (r1Message) {
+      return r1Message;
+    }
+
+    const r2Message = this.getResistorValidationMessage(this.dividerForm.controls.r2);
+    if (r2Message) {
+      return r2Message;
+    }
+
     const error = this.dividerViewModel().error;
     return error ? getCircuitValidationMessage(error.code) : '';
   });
@@ -173,5 +206,58 @@ export class CircuitStore {
     for (let i = 0; i < count; i++) {
       formArray.push(this.createResistorControl());
     }
+  }
+
+  private getResistorFormValidationMessage(formArray: FormArray<FormControl<string>>): string {
+    for (const control of formArray.controls) {
+      const message = this.getResistorValidationMessage(control);
+      if (message) {
+        return message;
+      }
+    }
+
+    return '';
+  }
+
+  private getResistorValidationMessage(control: FormControl<string>): string {
+    const errors = control.errors as {
+      required?: boolean;
+      circuitResistor?: ResistanceValueErrorCode;
+    } | null;
+
+    if (!errors) {
+      return '';
+    }
+
+    if (errors.required) {
+      return getCircuitValidationMessage(CircuitValidationError.EmptyInput);
+    }
+
+    if (errors.circuitResistor) {
+      return getCircuitResistorValidationMessage(errors.circuitResistor);
+    }
+
+    return '';
+  }
+
+  private getNumberValidationMessage(control: FormControl<string>): string {
+    const errors = control.errors as {
+      required?: boolean;
+      circuitNumber?: CircuitValidationError;
+    } | null;
+
+    if (!errors) {
+      return '';
+    }
+
+    if (errors.required) {
+      return getCircuitValidationMessage(CircuitValidationError.EmptyInput);
+    }
+
+    if (errors.circuitNumber) {
+      return getCircuitValidationMessage(errors.circuitNumber);
+    }
+
+    return '';
   }
 }

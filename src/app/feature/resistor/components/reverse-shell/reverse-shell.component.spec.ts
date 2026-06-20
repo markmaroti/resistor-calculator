@@ -4,7 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ReverseShellComponent } from './reverse-shell.component';
 import { ReverseErrorCode, ReverseCandidate } from '@resistor/resistor.model';
 import { ReverseViewModel } from '@resistor/state/resistor.mappers';
-import { ReverseValueErrorCode } from '@resistor/utils/reverse-value.util';
+import { ResistanceValueErrorCode } from '@shared/utils/resistance-value.util';
 
 const mockCandidates: ReverseCandidate[] = [
   {
@@ -75,7 +75,7 @@ describe('ReverseShellComponent', () => {
   it('detects parse error state', () => {
     fixture.componentRef.setInput('reverseViewModel', {
       ...defaultVm,
-      parseErrorCode: ReverseValueErrorCode.InvalidFormat,
+      parseErrorCode: ResistanceValueErrorCode.InvalidFormat,
     });
 
     expect(component.hasReverseError()).toBe(true);

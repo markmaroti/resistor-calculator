@@ -8,7 +8,10 @@ import {
   ServiceError,
   ResistanceErrorCode,
 } from '@resistor/resistor.model';
-import { ParseReverseValueResult, ReverseValueErrorCode } from '@resistor/utils/reverse-value.util';
+import {
+  ParseResistanceValueResult,
+  ResistanceValueErrorCode,
+} from '@shared/utils/resistance-value.util';
 
 export type ResistorViewModel = {
   bandCount: ResistorBandsInput['bandCount'];
@@ -34,7 +37,7 @@ export type ReverseViewModel = {
   tcrPpm: ReverseFormValue['tcrPpm'];
   mode: ReverseFormValue['mode'];
   isValidTarget: boolean;
-  parseErrorCode: ReverseValueErrorCode | null;
+  parseErrorCode: ResistanceValueErrorCode | null;
   serviceErrorCode: ReverseErrorCode | null;
   candidates: ReverseResult['data']['candidates'];
   showTcr: boolean;
@@ -85,7 +88,7 @@ export function toReverseInput(formValue: ReverseFormValue, targetOhms: number):
 
 export function toReverseViewModel(
   formValue: ReverseFormValue,
-  parsedValue: ParseReverseValueResult,
+  parsedValue: ParseResistanceValueResult,
   reverseResult: ReverseResult,
 ): ReverseViewModel {
   const parseErrorCode = parsedValue.error?.code ?? null;

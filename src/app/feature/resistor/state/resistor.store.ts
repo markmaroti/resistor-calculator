@@ -21,7 +21,7 @@ import {
   ReverseResult,
   type BandCount,
 } from '@resistor/resistor.model';
-import { parseResistanceValue } from '@resistor/utils/reverse-value.util';
+import { parseResistanceValue } from '@shared/utils/resistance-value.util';
 
 @Injectable()
 export class ResistorStore {

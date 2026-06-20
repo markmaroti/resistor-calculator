@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   parseResistanceValue,
-  ReverseValueErrorCode,
-  ReverseValueUnit,
-} from './reverse-value.util';
+  ResistanceValueErrorCode,
+  ResistanceValueUnit,
+} from './resistance-value.util';
 
 describe('parseResistanceValue', () => {
   it('parses plain ohm value without explicit unit', () => {
@@ -11,7 +11,7 @@ describe('parseResistanceValue', () => {
 
     expect(result.error).toBeNull();
     expect(result.data.normalizedOhms).toBe(4700);
-    expect(result.data.unit).toBe(ReverseValueUnit.Ohm);
+    expect(result.data.unit).toBe(ResistanceValueUnit.Ohm);
   });
 
   it('parses kilo-ohm shorthand input', () => {
@@ -19,7 +19,7 @@ describe('parseResistanceValue', () => {
 
     expect(result.error).toBeNull();
     expect(result.data.normalizedOhms).toBe(4700);
-    expect(result.data.unit).toBe(ReverseValueUnit.KiloOhm);
+    expect(result.data.unit).toBe(ResistanceValueUnit.KiloOhm);
   });
 
   it('parses mega-ohm shorthand input', () => {
@@ -27,7 +27,7 @@ describe('parseResistanceValue', () => {
 
     expect(result.error).toBeNull();
     expect(result.data.normalizedOhms).toBe(1_000_000);
-    expect(result.data.unit).toBe(ReverseValueUnit.MegaOhm);
+    expect(result.data.unit).toBe(ResistanceValueUnit.MegaOhm);
   });
 
   it('parses giga-ohm input with symbol', () => {
@@ -35,7 +35,7 @@ describe('parseResistanceValue', () => {
 
     expect(result.error).toBeNull();
     expect(result.data.normalizedOhms).toBe(2_200_000_000);
-    expect(result.data.unit).toBe(ReverseValueUnit.GigaOhm);
+    expect(result.data.unit).toBe(ResistanceValueUnit.GigaOhm);
   });
 
   it('parses ohm alias input', () => {
@@ -43,38 +43,38 @@ describe('parseResistanceValue', () => {
 
     expect(result.error).toBeNull();
     expect(result.data.normalizedOhms).toBe(330);
-    expect(result.data.unit).toBe(ReverseValueUnit.Ohm);
+    expect(result.data.unit).toBe(ResistanceValueUnit.Ohm);
   });
 
   it('returns EMPTY_INPUT for blank input', () => {
     const result = parseResistanceValue('   ');
 
-    expect(result.error?.code).toBe(ReverseValueErrorCode.EmptyInput);
+    expect(result.error?.code).toBe(ResistanceValueErrorCode.EmptyInput);
   });
 
   it('returns INVALID_FORMAT for malformed input', () => {
     const result = parseResistanceValue('4..7k');
 
-    expect(result.error?.code).toBe(ReverseValueErrorCode.InvalidFormat);
+    expect(result.error?.code).toBe(ResistanceValueErrorCode.InvalidFormat);
   });
 
   it('returns UNSUPPORTED_UNIT for unknown unit', () => {
     const result = parseResistanceValue('10x');
 
-    expect(result.error?.code).toBe(ReverseValueErrorCode.UnsupportedUnit);
+    expect(result.error?.code).toBe(ResistanceValueErrorCode.UnsupportedUnit);
   });
 
   it('returns NON_POSITIVE_VALUE for zero or negative input', () => {
     const zero = parseResistanceValue('0');
     const negative = parseResistanceValue('-5k');
 
-    expect(zero.error?.code).toBe(ReverseValueErrorCode.NonPositiveValue);
-    expect(negative.error?.code).toBe(ReverseValueErrorCode.NonPositiveValue);
+    expect(zero.error?.code).toBe(ResistanceValueErrorCode.NonPositiveValue);
+    expect(negative.error?.code).toBe(ResistanceValueErrorCode.NonPositiveValue);
   });
 
   it('returns INVALID_FORMAT for Infinity input', () => {
     const result = parseResistanceValue('Infinity');
 
-    expect(result.error?.code).toBe(ReverseValueErrorCode.InvalidFormat);
+    expect(result.error?.code).toBe(ResistanceValueErrorCode.InvalidFormat);
   });
 });
