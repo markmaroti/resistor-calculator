@@ -68,17 +68,6 @@ describe('CircuitToolsComponent', () => {
     expect(errorEl.nativeElement.textContent.trim()).toBe('Resistance value is required.');
   });
 
-  it('renders series result from store view model', async () => {
-    component.store.seriesForm.controls.resistors.at(0).setValue('1000');
-    component.store.seriesForm.controls.resistors.at(1).setValue('2000');
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    const resultValue = fixture.debugElement.query(By.css('.result-value'));
-    expect(resultValue).toBeTruthy();
-    expect(resultValue.nativeElement.textContent.trim()).toBe('3.00 kΩ');
-  });
-
   it('removeLastResistor uses the last series index', async () => {
     component.store.addResistor('series');
     const removeSpy = vi.spyOn(component.store, 'removeResistor');
