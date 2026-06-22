@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+
 import { AmpsPipe } from './amps.pipe';
 
 describe('AmpsPipe', () => {

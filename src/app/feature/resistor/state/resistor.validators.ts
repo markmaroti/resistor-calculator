@@ -1,6 +1,8 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { DIGIT_BY_COLOR, ResistorBandsInput } from '@resistor/resistor.model';
+
 import { parseResistanceValue } from '@shared/utils/resistance-value.util';
+
+import { DIGIT_BY_COLOR, ResistorBandsInput } from '@resistor/resistor.model';
 
 export function validateResistorBands(control: AbstractControl): ValidationErrors | null {
   const value = control.value as ResistorBandsInput | null;

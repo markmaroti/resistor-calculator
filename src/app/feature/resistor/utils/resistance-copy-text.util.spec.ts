@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { buildResistanceCopyText } from './resistance-copy-text.util';
 
 describe('buildResistanceCopyText', () => {

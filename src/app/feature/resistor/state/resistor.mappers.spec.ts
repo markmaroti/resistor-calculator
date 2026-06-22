@@ -1,4 +1,7 @@
 import { describe, expect, it } from 'vitest';
+
+import { parseResistanceValue } from '@shared/utils/resistance-value.util';
+
 import {
   Color,
   ReverseErrorCode,
@@ -9,7 +12,7 @@ import {
   ResistanceErrorCode,
   ResistorBandsInput,
 } from '@resistor/resistor.model';
-import { parseResistanceValue } from '@shared/utils/resistance-value.util';
+
 import {
   toResistorInput,
   toReverseInput,

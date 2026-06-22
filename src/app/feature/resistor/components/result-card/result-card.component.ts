@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+
 import { OhmsPipe } from '@shared/pipes/ohms.pipe';
 
 export type CopyState = 'idle' | 'success' | 'error';

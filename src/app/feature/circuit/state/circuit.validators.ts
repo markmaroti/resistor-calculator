@@ -1,6 +1,8 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { CircuitValidationError } from '@circuit/circuit.model';
+
 import { parseResistanceValue } from '@shared/utils/resistance-value.util';
+
+import { CircuitValidationError } from '@circuit/circuit.model';
 
 export function validateCircuitResistorValue(control: AbstractControl): ValidationErrors | null {
   const value = control.value as string;

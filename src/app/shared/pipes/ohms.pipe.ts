@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+
 import { formatOhms } from '@shared/utils/format-value.util';
 
 @Pipe({

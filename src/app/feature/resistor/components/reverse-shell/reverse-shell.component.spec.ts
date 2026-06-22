@@ -1,10 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 
-import { ReverseShellComponent } from './reverse-shell.component';
+import { ResistanceValueErrorCode } from '@shared/utils/resistance-value.util';
+
 import { ReverseErrorCode, ReverseCandidate } from '@resistor/resistor.model';
 import { ReverseViewModel } from '@resistor/state/resistor.mappers';
-import { ResistanceValueErrorCode } from '@shared/utils/resistance-value.util';
+
+import { ReverseShellComponent } from './reverse-shell.component';
 
 const mockCandidates: ReverseCandidate[] = [
   {

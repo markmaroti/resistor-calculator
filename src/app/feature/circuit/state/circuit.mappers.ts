@@ -1,3 +1,5 @@
+import { parseResistanceValue } from '@shared/utils/resistance-value.util';
+
 import {
   CircuitErrorCode,
   CircuitServiceError,
@@ -11,7 +13,6 @@ import {
   SeriesInput,
   SeriesResult,
 } from '@circuit/circuit.model';
-import { parseResistanceValue } from '@shared/utils/resistance-value.util';
 
 export type SeriesViewModel = {
   resistors: string[];

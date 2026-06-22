@@ -2,6 +2,9 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { map } from 'rxjs';
+
+import { ResistanceValueErrorCode } from '@shared/utils/resistance-value.util';
+
 import { CircuitService } from '@circuit/services/circuit.service';
 import {
   CircuitValidationError,
@@ -10,7 +13,7 @@ import {
   ParallelFormValue,
   SeriesFormValue,
 } from '@circuit/circuit.model';
-import { ResistanceValueErrorCode } from '@shared/utils/resistance-value.util';
+
 import {
   toDividerInput,
   toDividerViewModel,
@@ -30,13 +33,6 @@ export class CircuitStore {
   private readonly service = inject(CircuitService);
 
   readonly activeTab = signal<CircuitTab>('series');
-
-  private createResistorControl(value = ''): FormControl<string> {
-    return new FormControl<string>(value, {
-      nonNullable: true,
-      validators: [Validators.required, circuitResistorValidator],
-    });
-  }
 
   readonly seriesForm = new FormGroup({
     resistors: new FormArray<FormControl<string>>(
@@ -199,6 +195,13 @@ export class CircuitStore {
         this.dividerForm.markAsUntouched();
         break;
     }
+  }
+
+  private createResistorControl(value = ''): FormControl<string> {
+    return new FormControl<string>(value, {
+      nonNullable: true,
+      validators: [Validators.required, circuitResistorValidator],
+    });
   }
 
   private resetResistorFormArray(formArray: FormArray<FormControl<string>>, count = 2): void {

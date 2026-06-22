@@ -8,6 +8,20 @@ import {
   signal,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+
+import { copyTextToClipboard } from '@shared/utils/clipboard.util';
+
+import { ResistorStore } from '@resistor/state/resistor.store';
+import { buildResistanceCopyText } from '@resistor/utils/resistance-copy-text.util';
+import { ModeToggleComponent } from '@resistor/components/mode-toggle/mode-toggle.component';
+import { ForwardFormComponent } from '@resistor/components/forward-form/forward-form.component';
+import {
+  ResultCardComponent,
+  CopyState,
+} from '@resistor/components/result-card/result-card.component';
+import { HelpSectionComponent } from '@resistor/components/help-section/help-section.component';
+import { ReverseShellComponent } from '@resistor/components/reverse-shell/reverse-shell.component';
+
 import {
   Color,
   DIGIT_BY_COLOR,
@@ -19,17 +33,6 @@ import {
   ReverseErrorCode,
   ReverseCandidate,
 } from './resistor.model';
-import { ResistorStore } from '@resistor/state/resistor.store';
-import { copyTextToClipboard } from '@shared/utils/clipboard.util';
-import { buildResistanceCopyText } from '@resistor/utils/resistance-copy-text.util';
-import { ModeToggleComponent } from '@resistor/components/mode-toggle/mode-toggle.component';
-import { ForwardFormComponent } from '@resistor/components/forward-form/forward-form.component';
-import {
-  ResultCardComponent,
-  CopyState,
-} from '@resistor/components/result-card/result-card.component';
-import { HelpSectionComponent } from '@resistor/components/help-section/help-section.component';
-import { ReverseShellComponent } from '@resistor/components/reverse-shell/reverse-shell.component';
 
 type CalculatorMode = 'forward' | 'reverse';
 

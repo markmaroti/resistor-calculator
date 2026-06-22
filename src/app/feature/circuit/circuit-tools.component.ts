@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+
 import { OhmsPipe } from '@shared/pipes/ohms.pipe';
 import { AmpsPipe } from '@shared/pipes/amps.pipe';
 import { VoltsPipe } from '@shared/pipes/volts.pipe';
-import { CircuitTab } from './circuit.model';
+
 import { CircuitStore } from '@circuit/state/circuit.store';
+
+import { CircuitTab } from './circuit.model';
 
 const TABS: { key: CircuitTab; label: string }[] = [
   { key: 'series', label: 'Series' },

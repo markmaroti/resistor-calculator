@@ -3,8 +3,9 @@ import { By } from '@angular/platform-browser';
 import { provideRouter, Router } from '@angular/router';
 import { vi } from 'vitest';
 
-import { HeaderComponent } from './header.component';
 import { appRoutes } from '@app/app.routes';
+
+import { HeaderComponent } from './header.component';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;

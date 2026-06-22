@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ReverseCandidate, ReverseErrorCode } from '@resistor/resistor.model';
-import { ReverseViewModel } from '@resistor/state/resistor.mappers';
+
 import { SelectComponent } from '@shared/select/select.component';
 import { OhmsPipe } from '@shared/pipes/ohms.pipe';
+
+import { ReverseCandidate, ReverseErrorCode } from '@resistor/resistor.model';
+import { ReverseViewModel } from '@resistor/state/resistor.mappers';
 
 @Component({
   selector: 'app-reverse-shell',

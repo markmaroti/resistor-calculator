@@ -1,8 +1,10 @@
 import { FormControl } from '@angular/forms';
 import { describe, expect, it } from 'vitest';
 
-import { CircuitValidationError } from '@circuit/circuit.model';
 import { ResistanceValueErrorCode } from '@shared/utils/resistance-value.util';
+
+import { CircuitValidationError } from '@circuit/circuit.model';
+
 import { validateCircuitNumberValue, validateCircuitResistorValue } from './circuit.validators';
 
 describe('validateCircuitResistorValue', () => {

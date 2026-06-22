@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+
 import { ReferencePanelComponent } from '@resistor/components/reference-panel/reference-panel.component';
 
 @Component({

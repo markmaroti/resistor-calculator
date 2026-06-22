@@ -1,6 +1,8 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { describe, expect, it } from 'vitest';
+
 import { BandCount, Color, ResistorBandsInput } from '@resistor/resistor.model';
+
 import { validateResistorBands, validateReverseValue } from './resistor.validators';
 
 function buildValue(overrides: Partial<ResistorBandsInput> = {}): ResistorBandsInput {

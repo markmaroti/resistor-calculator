@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+
 import {
   BAND_LAYOUTS,
   BandCount,

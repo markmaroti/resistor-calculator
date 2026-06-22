@@ -1,5 +1,6 @@
-import { ReverseErrorCode, ResistanceErrorCode } from '@resistor/resistor.model';
 import { ResistanceValueErrorCode } from '@shared/utils/resistance-value.util';
+
+import { ReverseErrorCode, ResistanceErrorCode } from '@resistor/resistor.model';
 
 export const RESISTOR_VALIDATION_MESSAGES: Record<ResistanceErrorCode, string> = {
   [ResistanceErrorCode.InvalidDigitColor]: 'Digit bands must be a valid color (not Gold/Silver).',

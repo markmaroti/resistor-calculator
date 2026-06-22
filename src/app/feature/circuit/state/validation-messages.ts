@@ -1,5 +1,6 @@
-import { CircuitErrorCode, CircuitValidationError } from '@circuit/circuit.model';
 import { ResistanceValueErrorCode } from '@shared/utils/resistance-value.util';
+
+import { CircuitErrorCode, CircuitValidationError } from '@circuit/circuit.model';
 
 export const CIRCUIT_VALIDATION_MESSAGES: Record<CircuitValidationError, string> = {
   [CircuitValidationError.EmptyInput]: 'Resistance value is required.',

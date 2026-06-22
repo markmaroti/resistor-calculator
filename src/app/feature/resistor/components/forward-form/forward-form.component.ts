@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+
+import { SelectComponent } from '@shared/select/select.component';
+
 import { Color } from '@resistor/resistor.model';
 import { ResistorViewModel } from '@resistor/state/resistor.mappers';
-import { SelectComponent } from '@shared/select/select.component';
 import { ResistorPreviewComponent } from '@resistor/components/resistor-preview/resistor-preview.component';
 
 @Component({

@@ -2,15 +2,10 @@ import { Injectable, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { map } from 'rxjs';
+
+import { parseResistanceValue } from '@shared/utils/resistance-value.util';
+
 import { ResistorService } from '@resistor/services/resistor.service';
-import {
-  toResistorInput,
-  toReverseInput,
-  toReverseViewModel,
-  toViewModel,
-} from './resistor.mappers';
-import { getResistanceValidationMessage, getReverseValidationMessage } from './validation-messages';
-import { resistorBandsValidator, reverseValueValidator } from './resistor.validators';
 import {
   Color,
   DEFAULT_BAND_COUNT,
@@ -21,7 +16,15 @@ import {
   ReverseResult,
   type BandCount,
 } from '@resistor/resistor.model';
-import { parseResistanceValue } from '@shared/utils/resistance-value.util';
+
+import {
+  toResistorInput,
+  toReverseInput,
+  toReverseViewModel,
+  toViewModel,
+} from './resistor.mappers';
+import { getResistanceValidationMessage, getReverseValidationMessage } from './validation-messages';
+import { resistorBandsValidator, reverseValueValidator } from './resistor.validators';
 
 @Injectable()
 export class ResistorStore {

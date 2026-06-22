@@ -1,4 +1,9 @@
 import {
+  ParseResistanceValueResult,
+  ResistanceValueErrorCode,
+} from '@shared/utils/resistance-value.util';
+
+import {
   ReverseFormValue,
   ReverseInput,
   ReverseResult,
@@ -8,10 +13,6 @@ import {
   ServiceError,
   ResistanceErrorCode,
 } from '@resistor/resistor.model';
-import {
-  ParseResistanceValueResult,
-  ResistanceValueErrorCode,
-} from '@shared/utils/resistance-value.util';
 
 export type ResistorViewModel = {
   bandCount: ResistorBandsInput['bandCount'];
