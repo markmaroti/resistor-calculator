@@ -1,8 +1,40 @@
+@use '../../../styles/buttons' as buttons;
+
 h1 {
   margin: 0;
   font-size: 1.15rem;
   letter-spacing: 0.06em;
   color: var(--text-strong);
+}
+
+.share-actions {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.share-link-trigger {
+  @include buttons.button-surface;
+  @include buttons.button-pill-typography;
+  @include buttons.button-transition-with-opacity;
+  padding: 8px 14px;
+  font-size: 0.72rem;
+}
+
+.share-link-trigger:hover:not(:disabled) {
+  @include buttons.button-hover-lift;
+}
+
+.share-link-trigger:focus-visible {
+  @include buttons.button-focus-visible;
+}
+
+.share-link-feedback {
+  min-height: 1.2em;
+  font-size: 0.82rem;
+  color: var(--text-muted);
 }
 
 @media (min-width: 600px) {

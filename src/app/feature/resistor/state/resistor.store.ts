@@ -23,6 +23,7 @@ import {
   toReverseViewModel,
   toViewModel,
 } from './resistor.mappers';
+import { ResistorUrlState, UrlBandCountValue } from './url-state.model';
 import { getResistanceValidationMessage, getReverseValidationMessage } from './validation-messages';
 import { resistorBandsValidator, reverseValueValidator } from './resistor.validators';
 
@@ -198,6 +199,129 @@ export class ResistorStore {
   public applyCandidate(candidate: ReverseCandidate): void {
     this.form.patchValue(candidate.bands);
     this.form.markAsDirty();
+  }
+
+  public hydrateFromUrlState(state: ResistorUrlState): void {
+    const forwardPatch = this.toForwardFormPatch(state.forward);
+    if (Object.keys(forwardPatch).length > 0) {
+      this.form.patchValue(forwardPatch);
+    }
+
+    const reversePatch = this.toReverseFormPatch(state.reverse);
+    if (Object.keys(reversePatch).length > 0) {
+      this.reverseForm.patchValue(reversePatch);
+    }
+  }
+
+  private toForwardFormPatch(state: ResistorUrlState['forward']): Partial<ResistorBandsInput> {
+    const patch: Partial<ResistorBandsInput> = {};
+
+    const bandCount = this.toBandCount(state?.bandCount);
+    if (bandCount !== undefined) {
+      patch.bandCount = bandCount;
+    }
+
+    const digit1 = this.toColor(state?.digit1);
+    if (digit1 !== undefined) {
+      patch.digit1 = digit1;
+    }
+
+    const digit2 = this.toColor(state?.digit2);
+    if (digit2 !== undefined) {
+      patch.digit2 = digit2;
+    }
+
+    const digit3 = this.toColor(state?.digit3);
+    if (digit3 !== undefined) {
+      patch.digit3 = digit3;
+    }
+
+    const multiplier = this.toColor(state?.multiplier);
+    if (multiplier !== undefined) {
+      patch.multiplier = multiplier;
+    }
+
+    const tolerance = this.toColor(state?.tolerance);
+    if (tolerance !== undefined) {
+      patch.tolerance = tolerance;
+    }
+
+    const tcr = this.toColor(state?.tcr);
+    if (tcr !== undefined) {
+      patch.tcr = tcr;
+    }
+
+    return patch;
+  }
+
+  private toReverseFormPatch(state: ResistorUrlState['reverse']): Partial<ReverseFormValue> {
+    const patch: Partial<ReverseFormValue> = {};
+
+    const targetInput = this.toNonEmptyString(state?.targetInput);
+    if (targetInput !== undefined) {
+      patch.targetInput = targetInput;
+    }
+
+    const bandCount = this.toBandCount(state?.bandCount);
+    if (bandCount !== undefined) {
+      patch.bandCount = bandCount;
+    }
+
+    const tolerancePct = this.toPositiveNumber(state?.tolerancePct);
+    if (tolerancePct !== undefined) {
+      patch.tolerancePct = tolerancePct;
+    }
+
+    const tcrPpm = this.toPositiveNumber(state?.tcrPpm);
+    if (tcrPpm !== undefined) {
+      patch.tcrPpm = tcrPpm;
+    }
+
+    const mode = this.toReverseMode(state?.mode);
+    if (mode !== undefined) {
+      patch.mode = mode;
+    }
+
+    return patch;
+  }
+
+  private toBandCount(value: UrlBandCountValue | undefined): BandCount | undefined {
+    if (value === undefined) {
+      return undefined;
+    }
+
+    const parsed = Number(value);
+    return parsed === 4 || parsed === 5 || parsed === 6 ? parsed : undefined;
+  }
+
+  private toColor(value: string | undefined): Color | undefined {
+    return value !== undefined && value in Color ? (value as Color) : undefined;
+  }
+
+  private toReverseMode(value: string | undefined): ReverseMode | undefined {
+    if (value === undefined) {
+      return undefined;
+    }
+
+    return value === ReverseMode.Exact || value === ReverseMode.Nearest ? value : undefined;
+  }
+
+  private toNonEmptyString(value: string | undefined): string | undefined {
+    if (value === undefined) {
+      return undefined;
+    }
+
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : undefined;
+  }
+
+  private toPositiveNumber(value: string | undefined): number | undefined {
+    if (value === undefined) {
+      return undefined;
+    }
+
+    const parsed = Number(value);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
   }
 
   private emptyReverseResult(): ReverseResult {

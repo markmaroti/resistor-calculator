@@ -7,6 +7,26 @@
   (modeChange)="setMode($event)"
 />
 
+<div class="share-actions">
+  <button
+    class="share-link-trigger"
+    type="button"
+    (click)="copyShareLink()"
+  >
+    Copy link
+  </button>
+  <span
+    class="share-link-feedback"
+    aria-live="polite"
+  >
+    @if (shareLinkCopyState() === 'success') {
+      Link copied.
+    } @else if (shareLinkCopyState() === 'error') {
+      Copy failed.
+    }
+  </span>
+</div>
+
 @if (mode() === 'forward') {
   <app-forward-form
     [form]="form"

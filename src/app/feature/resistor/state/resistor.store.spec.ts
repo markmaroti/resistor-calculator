@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
 
-import { ReverseMode } from '@resistor/resistor.model';
+import { Color, ReverseMode } from '@resistor/resistor.model';
 
 import { ResistorStore } from './resistor.store';
 
@@ -82,5 +82,135 @@ describe('ResistorStore', () => {
 
     expect(store.form.getRawValue()).toEqual(candidate.bands);
     expect(store.viewModel().ohms).toBe(candidate.ohms);
+  });
+
+  it('hydrates forward and reverse forms from url state', () => {
+    const store = createStore();
+
+    store.hydrateFromUrlState({
+      forward: {
+        bandCount: '6',
+        digit1: 'Red',
+        digit2: 'Violet',
+        digit3: 'Black',
+        multiplier: 'Orange',
+        tolerance: 'Brown',
+        tcr: 'Blue',
+      },
+      reverse: {
+        targetInput: '2.2k',
+        bandCount: '6',
+        tolerancePct: '1',
+        tcrPpm: '25',
+        mode: ReverseMode.Nearest,
+      },
+    });
+
+    expect(store.form.getRawValue()).toEqual({
+      bandCount: 6,
+      digit1: Color.Red,
+      digit2: Color.Violet,
+      digit3: Color.Black,
+      multiplier: Color.Orange,
+      tolerance: Color.Brown,
+      tcr: Color.Blue,
+    });
+    expect(store.reverseForm.getRawValue()).toEqual({
+      targetInput: '2.2k',
+      bandCount: 6,
+      tolerancePct: 1,
+      tcrPpm: 25,
+      mode: ReverseMode.Nearest,
+    });
+  });
+
+  it('ignores invalid url state values during hydration', () => {
+    const store = createStore();
+
+    store.hydrateFromUrlState({
+      forward: {
+        bandCount: '4',
+        digit1: 'Pink' as Color,
+      },
+      reverse: {
+        targetInput: '   ',
+        tolerancePct: '0',
+        mode: 'INVALID' as ReverseMode,
+      },
+    });
+
+    expect(store.form.getRawValue()).toEqual({
+      bandCount: 4,
+      digit1: Color.Brown,
+      digit2: Color.Black,
+      digit3: Color.Black,
+      multiplier: Color.Black,
+      tolerance: Color.Gold,
+      tcr: Color.Brown,
+    });
+    expect(store.reverseForm.getRawValue()).toEqual({
+      targetInput: '1k',
+      bandCount: 4,
+      tolerancePct: null,
+      tcrPpm: null,
+      mode: ReverseMode.Exact,
+    });
+  });
+
+  it('preserves defaults for fields missing from partial url hydration', () => {
+    const store = createStore();
+
+    store.hydrateFromUrlState({
+      forward: {
+        multiplier: Color.Red,
+      },
+    });
+
+    expect(store.form.getRawValue()).toEqual({
+      bandCount: 4,
+      digit1: Color.Brown,
+      digit2: Color.Black,
+      digit3: Color.Black,
+      multiplier: Color.Red,
+      tolerance: Color.Gold,
+      tcr: Color.Brown,
+    });
+    expect(store.reverseForm.getRawValue()).toEqual({
+      targetInput: '1k',
+      bandCount: 4,
+      tolerancePct: null,
+      tcrPpm: null,
+      mode: ReverseMode.Exact,
+    });
+  });
+
+  it('keeps stable 4-band state when hydration contains digit3 and tcr values', () => {
+    const store = createStore();
+
+    store.hydrateFromUrlState({
+      forward: {
+        bandCount: '4',
+        digit1: Color.Brown,
+        digit2: Color.Black,
+        digit3: Color.Red,
+        multiplier: Color.Black,
+        tolerance: Color.Gold,
+        tcr: Color.Blue,
+      },
+    });
+
+    expect(store.form.getRawValue()).toEqual({
+      bandCount: 4,
+      digit1: Color.Brown,
+      digit2: Color.Black,
+      digit3: Color.Red,
+      multiplier: Color.Black,
+      tolerance: Color.Gold,
+      tcr: Color.Blue,
+    });
+    expect(store.validationMessage()).toBe('');
+    expect(store.viewModel().showDigit3).toBe(false);
+    expect(store.viewModel().showTcr).toBe(false);
+    expect(store.viewModel().ohms).toBe(10);
   });
 });
