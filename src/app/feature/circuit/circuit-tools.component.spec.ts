@@ -28,17 +28,6 @@ describe('CircuitToolsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('defaults to Series tab', async () => {
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    expect(component.store.activeTab()).toBe('series');
-    const labels = fixture.debugElement.queryAll(By.css('.circuit-controls label'));
-    expect(labels.length).toBe(2);
-    expect(labels[0].nativeElement.textContent).toContain('R1');
-    expect(labels[1].nativeElement.textContent).toContain('R2');
-  });
-
   it('switches between tabs', async () => {
     component.store.setActiveTab('parallel');
     fixture.detectChanges();

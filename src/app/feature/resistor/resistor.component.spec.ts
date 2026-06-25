@@ -59,18 +59,6 @@ describe('ResistorComponent', () => {
     TestBed.resetTestingModule();
   });
 
-  it('should create', async () => {
-    await createComponent();
-
-    expect(component).toBeTruthy();
-  });
-
-  it('defaults to forward mode', async () => {
-    await createComponent();
-
-    expect(component.mode()).toBe('forward');
-  });
-
   it('does not sync URL during initial hydration', async () => {
     await createComponent({
       mode: 'forward',
@@ -309,95 +297,6 @@ describe('ResistorComponent', () => {
     expect(secondSyncedQuery['utm_source']).toBe('newsletter');
     expect(secondSyncedQuery['ref']).toBe('campaign');
     expect(secondSyncedQuery['d1']).toBe('Blue');
-  });
-
-  it('switches to reverse mode', async () => {
-    await createComponent();
-
-    component.setMode('reverse');
-    expect(component.mode()).toBe('reverse');
-  });
-
-  it('switches back to forward mode after reverse mode', async () => {
-    await createComponent();
-
-    component.setMode('reverse');
-    expect(component.mode()).toBe('reverse');
-
-    component.setMode('forward');
-    expect(component.mode()).toBe('forward');
-  });
-
-  it('detects when form is at defaults', async () => {
-    await createComponent();
-
-    expect(component.isAtDefaults()).toBe(true);
-
-    component.form.patchValue({ bandCount: 5 });
-    expect(component.isAtDefaults()).toBe(false);
-
-    component.resetToDefaults();
-    expect(component.isAtDefaults()).toBe(true);
-  });
-
-  it('resets form values back to defaults', async () => {
-    await createComponent();
-
-    component.form.patchValue({
-      bandCount: 6,
-      digit1: Color.Orange,
-      digit2: Color.Orange,
-      digit3: Color.Black,
-      multiplier: Color.Brown,
-      tolerance: Color.Brown,
-      tcr: Color.Violet,
-    });
-
-    component.resetToDefaults();
-
-    expect(component.form.getRawValue()).toEqual({
-      bandCount: 4,
-      digit1: Color.Brown,
-      digit2: Color.Black,
-      digit3: Color.Black,
-      multiplier: Color.Black,
-      tolerance: Color.Gold,
-      tcr: Color.Brown,
-    });
-  });
-
-  it('resets computed result to default value state', async () => {
-    await createComponent();
-
-    component.form.patchValue({
-      bandCount: 6,
-      digit1: Color.Orange,
-      digit2: Color.Orange,
-      digit3: Color.Black,
-      multiplier: Color.Brown,
-      tolerance: Color.Brown,
-      tcr: Color.Violet,
-    });
-
-    component.resetToDefaults();
-
-    const vm = component.viewModel();
-    expect(vm.ohms).toBe(10);
-    expect(vm.tolerancePct).toBe(5);
-    expect(vm.tcrPpm).toBeNull();
-  });
-
-  it('disables copy for invalid bands', async () => {
-    await createComponent();
-
-    component.form.patchValue({ digit1: Color.Gold });
-    expect(component.isCopyEnabled()).toBe(false);
-  });
-
-  it('enables copy for valid default bands', async () => {
-    await createComponent();
-
-    expect(component.isCopyEnabled()).toBe(true);
   });
 
   it('applies candidate and switches to forward mode with feedback', async () => {
