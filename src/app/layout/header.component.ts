@@ -9,18 +9,18 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
-  readonly isMenuOpen = signal(false);
+  public readonly isMenuOpen = signal(false);
 
-  toggleMenu(): void {
+  public toggleMenu(): void {
     this.isMenuOpen.update((v) => !v);
   }
 
-  closeMenu(): void {
+  public closeMenu(): void {
     this.isMenuOpen.set(false);
   }
 
   @HostListener('document:keydown.escape')
-  onEscape(): void {
+  public onEscape(): void {
     this.closeMenu();
   }
 }

@@ -6,7 +6,7 @@ import { formatVolts } from '@shared/utils/format-value.util';
   name: 'volts',
 })
 export class VoltsPipe implements PipeTransform {
-  transform(value: number | null | undefined): string {
+  public transform(value: number | null | undefined): string {
     return formatVolts(value ?? 0);
   }
 }

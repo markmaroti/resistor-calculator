@@ -25,10 +25,10 @@ const TABS: { key: CircuitTab; label: string }[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CircuitToolsComponent {
-  readonly tabs = TABS;
-  readonly store = inject(CircuitStore);
+  public readonly tabs = TABS;
+  public readonly store = inject(CircuitStore);
 
-  removeLastResistor(form: 'series' | 'parallel'): void {
+  public removeLastResistor(form: 'series' | 'parallel'): void {
     const controls =
       form === 'series'
         ? this.store.seriesForm.controls.resistors

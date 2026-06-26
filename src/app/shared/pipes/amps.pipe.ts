@@ -6,7 +6,7 @@ import { formatAmps } from '@shared/utils/format-value.util';
   name: 'amps',
 })
 export class AmpsPipe implements PipeTransform {
-  transform(value: number | null | undefined): string {
+  public transform(value: number | null | undefined): string {
     return formatAmps(value ?? 0);
   }
 }

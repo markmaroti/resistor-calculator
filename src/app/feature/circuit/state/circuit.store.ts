@@ -32,23 +32,23 @@ import {
 export class CircuitStore {
   private readonly service = inject(CircuitService);
 
-  readonly activeTab = signal<CircuitTab>('series');
+  public readonly activeTab = signal<CircuitTab>('series');
 
-  readonly seriesForm = new FormGroup({
+  public readonly seriesForm = new FormGroup({
     resistors: new FormArray<FormControl<string>>(
       [this.createResistorControl(), this.createResistorControl()],
       { validators: [Validators.required] },
     ),
   });
 
-  readonly parallelForm = new FormGroup({
+  public readonly parallelForm = new FormGroup({
     resistors: new FormArray<FormControl<string>>(
       [this.createResistorControl(), this.createResistorControl()],
       { validators: [Validators.required] },
     ),
   });
 
-  readonly dividerForm = new FormGroup({
+  public readonly dividerForm = new FormGroup({
     vin: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.required, circuitNumberValidator],
@@ -94,28 +94,28 @@ export class CircuitStore {
     initialValue: this.dividerForm.status,
   });
 
-  readonly seriesViewModel = computed(() => {
+  public readonly seriesViewModel = computed(() => {
     const value = this.seriesFormValue();
     const input = toSeriesInput(value);
     const result = this.service.calculateSeries(input);
     return toSeriesViewModel(value, result);
   });
 
-  readonly parallelViewModel = computed(() => {
+  public readonly parallelViewModel = computed(() => {
     const value = this.parallelFormValue();
     const input = toParallelInput(value);
     const result = this.service.calculateParallel(input);
     return toParallelViewModel(value, result);
   });
 
-  readonly dividerViewModel = computed(() => {
+  public readonly dividerViewModel = computed(() => {
     const value = this.dividerFormValue();
     const input = toDividerInput(value);
     const result = this.service.calculateDivider(input);
     return toDividerViewModel(value, result);
   });
 
-  readonly seriesValidationMessage = computed(() => {
+  public readonly seriesValidationMessage = computed(() => {
     this.seriesFormStatus();
     this.seriesFormValue();
     const formMessage = this.getResistorFormValidationMessage(this.seriesForm.controls.resistors);
@@ -127,7 +127,7 @@ export class CircuitStore {
     return error ? getCircuitValidationMessage(error.code) : '';
   });
 
-  readonly parallelValidationMessage = computed(() => {
+  public readonly parallelValidationMessage = computed(() => {
     this.parallelFormStatus();
     this.parallelFormValue();
     const formMessage = this.getResistorFormValidationMessage(this.parallelForm.controls.resistors);
@@ -139,7 +139,7 @@ export class CircuitStore {
     return error ? getCircuitValidationMessage(error.code) : '';
   });
 
-  readonly dividerValidationMessage = computed(() => {
+  public readonly dividerValidationMessage = computed(() => {
     this.dividerFormStatus();
     this.dividerFormValue();
     const vinMessage = this.getNumberValidationMessage(this.dividerForm.controls.vin);
@@ -161,23 +161,23 @@ export class CircuitStore {
     return error ? getCircuitValidationMessage(error.code) : '';
   });
 
-  setActiveTab(tab: CircuitTab): void {
+  public setActiveTab(tab: CircuitTab): void {
     this.activeTab.set(tab);
   }
 
-  addResistor(form: 'series' | 'parallel'): void {
+  public addResistor(form: 'series' | 'parallel'): void {
     const formGroup = form === 'series' ? this.seriesForm : this.parallelForm;
     formGroup.controls.resistors.push(this.createResistorControl());
   }
 
-  removeResistor(form: 'series' | 'parallel', index: number): void {
+  public removeResistor(form: 'series' | 'parallel', index: number): void {
     const formGroup = form === 'series' ? this.seriesForm : this.parallelForm;
     if (formGroup.controls.resistors.length > 1) {
       formGroup.controls.resistors.removeAt(index);
     }
   }
 
-  resetForm(tab: CircuitTab): void {
+  public resetForm(tab: CircuitTab): void {
     switch (tab) {
       case 'series':
         this.resetResistorFormArray(this.seriesForm.controls.resistors);
