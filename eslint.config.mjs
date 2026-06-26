@@ -44,6 +44,12 @@ export default tseslint.config(
           },
         },
       ],
+      '@typescript-eslint/explicit-member-accessibility': [
+        'error',
+        {
+          accessibility: 'explicit',
+        },
+      ],
       'import/order': [
         'error',
         {
