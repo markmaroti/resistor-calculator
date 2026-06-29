@@ -147,35 +147,30 @@ function normalizeBandCount(value: string | undefined): UrlBandCountValue | unde
 }
 
 function normalizeDigitColor(value: string | undefined): string | undefined {
-  if (!value) {
-    return undefined;
-  }
-
-  return isDigitColor(value) ? value : undefined;
+  return normalizeOptionalValue(value, isDigitColor);
 }
 
 function normalizeMultiplierColor(value: string | undefined): string | undefined {
-  if (!value) {
-    return undefined;
-  }
-
-  return isMultiplierColor(value) ? value : undefined;
+  return normalizeOptionalValue(value, isMultiplierColor);
 }
 
 function normalizeToleranceColor(value: string | undefined): string | undefined {
-  if (!value) {
-    return undefined;
-  }
-
-  return isToleranceColor(value) ? value : undefined;
+  return normalizeOptionalValue(value, isToleranceColor);
 }
 
 function normalizeTcrColor(value: string | undefined): string | undefined {
+  return normalizeOptionalValue(value, isTcrColor);
+}
+
+function normalizeOptionalValue(
+  value: string | undefined,
+  isValid: (input: string) => boolean,
+): string | undefined {
   if (!value) {
     return undefined;
   }
 
-  return isTcrColor(value) ? value : undefined;
+  return isValid(value) ? value : undefined;
 }
 
 function normalizeTrimmedValue(value: string | undefined): string | undefined {
