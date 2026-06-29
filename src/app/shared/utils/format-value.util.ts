@@ -23,8 +23,6 @@ export const AMP_UNITS: readonly SiUnit[] = [
   { factor: 1e-6, symbol: 'μA' },
 ] as const;
 
-const DEFAULT_OHM_UNIT = OHM_UNITS[OHM_UNITS.length - 1];
-
 function formatSiValue(value: number, units: readonly SiUnit[], zeroSymbol: string): string {
   if (!Number.isFinite(value) || value <= 0) {
     return `0 ${zeroSymbol}`;
@@ -46,23 +44,7 @@ function formatSiValue(value: number, units: readonly SiUnit[], zeroSymbol: stri
 }
 
 export function formatOhms(value: number): string {
-  if (!Number.isFinite(value) || value <= 0) {
-    return '0 Ω';
-  }
-
-  const unit = OHM_UNITS.find(({ factor }) => value >= factor) ?? DEFAULT_OHM_UNIT;
-  const normalizedValue = value / unit.factor;
-
-  let formattedValue: string;
-  if (normalizedValue >= 100) {
-    formattedValue = normalizedValue.toFixed(0);
-  } else if (normalizedValue >= 10) {
-    formattedValue = normalizedValue.toFixed(1);
-  } else {
-    formattedValue = normalizedValue.toFixed(2);
-  }
-
-  return `${formattedValue} ${unit.symbol}`;
+  return formatSiValue(value, OHM_UNITS, 'Ω');
 }
 
 export function formatVolts(value: number): string {
