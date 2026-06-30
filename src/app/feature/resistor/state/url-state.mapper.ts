@@ -17,8 +17,19 @@ import {
   URL_STATE_PARAM_ORDER,
   UrlBandCountValue,
   UrlCalculatorMode,
+  UrlStateParamKey,
   UrlReverseMode,
 } from './url-state.model';
+
+const BAND_COUNT_VALUES = new Set(BAND_COUNTS.map((count) => String(count)));
+const DIGIT_COLORS = new Set(
+  Object.entries(DIGIT_BY_COLOR)
+    .filter(([, digit]) => digit !== null)
+    .map(([color]) => color),
+);
+const MULTIPLIER_COLORS = new Set(Object.keys(MULTIPLIER_BY_COLOR));
+const TOLERANCE_COLORS = new Set(Object.keys(TOLERANCE_BY_COLOR));
+const TCR_COLORS = new Set(Object.keys(TCR_BY_COLOR));
 
 export function toQueryParams(state: ResistorUrlState): ResistorUrlQueryParamMap {
   const mode = normalizeCalculatorMode(state.mode);
@@ -72,24 +83,24 @@ export function toQueryParams(state: ResistorUrlState): ResistorUrlQueryParamMap
 export function fromQueryParams(
   query: Record<string, string | string[] | null | undefined>,
 ): ResistorUrlState {
-  const mode = normalizeCalculatorMode(toSingleQueryValue(query[URL_STATE_PARAM_KEY.Mode]));
+  const mode = normalizeCalculatorMode(getSingleQueryValue(query, URL_STATE_PARAM_KEY.Mode));
 
   const forwardBandCount = normalizeBandCount(
-    toSingleQueryValue(query[URL_STATE_PARAM_KEY.BandCount]),
+    getSingleQueryValue(query, URL_STATE_PARAM_KEY.BandCount),
   );
   const forward = compactObject<ForwardUrlState>({
     bandCount: forwardBandCount,
-    digit1: normalizeDigitColor(toSingleQueryValue(query[URL_STATE_PARAM_KEY.Digit1])),
-    digit2: normalizeDigitColor(toSingleQueryValue(query[URL_STATE_PARAM_KEY.Digit2])),
+    digit1: normalizeDigitColor(getSingleQueryValue(query, URL_STATE_PARAM_KEY.Digit1)),
+    digit2: normalizeDigitColor(getSingleQueryValue(query, URL_STATE_PARAM_KEY.Digit2)),
     digit3:
       forwardBandCount && isForwardDigit3RelevantBandCount(forwardBandCount)
-        ? normalizeDigitColor(toSingleQueryValue(query[URL_STATE_PARAM_KEY.Digit3]))
+        ? normalizeDigitColor(getSingleQueryValue(query, URL_STATE_PARAM_KEY.Digit3))
         : undefined,
-    multiplier: normalizeMultiplierColor(toSingleQueryValue(query[URL_STATE_PARAM_KEY.Multiplier])),
-    tolerance: normalizeToleranceColor(toSingleQueryValue(query[URL_STATE_PARAM_KEY.Tolerance])),
+    multiplier: normalizeMultiplierColor(getSingleQueryValue(query, URL_STATE_PARAM_KEY.Multiplier)),
+    tolerance: normalizeToleranceColor(getSingleQueryValue(query, URL_STATE_PARAM_KEY.Tolerance)),
     tcr:
       forwardBandCount && isForwardTcrRelevantBandCount(forwardBandCount)
-        ? normalizeTcrColor(toSingleQueryValue(query[URL_STATE_PARAM_KEY.Tcr]))
+        ? normalizeTcrColor(getSingleQueryValue(query, URL_STATE_PARAM_KEY.Tcr))
         : undefined,
   });
 
@@ -97,18 +108,18 @@ export function fromQueryParams(
     mode === URL_CALCULATOR_MODE.Reverse
       ? compactObject<ReverseUrlState>({
           targetInput: normalizeTrimmedValue(
-            toSingleQueryValue(query[URL_STATE_PARAM_KEY.ReverseTargetInput]),
+            getSingleQueryValue(query, URL_STATE_PARAM_KEY.ReverseTargetInput),
           ),
           bandCount: normalizeBandCount(
-            toSingleQueryValue(query[URL_STATE_PARAM_KEY.ReverseBandCount]),
+            getSingleQueryValue(query, URL_STATE_PARAM_KEY.ReverseBandCount),
           ),
           tolerancePct: normalizePositiveNumericString(
-            toSingleQueryValue(query[URL_STATE_PARAM_KEY.ReverseTolerancePct]),
+            getSingleQueryValue(query, URL_STATE_PARAM_KEY.ReverseTolerancePct),
           ),
           tcrPpm: normalizePositiveNumericString(
-            toSingleQueryValue(query[URL_STATE_PARAM_KEY.ReverseTcrPpm]),
+            getSingleQueryValue(query, URL_STATE_PARAM_KEY.ReverseTcrPpm),
           ),
-          mode: normalizeReverseMode(toSingleQueryValue(query[URL_STATE_PARAM_KEY.ReverseMode])),
+          mode: normalizeReverseMode(getSingleQueryValue(query, URL_STATE_PARAM_KEY.ReverseMode)),
         })
       : undefined;
 
@@ -126,7 +137,11 @@ export function fromQueryParams(
   return state;
 }
 
-function toSingleQueryValue(value: string | string[] | null | undefined): string | undefined {
+function getSingleQueryValue(
+  query: Record<string, string | string[] | null | undefined>,
+  key: UrlStateParamKey,
+): string | undefined {
+  const value = query[key];
   if (Array.isArray(value)) {
     return value[0];
   }
@@ -205,23 +220,23 @@ function isReverseMode(value: unknown): value is UrlReverseMode {
 }
 
 function isBandCountValue(value: unknown): value is UrlBandCountValue {
-  return typeof value === 'string' && BAND_COUNTS.some((count) => String(count) === value);
+  return typeof value === 'string' && BAND_COUNT_VALUES.has(value);
 }
 
 function isDigitColor(value: string): boolean {
-  return value in DIGIT_BY_COLOR && DIGIT_BY_COLOR[value as keyof typeof DIGIT_BY_COLOR] !== null;
+  return DIGIT_COLORS.has(value);
 }
 
 function isMultiplierColor(value: string): boolean {
-  return value in MULTIPLIER_BY_COLOR;
+  return MULTIPLIER_COLORS.has(value);
 }
 
 function isToleranceColor(value: string): boolean {
-  return value in TOLERANCE_BY_COLOR;
+  return TOLERANCE_COLORS.has(value);
 }
 
 function isTcrColor(value: string): boolean {
-  return value in TCR_BY_COLOR;
+  return TCR_COLORS.has(value);
 }
 
 function isForwardDigit3RelevantBandCount(bandCount: UrlBandCountValue): boolean {
