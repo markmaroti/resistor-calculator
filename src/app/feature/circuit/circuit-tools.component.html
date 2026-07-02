@@ -34,236 +34,35 @@
   </div>
 
   @if (store.activeTab() === 'series') {
-    <section class="circuit-calculator">
-      @let seriesVm = store.seriesViewModel();
-      @if (seriesVm.totalOhms !== null) {
-        <div
-          class="circuit-result"
-          aria-live="polite"
-        >
-          <span class="result-label">Total Resistance</span>
-          <span class="result-value">{{ seriesVm.totalOhms | ohms }}</span>
-        </div>
-      } @else {
-        @let seriesMsg = store.seriesValidationMessage();
-        @if (seriesMsg) {
-          <div
-            class="circuit-error"
-            role="alert"
-            aria-live="assertive"
-          >
-            {{ seriesMsg }}
-          </div>
-        } @else {
-          <div class="circuit-placeholder">Enter resistor values to calculate.</div>
-        }
-      }
-
-      <ul
-        class="circuit-controls"
-        [formGroup]="store.seriesForm"
-      >
-        @for (control of store.seriesForm.controls.resistors.controls; track $index) {
-          <li>
-            <label>
-              R{{ $index + 1 }}
-              <input
-                type="text"
-                [formControl]="control"
-                class="circuit-input"
-                placeholder="e.g. 1000"
-                autocomplete="off"
-              />
-            </label>
-          </li>
-        }
-      </ul>
-
-      <div class="circuit-actions">
-        <button
-          type="button"
-          class="action-add"
-          (click)="store.addResistor('series')"
-        >
-          + Add resistor
-        </button>
-        @if (store.seriesForm.controls.resistors.length > 1) {
-          <button
-            type="button"
-            class="action-remove"
-            (click)="removeLastResistor('series')"
-          >
-            &minus; Remove last
-          </button>
-        }
-        <button
-          type="button"
-          class="action-reset"
-          (click)="store.resetForm('series')"
-        >
-          Reset
-        </button>
-      </div>
-    </section>
+    <app-resistor-list-panel
+      [form]="store.seriesForm"
+      [totalOhms]="store.seriesViewModel().totalOhms"
+      [validationMessage]="store.seriesValidationMessage()"
+      (addResistor)="store.addResistor('series')"
+      (removeLastResistor)="removeLastResistor('series')"
+      (resetForm)="store.resetForm('series')"
+    />
   }
 
   @if (store.activeTab() === 'parallel') {
-    <section class="circuit-calculator">
-      @let parallelVm = store.parallelViewModel();
-      @if (parallelVm.totalOhms !== null) {
-        <div
-          class="circuit-result"
-          aria-live="polite"
-        >
-          <span class="result-label">Total Resistance</span>
-          <span class="result-value">{{ parallelVm.totalOhms | ohms }}</span>
-        </div>
-      } @else {
-        @let parallelMsg = store.parallelValidationMessage();
-        @if (parallelMsg) {
-          <div
-            class="circuit-error"
-            role="alert"
-            aria-live="assertive"
-          >
-            {{ parallelMsg }}
-          </div>
-        } @else {
-          <div class="circuit-placeholder">Enter resistor values to calculate.</div>
-        }
-      }
-
-      <ul
-        class="circuit-controls"
-        [formGroup]="store.parallelForm"
-      >
-        @for (control of store.parallelForm.controls.resistors.controls; track $index) {
-          <li>
-            <label>
-              R{{ $index + 1 }}
-              <input
-                type="text"
-                [formControl]="control"
-                class="circuit-input"
-                placeholder="e.g. 1000"
-                autocomplete="off"
-              />
-            </label>
-          </li>
-        }
-      </ul>
-
-      <div class="circuit-actions">
-        <button
-          type="button"
-          class="action-add"
-          (click)="store.addResistor('parallel')"
-        >
-          + Add resistor
-        </button>
-        @if (store.parallelForm.controls.resistors.length > 1) {
-          <button
-            type="button"
-            class="action-remove"
-            (click)="removeLastResistor('parallel')"
-          >
-            &minus; Remove last
-          </button>
-        }
-        <button
-          type="button"
-          class="action-reset"
-          (click)="store.resetForm('parallel')"
-        >
-          Reset
-        </button>
-      </div>
-    </section>
+    <app-resistor-list-panel
+      [form]="store.parallelForm"
+      [totalOhms]="store.parallelViewModel().totalOhms"
+      [validationMessage]="store.parallelValidationMessage()"
+      (addResistor)="store.addResistor('parallel')"
+      (removeLastResistor)="removeLastResistor('parallel')"
+      (resetForm)="store.resetForm('parallel')"
+    />
   }
 
   @if (store.activeTab() === 'divider') {
-    <section class="circuit-calculator">
-      @let dividerVm = store.dividerViewModel();
-      @if (dividerVm.vout !== null) {
-        <div
-          class="circuit-result circuit-result-double"
-          aria-live="polite"
-        >
-          <div>
-            <span class="result-label">Vout</span>
-            <span class="result-value">{{ dividerVm.vout | volts }}</span>
-          </div>
-          <div>
-            <span class="result-label">Current</span>
-            <span class="result-value">{{ dividerVm.current | amps }}</span>
-          </div>
-        </div>
-      } @else {
-        @let dividerMsg = store.dividerValidationMessage();
-        @if (dividerMsg) {
-          <div
-            class="circuit-error"
-            role="alert"
-            aria-live="assertive"
-          >
-            {{ dividerMsg }}
-          </div>
-        } @else {
-          <div class="circuit-placeholder">Enter voltage and resistor values.</div>
-        }
-      }
-
-      <ul
-        class="circuit-controls"
-        [formGroup]="store.dividerForm"
-      >
-        <li>
-          <label>
-            Vin
-            <input
-              type="text"
-              formControlName="vin"
-              class="circuit-input"
-              placeholder="e.g. 5"
-              autocomplete="off"
-            />
-          </label>
-        </li>
-        <li>
-          <label>
-            R1
-            <input
-              type="text"
-              formControlName="r1"
-              class="circuit-input"
-              placeholder="e.g. 1000"
-              autocomplete="off"
-            />
-          </label>
-        </li>
-        <li>
-          <label>
-            R2
-            <input
-              type="text"
-              formControlName="r2"
-              class="circuit-input"
-              placeholder="e.g. 2000"
-              autocomplete="off"
-            />
-          </label>
-        </li>
-      </ul>
-
-      <div class="circuit-actions">
-        <button
-          type="button"
-          class="action-reset"
-          (click)="store.resetForm('divider')"
-        >
-          Reset
-        </button>
-      </div>
-    </section>
+    @let dividerVm = store.dividerViewModel();
+    <app-divider-panel
+      [form]="store.dividerForm"
+      [vout]="dividerVm.vout"
+      [current]="dividerVm.current"
+      [validationMessage]="store.dividerValidationMessage()"
+      (resetForm)="store.resetForm('divider')"
+    />
   }
 </section>

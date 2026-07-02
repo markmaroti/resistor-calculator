@@ -110,6 +110,9 @@ src/app/
 │   │   ├── state/
 │   │   └── utils/
 │   ├── circuit/
+│   │   ├── components/
+│   │   │   ├── resistor-list-panel/
+│   │   │   └── divider-panel/
 │   │   ├── services/
 │   │   └── state/
 │   └── guide/

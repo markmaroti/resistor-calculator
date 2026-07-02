@@ -1,13 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-
-import { OhmsPipe } from '@shared/pipes/ohms.pipe';
-import { AmpsPipe } from '@shared/pipes/amps.pipe';
-import { VoltsPipe } from '@shared/pipes/volts.pipe';
 
 import { CircuitStore } from '@circuit/state/circuit.store';
 
+import { ResistorListPanelComponent } from './components/resistor-list-panel/resistor-list-panel.component';
+import { DividerPanelComponent } from './components/divider-panel/divider-panel.component';
 import { CircuitTab } from './circuit.model';
 
 const TABS: { key: CircuitTab; label: string }[] = [
@@ -20,7 +17,7 @@ const TABS: { key: CircuitTab; label: string }[] = [
   selector: 'app-circuit-tools',
   templateUrl: './circuit-tools.component.html',
   styleUrl: './circuit-tools.component.scss',
-  imports: [RouterLink, ReactiveFormsModule, OhmsPipe, VoltsPipe, AmpsPipe],
+  imports: [RouterLink, ResistorListPanelComponent, DividerPanelComponent],
   providers: [CircuitStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

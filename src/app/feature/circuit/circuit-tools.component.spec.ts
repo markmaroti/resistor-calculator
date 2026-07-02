@@ -24,28 +24,19 @@ describe('CircuitToolsComponent', () => {
     vi.restoreAllMocks();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+  it('renders the correct panel when switching tabs', async () => {
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(By.css('app-resistor-list-panel'))).toBeTruthy();
 
-  it('switches between tabs', async () => {
     component.store.setActiveTab('parallel');
     fixture.detectChanges();
     await fixture.whenStable();
-
-    expect(component.store.activeTab()).toBe('parallel');
+    expect(fixture.debugElement.query(By.css('app-resistor-list-panel'))).toBeTruthy();
 
     component.store.setActiveTab('divider');
     fixture.detectChanges();
     await fixture.whenStable();
-
-    expect(component.store.activeTab()).toBe('divider');
-
-    const labels = fixture.debugElement.queryAll(By.css('.circuit-controls label'));
-    expect(labels.length).toBe(3);
-    expect(labels[0].nativeElement.textContent).toContain('Vin');
-    expect(labels[1].nativeElement.textContent).toContain('R1');
-    expect(labels[2].nativeElement.textContent).toContain('R2');
+    expect(fixture.debugElement.query(By.css('app-divider-panel'))).toBeTruthy();
   });
 
   it('shows series validation message from store state', async () => {

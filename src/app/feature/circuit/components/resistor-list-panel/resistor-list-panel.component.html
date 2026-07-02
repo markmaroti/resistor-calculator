@@ -1,0 +1,67 @@
+<section class="circuit-calculator">
+  @if (totalOhms() !== null) {
+    <div
+      class="circuit-result"
+      aria-live="polite"
+    >
+      <span class="result-label">Total Resistance</span>
+      <span class="result-value">{{ totalOhms() | ohms }}</span>
+    </div>
+  } @else if (validationMessage()) {
+    <div
+      class="circuit-error"
+      role="alert"
+      aria-live="assertive"
+    >
+      {{ validationMessage() }}
+    </div>
+  } @else {
+    <div class="circuit-placeholder">Enter resistor values to calculate.</div>
+  }
+
+  <ul
+    class="circuit-controls"
+    [formGroup]="form()"
+  >
+    @for (control of form().controls.resistors.controls; track $index) {
+      <li>
+        <label>
+          R{{ $index + 1 }}
+          <input
+            type="text"
+            [formControl]="control"
+            class="circuit-input"
+            placeholder="e.g. 1000"
+            autocomplete="off"
+          />
+        </label>
+      </li>
+    }
+  </ul>
+
+  <div class="circuit-actions">
+    <button
+      type="button"
+      class="action-add"
+      (click)="addResistor.emit()"
+    >
+      + Add resistor
+    </button>
+    @if (form().controls.resistors.length > 1) {
+      <button
+        type="button"
+        class="action-remove"
+        (click)="removeLastResistor.emit()"
+      >
+        &minus; Remove last
+      </button>
+    }
+    <button
+      type="button"
+      class="action-reset"
+      (click)="resetForm.emit()"
+    >
+      Reset
+    </button>
+  </div>
+</section>
