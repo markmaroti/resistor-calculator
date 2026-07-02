@@ -11,20 +11,18 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { map } from 'rxjs';
 
-import { copyTextToClipboard } from '@shared/utils/clipboard.util';
-
+import { ResistorClipboardService } from '@resistor/services/resistor-clipboard.service';
 import { ResistorStore } from '@resistor/state/resistor.store';
-import { buildResistanceCopyText } from '@resistor/utils/resistance-copy-text.util';
+import {
+  toResistorUrlState,
+  type CalculatorMode,
+} from '@resistor/state/resistor-url-state.mappers';
 import { ModeToggleComponent } from '@resistor/components/mode-toggle/mode-toggle.component';
 import { ForwardFormComponent } from '@resistor/components/forward-form/forward-form.component';
-import {
-  ResultCardComponent,
-  CopyState,
-} from '@resistor/components/result-card/result-card.component';
+import { ResultCardComponent } from '@resistor/components/result-card/result-card.component';
 import { HelpSectionComponent } from '@resistor/components/help-section/help-section.component';
 import { ReverseShellComponent } from '@resistor/components/reverse-shell/reverse-shell.component';
 import { ResistorUrlStateService } from '@resistor/services/resistor-url-state.service';
-import { ResistorUrlState, UrlBandCountValue } from '@resistor/state/url-state.model';
 
 import {
   Color,
@@ -36,9 +34,9 @@ import {
   ReverseMode,
   ReverseErrorCode,
   ReverseCandidate,
+  ReverseFormValue,
+  ResistorBandsInput,
 } from './resistor.model';
-
-type CalculatorMode = 'forward' | 'reverse';
 
 @Component({
   selector: 'app-resistor',
@@ -52,15 +50,27 @@ type CalculatorMode = 'forward' | 'reverse';
     HelpSectionComponent,
     ReverseShellComponent,
   ],
-  providers: [ResistorStore, ResistorUrlStateService],
+  providers: [ResistorStore, ResistorUrlStateService, ResistorClipboardService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResistorComponent implements OnDestroy {
   private readonly store = inject(ResistorStore);
+  private readonly clipboardService = inject(ResistorClipboardService);
   private readonly urlStateService = inject(ResistorUrlStateService);
   private readonly hostElement = inject(ElementRef<HTMLElement>);
   private applyFeedbackTimer: ReturnType<typeof setTimeout> | null = null;
-  private shareLinkFeedbackTimer: ReturnType<typeof setTimeout> | null = null;
+
+  private readonly forwardFormSyncValue = toSignal(
+    this.store.form.valueChanges.pipe(map(() => this.store.form.getRawValue())),
+    { initialValue: this.store.form.getRawValue() },
+  );
+
+  private readonly reverseFormSyncValue = toSignal(
+    this.store.reverseForm.valueChanges.pipe(map(() => this.store.reverseForm.getRawValue())),
+    { initialValue: this.store.reverseForm.getRawValue() },
+  );
+
+  private readonly isUrlSyncReady = signal(false);
 
   public readonly form = this.store.form;
   public readonly viewModel = this.store.viewModel;
@@ -70,21 +80,9 @@ export class ResistorComponent implements OnDestroy {
   public readonly reverseValidationMessage = this.store.reverseValidationMessage;
   public readonly isAtDefaults = this.store.isAtDefaults;
 
-  private readonly forwardFormSyncValue = toSignal(
-    this.form.valueChanges.pipe(map(() => this.form.getRawValue())),
-    { initialValue: this.form.getRawValue() },
-  );
-
-  private readonly reverseFormSyncValue = toSignal(
-    this.reverseForm.valueChanges.pipe(map(() => this.reverseForm.getRawValue())),
-    { initialValue: this.reverseForm.getRawValue() },
-  );
-
-  private readonly isUrlSyncReady = signal(false);
-
   public readonly showHelp = signal(false);
-  public readonly copyState = signal<CopyState>('idle');
-  public readonly shareLinkCopyState = signal<CopyState>('idle');
+  public readonly copyState = this.clipboardService.resultCopyState;
+  public readonly shareLinkCopyState = this.clipboardService.shareLinkCopyState;
   public readonly applyFeedback = signal('');
   public readonly mode = signal<CalculatorMode>('forward');
 
@@ -122,14 +120,13 @@ export class ResistorComponent implements OnDestroy {
       isReady: this.isUrlSyncReady,
       forwardFormSyncValue: this.forwardFormSyncValue,
       reverseFormSyncValue: this.reverseFormSyncValue,
-      getUrlState: () => this.toUrlState(),
+      getUrlState: () => this.currentUrlState(),
     });
     this.isUrlSyncReady.set(true);
   }
 
   public ngOnDestroy(): void {
     this.clearApplyFeedbackTimer();
-    this.clearShareLinkFeedbackTimer();
   }
 
   public toggleHelp() {
@@ -162,24 +159,17 @@ export class ResistorComponent implements OnDestroy {
     }
 
     const vm = this.viewModel();
-    const textToCopy = buildResistanceCopyText({
+    await this.clipboardService.copyResistanceResult({
       ohms: vm.ohms,
       tolerancePct: vm.tolerancePct,
       tcrPpm: vm.tcrPpm,
     });
-
-    const copied = await copyTextToClipboard(textToCopy);
-    this.copyState.set(copied ? 'success' : 'error');
-    setTimeout(() => this.copyState.set('idle'), 1500);
   }
 
   public async copyShareLink(): Promise<void> {
-    const shareUrl = this.buildShareUrl();
-    const copied = await copyTextToClipboard(shareUrl);
-
-    this.shareLinkCopyState.set(copied ? 'success' : 'error');
-    this.clearShareLinkFeedbackTimer();
-    this.shareLinkFeedbackTimer = setTimeout(() => this.shareLinkCopyState.set('idle'), 1500);
+    await this.clipboardService.copyShareLink(
+      this.urlStateService.buildShareUrl(this.currentUrlState()),
+    );
   }
 
   private focusForwardPrimaryControl(): void {
@@ -195,44 +185,11 @@ export class ResistorComponent implements OnDestroy {
     }
   }
 
-  private clearShareLinkFeedbackTimer(): void {
-    if (this.shareLinkFeedbackTimer !== null) {
-      clearTimeout(this.shareLinkFeedbackTimer);
-      this.shareLinkFeedbackTimer = null;
-    }
-  }
-
-  private toUrlState(): ResistorUrlState {
-    const forwardValue = this.form.getRawValue();
-    const reverseValue = this.reverseForm.getRawValue();
-
-    return {
-      mode: this.mode(),
-      forward: {
-        bandCount: this.toUrlBandCountValue(forwardValue.bandCount),
-        digit1: forwardValue.digit1,
-        digit2: forwardValue.digit2,
-        digit3: forwardValue.digit3,
-        multiplier: forwardValue.multiplier,
-        tolerance: forwardValue.tolerance,
-        tcr: forwardValue.tcr,
-      },
-      reverse: {
-        targetInput: reverseValue.targetInput,
-        bandCount: this.toUrlBandCountValue(reverseValue.bandCount),
-        tolerancePct:
-          reverseValue.tolerancePct !== null ? String(reverseValue.tolerancePct) : undefined,
-        tcrPpm: reverseValue.tcrPpm !== null ? String(reverseValue.tcrPpm) : undefined,
-        mode: reverseValue.mode,
-      },
-    };
-  }
-
-  private buildShareUrl(): string {
-    return this.urlStateService.buildShareUrl(this.toUrlState());
-  }
-
-  private toUrlBandCountValue(value: 4 | 5 | 6): UrlBandCountValue {
-    return String(value) as UrlBandCountValue;
+  private currentUrlState() {
+    return toResistorUrlState(
+      this.mode(),
+      this.form.getRawValue() as ResistorBandsInput,
+      this.reverseForm.getRawValue() as ReverseFormValue,
+    );
   }
 }
