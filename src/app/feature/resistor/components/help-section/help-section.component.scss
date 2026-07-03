@@ -13,11 +13,6 @@
   align-items: center;
 }
 
-.help-trigger {
-  justify-self: start;
-  font-size: 0.85rem;
-}
-
 .help-card {
   border-radius: 16px;
   padding: 16px 18px;
@@ -46,6 +41,8 @@
   @include buttons.button-surface;
   @include buttons.button-pill-typography;
   @include buttons.button-transition;
+  padding: 8px 16px;
+  font-size: 0.75rem;
 }
 
 .help-trigger:hover,
@@ -54,8 +51,6 @@
 }
 
 .help-reset {
-  padding: 8px 16px;
-  font-size: 0.75rem;
   @include buttons.button-transition-with-opacity;
 }
 
@@ -65,15 +60,6 @@
 
 .help-reset:hover:not(:disabled) {
   @include buttons.button-hover-lift;
-}
-
-.help-trigger {
-  padding: 8px 16px;
-}
-
-.help-link {
-  padding: 8px 16px;
-  font-size: 0.75rem;
 }
 
 .help-trigger:focus-visible,

@@ -23,8 +23,13 @@
   --resistor-body-stroke: #a98263;
 }
 
+body {
+  margin: 0;
+}
+
 *,
 *::before,
 *::after {
+  box-sizing: border-box;
   font-family: inherit;
 }
