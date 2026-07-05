@@ -96,7 +96,9 @@ export function fromQueryParams(
       forwardBandCount && isForwardDigit3RelevantBandCount(forwardBandCount)
         ? normalizeDigitColor(getSingleQueryValue(query, URL_STATE_PARAM_KEY.Digit3))
         : undefined,
-    multiplier: normalizeMultiplierColor(getSingleQueryValue(query, URL_STATE_PARAM_KEY.Multiplier)),
+    multiplier: normalizeMultiplierColor(
+      getSingleQueryValue(query, URL_STATE_PARAM_KEY.Multiplier),
+    ),
     tolerance: normalizeToleranceColor(getSingleQueryValue(query, URL_STATE_PARAM_KEY.Tolerance)),
     tcr:
       forwardBandCount && isForwardTcrRelevantBandCount(forwardBandCount)

@@ -1,13 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { httpResource } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { Color } from '@resistor/resistor.model';
-
-type ResistorReference = {
-  eSeries: { name: string; values: number[] }[];
-  tolerances: { color: Color; pct: number }[];
-  tcr: { color: Color; ppm: number }[];
-};
+import { ResistorReferenceService } from '@resistor/services/resistor-reference.service';
 
 @Component({
   selector: 'app-reference-panel',
@@ -16,11 +9,7 @@ type ResistorReference = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReferencePanelComponent {
-  public readonly reference = httpResource<ResistorReference>(() => '/resistor-reference.json', {
-    defaultValue: {
-      eSeries: [],
-      tolerances: [],
-      tcr: [],
-    },
-  });
+  private readonly referenceService = inject(ResistorReferenceService);
+
+  public readonly reference = this.referenceService.reference;
 }

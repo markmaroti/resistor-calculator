@@ -11,14 +11,6 @@
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
 }
 
-.reverse-controls li,
-.resistor-controls li {
-  background: linear-gradient(135deg, var(--surface-1), var(--surface-2));
-  border: 1px solid var(--border-1);
-  border-radius: 14px;
-  padding: 12px 14px;
-}
-
 .resistor-controls li {
   background: linear-gradient(135deg, var(--surface-1), var(--surface-2));
   border: 1px solid var(--border-1);

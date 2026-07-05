@@ -164,15 +164,15 @@ describe('ResistorUrlStateService', () => {
     });
 
     isReady.set(true);
-    TestBed.flushEffects();
+    TestBed.tick();
 
     nextState = buildForwardState('Blue');
     forwardFormSyncValue.update((value) => value + 1);
-    TestBed.flushEffects();
+    TestBed.tick();
 
     nextState = buildForwardState('Orange');
     forwardFormSyncValue.update((value) => value + 1);
-    TestBed.flushEffects();
+    TestBed.tick();
 
     vi.advanceTimersByTime(300);
     await Promise.resolve();
@@ -214,9 +214,9 @@ describe('ResistorUrlStateService', () => {
     });
 
     isReady.set(true);
-    TestBed.flushEffects();
+    TestBed.tick();
     forwardFormSyncValue.update((value) => value + 1);
-    TestBed.flushEffects();
+    TestBed.tick();
 
     vi.advanceTimersByTime(300);
     await Promise.resolve();

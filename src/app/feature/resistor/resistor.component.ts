@@ -32,7 +32,6 @@ import {
   TOLERANCE_BY_COLOR,
   BAND_COUNTS,
   ReverseMode,
-  ReverseErrorCode,
   ReverseCandidate,
   ReverseFormValue,
   ResistorBandsInput,
@@ -101,14 +100,6 @@ export class ResistorComponent implements OnDestroy {
   public readonly tcrColors = Object.keys(TCR_BY_COLOR) as Color[];
   public readonly bandCounts = BAND_COUNTS;
   public readonly reverseModes = [ReverseMode.Exact, ReverseMode.Nearest] as const;
-
-  public readonly hasReverseError = computed(() => {
-    const vm = this.reverseViewModel();
-    return vm.parseErrorCode !== null || vm.serviceErrorCode === ReverseErrorCode.InvalidTargetOhms;
-  });
-  public readonly hasReverseNoCandidates = computed(
-    () => this.reverseViewModel().serviceErrorCode === ReverseErrorCode.NoCandidates,
-  );
 
   public constructor() {
     const mode = this.urlStateService.hydrateStoreFromUrlState();

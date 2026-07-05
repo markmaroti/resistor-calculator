@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { Color, ReverseMode } from '@resistor/resistor.model';
+import { ResistorService } from '@resistor/services/resistor.service';
 
 import { ResistorStore } from './resistor.store';
 
@@ -212,5 +213,49 @@ describe('ResistorStore', () => {
     expect(store.viewModel().showDigit3).toBe(false);
     expect(store.viewModel().showTcr).toBe(false);
     expect(store.viewModel().ohms).toBe(10);
+  });
+
+  it('memoizes forward view model between unchanged reads', () => {
+    const store = createStore();
+    const service = TestBed.inject(ResistorService);
+    const calculateResistanceSpy = vi.spyOn(service, 'calculateResistance');
+
+    const first = store.viewModel();
+    const second = store.viewModel();
+
+    expect(first).toBe(second);
+    expect(calculateResistanceSpy).toHaveBeenCalledTimes(1);
+
+    store.form.patchValue({ digit1: Color.Red });
+
+    const third = store.viewModel();
+
+    expect(third).not.toBe(first);
+    expect(calculateResistanceSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it('memoizes reverse view model and skips service call for invalid parse input', () => {
+    const store = createStore();
+    const service = TestBed.inject(ResistorService);
+    const calculateReverseSpy = vi.spyOn(service, 'calculateBandsFromResistance');
+
+    store.reverseForm.patchValue({
+      targetInput: '1k',
+      bandCount: 4,
+      mode: ReverseMode.Exact,
+    });
+
+    const first = store.reverseViewModel();
+    const second = store.reverseViewModel();
+
+    expect(first).toBe(second);
+    expect(calculateReverseSpy).toHaveBeenCalledTimes(1);
+
+    store.reverseForm.patchValue({ targetInput: '' });
+
+    const invalid = store.reverseViewModel();
+
+    expect(invalid.parseErrorCode).toBeTruthy();
+    expect(calculateReverseSpy).toHaveBeenCalledTimes(1);
   });
 });

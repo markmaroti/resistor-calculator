@@ -13,12 +13,7 @@ import {
   ResistorBandsInput,
 } from '@resistor/resistor.model';
 
-import {
-  toResistorInput,
-  toReverseInput,
-  toReverseViewModel,
-  toViewModel,
-} from './resistor.mappers';
+import { toReverseInput, toReverseViewModel, toViewModel } from './resistor.mappers';
 
 const input: ResistorBandsInput = {
   bandCount: 6,
@@ -39,10 +34,6 @@ const reverseFormValue: ReverseFormValue = {
 };
 
 describe('resistor mappers', () => {
-  it('toResistorInput returns a stable domain-shaped object', () => {
-    expect(toResistorInput(input)).toEqual(input);
-  });
-
   it('toViewModel maps calculated result into UI view model', () => {
     const result: ResistanceCalculationResult = {
       data: {

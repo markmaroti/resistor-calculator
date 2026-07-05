@@ -17,12 +17,7 @@ import {
   type BandCount,
 } from '@resistor/resistor.model';
 
-import {
-  toResistorInput,
-  toReverseInput,
-  toReverseViewModel,
-  toViewModel,
-} from './resistor.mappers';
+import { toReverseInput, toReverseViewModel, toViewModel } from './resistor.mappers';
 import { ResistorUrlState, UrlBandCountValue } from './url-state.model';
 import { getResistanceValidationMessage, getReverseValidationMessage } from './validation-messages';
 import { resistorBandsValidator, reverseValueValidator } from './resistor.validators';
@@ -30,6 +25,11 @@ import { resistorBandsValidator, reverseValueValidator } from './resistor.valida
 @Injectable()
 export class ResistorStore {
   private readonly service = inject(ResistorService);
+
+  private readonly emptyReverseResultValue: ReverseResult = {
+    data: { candidates: [] },
+    error: null,
+  };
 
   private readonly defaultBandsInput: ResistorBandsInput = {
     bandCount: DEFAULT_BAND_COUNT,
@@ -112,10 +112,8 @@ export class ResistorStore {
   public readonly reverseForm = this.reverseFormGroup;
 
   private readonly formValue = toSignal(
-    this.form.valueChanges.pipe(
-      map(() => toResistorInput(this.form.getRawValue() as ResistorBandsInput)),
-    ),
-    { initialValue: toResistorInput(this.form.getRawValue() as ResistorBandsInput) },
+    this.form.valueChanges.pipe(map(() => this.form.getRawValue() as ResistorBandsInput)),
+    { initialValue: this.form.getRawValue() as ResistorBandsInput },
   );
 
   private readonly formStatus = toSignal(this.form.statusChanges, {
@@ -134,7 +132,7 @@ export class ResistorStore {
   });
 
   public readonly viewModel = computed(() => {
-    const input = toResistorInput(this.formValue());
+    const input = this.formValue();
     const resistanceResult = this.service.calculateResistance(input);
 
     return toViewModel(input, resistanceResult);
@@ -155,7 +153,7 @@ export class ResistorStore {
     const parsed = parseResistanceValue(value.targetInput);
 
     if (parsed.error) {
-      return toReverseViewModel(value, parsed, this.emptyReverseResult());
+      return toReverseViewModel(value, parsed, this.emptyReverseResultValue);
     }
 
     const reverseInput = toReverseInput(value, parsed.data.normalizedOhms);
@@ -322,12 +320,5 @@ export class ResistorStore {
 
     const parsed = Number(value);
     return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
-  }
-
-  private emptyReverseResult(): ReverseResult {
-    return {
-      data: { candidates: [] },
-      error: null,
-    };
   }
 }

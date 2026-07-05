@@ -44,18 +44,6 @@ export type ReverseViewModel = {
   showTcr: boolean;
 };
 
-export function toResistorInput(value: ResistorBandsInput): ResistorBandsInput {
-  return {
-    bandCount: value.bandCount,
-    digit1: value.digit1,
-    digit2: value.digit2,
-    digit3: value.digit3,
-    multiplier: value.multiplier,
-    tolerance: value.tolerance,
-    tcr: value.tcr,
-  };
-}
-
 export function toViewModel(
   input: ResistorBandsInput,
   result: ResistanceCalculationResult,
