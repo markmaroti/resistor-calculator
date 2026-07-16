@@ -3,7 +3,7 @@
 
 # Resistor Calculator
 
-<img width="1036" height="620" alt="image" src="https://github.com/user-attachments/assets/c1f22acc-7d59-486c-bf42-14fe0ae1f099" />
+<img width="1366" height="800" alt="image" src="https://github.com/user-attachments/assets/b9164513-9dac-4e69-87a0-f6cabb56f734" />
 
 A simple Angular application that calculates resistor values based on standard resistor color codes.
 
