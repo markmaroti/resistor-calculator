@@ -1,5 +1,5 @@
-![Angular](https://img.shields.io/badge/Angular-21-red)
-![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen)
+![Angular](https://img.shields.io/badge/Angular-22-red)
+![Node.js](https://img.shields.io/badge/node-%3E%3D24.15.0-brightgreen)
 
 # Resistor Calculator
 
@@ -24,9 +24,9 @@ The app allows users to select color bands and instantly computes the correspond
 
 Before running the project, make sure the following tools are installed on your system:
 
-- **Node.js** `>= 20.x` (required by Angular 21)
+- **Node.js** `>= 24.15.0` (required by Angular 22 in this project)
 - **npm** `>= 10.x` (bundled with Node.js)
-- **Angular CLI** `>= 21`
+- **Angular CLI** `>= 22`
 
 You can install the Angular CLI globally with:
 

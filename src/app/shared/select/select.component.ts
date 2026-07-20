@@ -1,10 +1,18 @@
-import { Component, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  input,
+  output,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-select',
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -14,6 +22,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ],
 })
 export class SelectComponent<T> implements ControlValueAccessor {
+  private readonly changeDetector = inject(ChangeDetectorRef);
+
   public readonly label = input.required<string>();
   public readonly options = input.required<readonly T[]>();
   public readonly value = input<T | null>(null);
@@ -45,6 +55,7 @@ export class SelectComponent<T> implements ControlValueAccessor {
 
   public writeValue(value: T | null): void {
     this.cvaValue = value;
+    this.changeDetector.markForCheck();
   }
 
   public registerOnChange(fn: (value: T) => void): void {
@@ -57,5 +68,6 @@ export class SelectComponent<T> implements ControlValueAccessor {
 
   public setDisabledState(isDisabled: boolean): void {
     this.isDisabled = isDisabled;
+    this.changeDetector.markForCheck();
   }
 }

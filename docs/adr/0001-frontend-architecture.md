@@ -6,7 +6,7 @@ Date: 2026-07-09
 
 ## Context
 
-This repository is an Angular 21 application focused on resistor and circuit calculation workflows.
+This repository is an Angular 22 application focused on resistor and circuit calculation workflows.
 
 The team needs a stable frontend architecture that:
 
