@@ -1,4 +1,3 @@
-import { FormControl } from '@angular/forms';
 import { describe, expect, it } from 'vitest';
 
 import { ResistanceValueErrorCode } from '@shared/utils/resistance-value.util';
@@ -9,68 +8,55 @@ import { validateCircuitNumberValue, validateCircuitResistorValue } from './circ
 
 describe('validateCircuitResistorValue', () => {
   it('returns null for valid SI resistor input', () => {
-    const control = new FormControl('4.7k');
-
-    expect(validateCircuitResistorValue(control)).toBeNull();
+    expect(validateCircuitResistorValue('4.7k')).toBeNull();
   });
 
   it('returns null for blank input because required handles empties', () => {
-    const control = new FormControl('   ');
-
-    expect(validateCircuitResistorValue(control)).toBeNull();
+    expect(validateCircuitResistorValue('   ')).toBeNull();
   });
 
   it('returns parser error code for unsupported unit', () => {
-    const control = new FormControl('10x');
-
-    expect(validateCircuitResistorValue(control)).toEqual({
-      circuitResistor: ResistanceValueErrorCode.UnsupportedUnit,
+    expect(validateCircuitResistorValue('10x')).toEqual({
+      kind: 'circuitResistor',
+      code: ResistanceValueErrorCode.UnsupportedUnit,
     });
   });
 
   it('returns parser error code for non-positive value', () => {
-    const control = new FormControl('0');
-
-    expect(validateCircuitResistorValue(control)).toEqual({
-      circuitResistor: ResistanceValueErrorCode.NonPositiveValue,
+    expect(validateCircuitResistorValue('0')).toEqual({
+      kind: 'circuitResistor',
+      code: ResistanceValueErrorCode.NonPositiveValue,
     });
   });
 });
 
 describe('validateCircuitNumberValue', () => {
   it('returns null for valid numeric input', () => {
-    const control = new FormControl('12.5');
-
-    expect(validateCircuitNumberValue(control)).toBeNull();
+    expect(validateCircuitNumberValue('12.5')).toBeNull();
   });
 
   it('keeps parseFloat behavior for SI-like vin input', () => {
-    const control = new FormControl('4.7k');
-
-    expect(validateCircuitNumberValue(control)).toBeNull();
+    expect(validateCircuitNumberValue('4.7k')).toBeNull();
   });
 
   it('returns INVALID_FORMAT for non-numeric input', () => {
-    const control = new FormControl('abc');
-
-    expect(validateCircuitNumberValue(control)).toEqual({
-      circuitNumber: CircuitValidationError.InvalidFormat,
+    expect(validateCircuitNumberValue('abc')).toEqual({
+      kind: 'circuitNumber',
+      code: CircuitValidationError.InvalidFormat,
     });
   });
 
   it('returns NON_FINITE_VALUE for infinity input', () => {
-    const control = new FormControl('Infinity');
-
-    expect(validateCircuitNumberValue(control)).toEqual({
-      circuitNumber: CircuitValidationError.NonFiniteValue,
+    expect(validateCircuitNumberValue('Infinity')).toEqual({
+      kind: 'circuitNumber',
+      code: CircuitValidationError.NonFiniteValue,
     });
   });
 
   it('returns NON_POSITIVE_VALUE for zero input', () => {
-    const control = new FormControl('0');
-
-    expect(validateCircuitNumberValue(control)).toEqual({
-      circuitNumber: CircuitValidationError.NonPositiveValue,
+    expect(validateCircuitNumberValue('0')).toEqual({
+      kind: 'circuitNumber',
+      code: CircuitValidationError.NonPositiveValue,
     });
   });
 });

@@ -19,17 +19,14 @@
     <div class="circuit-placeholder">Enter resistor values to calculate.</div>
   }
 
-  <ul
-    class="circuit-controls"
-    [formGroup]="form()"
-  >
-    @for (control of form().controls.resistors.controls; track $index) {
+  <ul class="circuit-controls">
+    @for (item of form().resistors; track $index; let i = $index) {
       <li>
         <label>
-          R{{ $index + 1 }}
+          R{{ i + 1 }}
           <input
             type="text"
-            [formControl]="control"
+            [formField]="item"
             class="circuit-input"
             placeholder="e.g. 1000"
             autocomplete="off"
@@ -47,7 +44,7 @@
     >
       + Add resistor
     </button>
-    @if (form().controls.resistors.length > 1) {
+    @if (form().resistors.length > 1) {
       <button
         type="button"
         class="action-remove"

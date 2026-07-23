@@ -18,7 +18,7 @@ describe('ResistorStore', () => {
   it('initializes reverse form with expected defaults', () => {
     const store = createStore();
 
-    expect(store.reverseForm.getRawValue()).toEqual({
+    expect(store.reverseForm().value()).toEqual({
       targetInput: '1k',
       bandCount: 4,
       tolerancePct: null,
@@ -29,18 +29,19 @@ describe('ResistorStore', () => {
 
   it('exposes reverse validation message for invalid input', () => {
     const store = createStore();
-    store.reverseForm.patchValue({ targetInput: '' });
+    store.reverseForm().value.update((current) => ({ ...current, targetInput: '' }));
 
     expect(store.reverseValidationMessage()).toBe('Resistance value is required.');
   });
 
   it('computes reverse view model from valid input', () => {
     const store = createStore();
-    store.reverseForm.patchValue({
+    store.reverseForm().value.update((current) => ({
+      ...current,
       targetInput: '1k',
       bandCount: 4,
       mode: ReverseMode.Exact,
-    });
+    }));
 
     const vm = store.reverseViewModel();
 
@@ -51,12 +52,13 @@ describe('ResistorStore', () => {
 
   it('ignores tcr input for 4-band reverse state', () => {
     const store = createStore();
-    store.reverseForm.patchValue({
+    store.reverseForm().value.update((current) => ({
+      ...current,
       targetInput: '1k',
       bandCount: 4,
       tcrPpm: 5,
       mode: ReverseMode.Exact,
-    });
+    }));
 
     const vm = store.reverseViewModel();
 
@@ -67,11 +69,12 @@ describe('ResistorStore', () => {
 
   it('applies selected reverse candidate into forward form and updates result', () => {
     const store = createStore();
-    store.reverseForm.patchValue({
+    store.reverseForm().value.update((current) => ({
+      ...current,
       targetInput: '2.2k',
       bandCount: 4,
       mode: ReverseMode.Exact,
-    });
+    }));
 
     const candidate = store.reverseViewModel().candidates[0];
     expect(candidate).toBeDefined();
@@ -81,7 +84,7 @@ describe('ResistorStore', () => {
 
     store.applyCandidate(candidate);
 
-    expect(store.form.getRawValue()).toEqual(candidate.bands);
+    expect(store.form().value()).toEqual(candidate.bands);
     expect(store.viewModel().ohms).toBe(candidate.ohms);
   });
 
@@ -107,7 +110,7 @@ describe('ResistorStore', () => {
       },
     });
 
-    expect(store.form.getRawValue()).toEqual({
+    expect(store.form().value()).toEqual({
       bandCount: 6,
       digit1: Color.Red,
       digit2: Color.Violet,
@@ -116,7 +119,7 @@ describe('ResistorStore', () => {
       tolerance: Color.Brown,
       tcr: Color.Blue,
     });
-    expect(store.reverseForm.getRawValue()).toEqual({
+    expect(store.reverseForm().value()).toEqual({
       targetInput: '2.2k',
       bandCount: 6,
       tolerancePct: 1,
@@ -140,7 +143,7 @@ describe('ResistorStore', () => {
       },
     });
 
-    expect(store.form.getRawValue()).toEqual({
+    expect(store.form().value()).toEqual({
       bandCount: 4,
       digit1: Color.Brown,
       digit2: Color.Black,
@@ -149,7 +152,7 @@ describe('ResistorStore', () => {
       tolerance: Color.Gold,
       tcr: Color.Brown,
     });
-    expect(store.reverseForm.getRawValue()).toEqual({
+    expect(store.reverseForm().value()).toEqual({
       targetInput: '1k',
       bandCount: 4,
       tolerancePct: null,
@@ -167,7 +170,7 @@ describe('ResistorStore', () => {
       },
     });
 
-    expect(store.form.getRawValue()).toEqual({
+    expect(store.form().value()).toEqual({
       bandCount: 4,
       digit1: Color.Brown,
       digit2: Color.Black,
@@ -176,7 +179,7 @@ describe('ResistorStore', () => {
       tolerance: Color.Gold,
       tcr: Color.Brown,
     });
-    expect(store.reverseForm.getRawValue()).toEqual({
+    expect(store.reverseForm().value()).toEqual({
       targetInput: '1k',
       bandCount: 4,
       tolerancePct: null,
@@ -200,7 +203,7 @@ describe('ResistorStore', () => {
       },
     });
 
-    expect(store.form.getRawValue()).toEqual({
+    expect(store.form().value()).toEqual({
       bandCount: 4,
       digit1: Color.Brown,
       digit2: Color.Black,
@@ -226,7 +229,7 @@ describe('ResistorStore', () => {
     expect(first).toBe(second);
     expect(calculateResistanceSpy).toHaveBeenCalledTimes(1);
 
-    store.form.patchValue({ digit1: Color.Red });
+    store.form().value.update((current) => ({ ...current, digit1: Color.Red }));
 
     const third = store.viewModel();
 
@@ -239,11 +242,12 @@ describe('ResistorStore', () => {
     const service = TestBed.inject(ResistorService);
     const calculateReverseSpy = vi.spyOn(service, 'calculateBandsFromResistance');
 
-    store.reverseForm.patchValue({
+    store.reverseForm().value.update((current) => ({
+      ...current,
       targetInput: '1k',
       bandCount: 4,
       mode: ReverseMode.Exact,
-    });
+    }));
 
     const first = store.reverseViewModel();
     const second = store.reverseViewModel();
@@ -251,7 +255,7 @@ describe('ResistorStore', () => {
     expect(first).toBe(second);
     expect(calculateReverseSpy).toHaveBeenCalledTimes(1);
 
-    store.reverseForm.patchValue({ targetInput: '' });
+    store.reverseForm().value.update((current) => ({ ...current, targetInput: '' }));
 
     const invalid = store.reverseViewModel();
 

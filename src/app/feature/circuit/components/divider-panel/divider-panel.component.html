@@ -25,16 +25,13 @@
     <div class="circuit-placeholder">Enter voltage and resistor values.</div>
   }
 
-  <ul
-    class="circuit-controls"
-    [formGroup]="form()"
-  >
+  <ul class="circuit-controls">
     <li>
       <label>
         Vin
         <input
           type="text"
-          formControlName="vin"
+          [formField]="form().vin"
           class="circuit-input"
           placeholder="e.g. 5"
           autocomplete="off"
@@ -46,7 +43,7 @@
         R1
         <input
           type="text"
-          formControlName="r1"
+          [formField]="form().r1"
           class="circuit-input"
           placeholder="e.g. 1000"
           autocomplete="off"
@@ -58,7 +55,7 @@
         R2
         <input
           type="text"
-          formControlName="r2"
+          [formField]="form().r2"
           class="circuit-input"
           placeholder="e.g. 2000"
           autocomplete="off"

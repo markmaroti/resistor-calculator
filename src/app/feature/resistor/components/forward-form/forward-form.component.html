@@ -10,29 +10,26 @@
     [tcr]="vm.tcr"
   />
 
-  <ul
-    class="resistor-controls"
-    [formGroup]="form()"
-  >
+  <ul class="resistor-controls">
     <li>
       <app-select
         label="Bands"
         [options]="bandCounts()"
-        formControlName="bandCount"
+        [formField]="form().bandCount"
       />
     </li>
     <li>
       <app-select
         label="Band 1 (Digit)"
         [options]="digitColors()"
-        formControlName="digit1"
+        [formField]="form().digit1"
       />
     </li>
     <li>
       <app-select
         label="Band 2 (Digit)"
         [options]="digitColors()"
-        formControlName="digit2"
+        [formField]="form().digit2"
       />
     </li>
     @if (vm.showDigit3) {
@@ -40,7 +37,7 @@
         <app-select
           label="Band 3 (Digit)"
           [options]="digitColors()"
-          formControlName="digit3"
+          [formField]="form().digit3"
         />
       </li>
     }
@@ -48,14 +45,14 @@
       <app-select
         label="Multiplier"
         [options]="multiplierColors()"
-        formControlName="multiplier"
+        [formField]="form().multiplier"
       />
     </li>
     <li>
       <app-select
         label="Tolerance"
         [options]="toleranceColors()"
-        formControlName="tolerance"
+        [formField]="form().tolerance"
       />
     </li>
     @if (vm.showTcr) {
@@ -63,7 +60,7 @@
         <app-select
           label="TCR (ppm/°C)"
           [options]="tcrColors()"
-          formControlName="tcr"
+          [formField]="form().tcr"
         />
       </li>
     }

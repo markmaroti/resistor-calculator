@@ -6,10 +6,7 @@
     matching band combinations.
   </p>
 
-  <ul
-    class="reverse-controls"
-    [formGroup]="reverseForm()"
-  >
+  <ul class="reverse-controls">
     <li>
       <label>
         Target resistance
@@ -21,7 +18,7 @@
         <input
           class="reverse-input"
           type="text"
-          formControlName="targetInput"
+          [formField]="reverseForm().targetInput"
           placeholder="e.g. 4.7k"
           autocomplete="off"
           [attr.aria-invalid]="hasReverseError()"
@@ -35,14 +32,14 @@
       <app-select
         label="Bands"
         [options]="bandCounts()"
-        formControlName="bandCount"
+        [formField]="reverseForm().bandCount"
       />
     </li>
     <li>
       <app-select
         label="Mode"
         [options]="reverseModes()"
-        formControlName="mode"
+        [formField]="reverseForm().mode"
       />
     </li>
   </ul>

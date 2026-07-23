@@ -90,7 +90,7 @@ describe('ResistorComponent', () => {
     });
 
     expect(component.mode()).toBe('reverse');
-    expect(component.form.getRawValue()).toEqual({
+    expect(component.form().value()).toEqual({
       bandCount: 6,
       digit1: Color.Red,
       digit2: Color.Violet,
@@ -99,7 +99,7 @@ describe('ResistorComponent', () => {
       tolerance: Color.Brown,
       tcr: Color.Blue,
     });
-    expect(component.reverseForm.getRawValue()).toEqual({
+    expect(component.reverseForm().value()).toEqual({
       targetInput: '2.2k',
       bandCount: 6,
       tolerancePct: 1,
@@ -119,7 +119,7 @@ describe('ResistorComponent', () => {
     });
 
     expect(component.mode()).toBe('forward');
-    expect(component.form.getRawValue()).toEqual({
+    expect(component.form().value()).toEqual({
       bandCount: 4,
       digit1: Color.Brown,
       digit2: Color.Black,
@@ -128,7 +128,7 @@ describe('ResistorComponent', () => {
       tolerance: Color.Gold,
       tcr: Color.Brown,
     });
-    expect(component.reverseForm.getRawValue()).toEqual({
+    expect(component.reverseForm().value()).toEqual({
       targetInput: '1k',
       bandCount: 4,
       tolerancePct: null,
@@ -140,7 +140,7 @@ describe('ResistorComponent', () => {
   it('syncs URL with debounce and replaceUrl on form change', async () => {
     await createComponent();
 
-    component.form.patchValue({ digit1: Color.Red });
+    component.form().value.update((current) => ({ ...current, digit1: Color.Red }));
     fixture.detectChanges();
     await waitForUrlSync();
 
@@ -168,7 +168,7 @@ describe('ResistorComponent', () => {
       ref: 'campaign',
     });
 
-    component.form.patchValue({ digit1: Color.Red });
+    component.form().value.update((current) => ({ ...current, digit1: Color.Red }));
     fixture.detectChanges();
     await waitForUrlSync();
 
@@ -188,9 +188,9 @@ describe('ResistorComponent', () => {
   it('debounces rapid changes into a single URL sync', async () => {
     await createComponent();
 
-    component.form.patchValue({ digit1: Color.Red });
-    component.form.patchValue({ digit1: Color.Blue });
-    component.form.patchValue({ digit1: Color.Orange });
+    component.form().value.update((current) => ({ ...current, digit1: Color.Red }));
+    component.form().value.update((current) => ({ ...current, digit1: Color.Blue }));
+    component.form().value.update((current) => ({ ...current, digit1: Color.Orange }));
     fixture.detectChanges();
     await waitForUrlSync();
 
@@ -236,7 +236,7 @@ describe('ResistorComponent', () => {
       t: 'Gold',
     });
 
-    component.form.patchValue({ digit1: Color.Brown });
+    component.form().value.update((current) => ({ ...current, digit1: Color.Brown }));
     fixture.detectChanges();
     await waitForUrlSync();
 
@@ -246,7 +246,7 @@ describe('ResistorComponent', () => {
   it('does not re-navigate after route snapshot catches up to synced query', async () => {
     await createComponent();
 
-    component.form.patchValue({ digit1: Color.Red });
+    component.form().value.update((current) => ({ ...current, digit1: Color.Red }));
     fixture.detectChanges();
     await waitForUrlSync();
 
@@ -258,7 +258,7 @@ describe('ResistorComponent', () => {
 
     replaceRouteQueryParams(firstSyncedQuery);
 
-    component.form.patchValue({ digit2: Color.Black });
+    component.form().value.update((current) => ({ ...current, digit2: Color.Black }));
     fixture.detectChanges();
     await waitForUrlSync();
 
@@ -271,7 +271,7 @@ describe('ResistorComponent', () => {
       ref: 'campaign',
     });
 
-    component.form.patchValue({ digit1: Color.Red });
+    component.form().value.update((current) => ({ ...current, digit1: Color.Red }));
     fixture.detectChanges();
     await waitForUrlSync();
 
@@ -285,7 +285,7 @@ describe('ResistorComponent', () => {
 
     replaceRouteQueryParams(firstSyncedQuery);
 
-    component.form.patchValue({ digit1: Color.Blue });
+    component.form().value.update((current) => ({ ...current, digit1: Color.Blue }));
     fixture.detectChanges();
     await waitForUrlSync();
 
@@ -339,7 +339,12 @@ describe('ResistorComponent', () => {
       },
     });
 
-    component.form.patchValue({ digit1: Color.Red, bandCount: 6, tcr: Color.Blue });
+    component.form().value.update((current) => ({
+      ...current,
+      digit1: Color.Red,
+      bandCount: 6,
+      tcr: Color.Blue,
+    }));
     component.setMode('reverse');
 
     await component.copyShareLink();

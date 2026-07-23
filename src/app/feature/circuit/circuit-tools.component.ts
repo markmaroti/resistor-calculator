@@ -26,10 +26,8 @@ export class CircuitToolsComponent {
   public readonly store = inject(CircuitStore);
 
   public removeLastResistor(form: 'series' | 'parallel'): void {
-    const controls =
-      form === 'series'
-        ? this.store.seriesForm.controls.resistors
-        : this.store.parallelForm.controls.resistors;
-    this.store.removeResistor(form, controls.length - 1);
+    const resistors =
+      form === 'series' ? this.store.seriesForm.resistors : this.store.parallelForm.resistors;
+    this.store.removeResistor(form, resistors.length - 1);
   }
 }

@@ -7,9 +7,6 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ReactiveFormsModule } from '@angular/forms';
-import { map } from 'rxjs';
 
 import { ResistorClipboardService } from '@resistor/services/resistor-clipboard.service';
 import { ResistorStore } from '@resistor/state/resistor.store';
@@ -33,8 +30,6 @@ import {
   BAND_COUNTS,
   ReverseMode,
   ReverseCandidate,
-  ReverseFormValue,
-  ResistorBandsInput,
 } from './resistor.model';
 
 @Component({
@@ -42,7 +37,6 @@ import {
   templateUrl: './resistor.component.html',
   styleUrl: './resistor.component.scss',
   imports: [
-    ReactiveFormsModule,
     ModeToggleComponent,
     ForwardFormComponent,
     ResultCardComponent,
@@ -59,15 +53,9 @@ export class ResistorComponent implements OnDestroy {
   private readonly hostElement = inject(ElementRef<HTMLElement>);
   private applyFeedbackTimer: ReturnType<typeof setTimeout> | null = null;
 
-  private readonly forwardFormSyncValue = toSignal(
-    this.store.form.valueChanges.pipe(map(() => this.store.form.getRawValue())),
-    { initialValue: this.store.form.getRawValue() },
-  );
+  private readonly forwardFormSyncValue = this.store.form().value;
 
-  private readonly reverseFormSyncValue = toSignal(
-    this.store.reverseForm.valueChanges.pipe(map(() => this.store.reverseForm.getRawValue())),
-    { initialValue: this.store.reverseForm.getRawValue() },
-  );
+  private readonly reverseFormSyncValue = this.store.reverseForm().value;
 
   private readonly isUrlSyncReady = signal(false);
 
@@ -177,10 +165,6 @@ export class ResistorComponent implements OnDestroy {
   }
 
   private currentUrlState() {
-    return toResistorUrlState(
-      this.mode(),
-      this.form.getRawValue() as ResistorBandsInput,
-      this.reverseForm.getRawValue() as ReverseFormValue,
-    );
+    return toResistorUrlState(this.mode(), this.form().value(), this.reverseForm().value());
   }
 }

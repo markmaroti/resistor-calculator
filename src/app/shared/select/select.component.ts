@@ -1,73 +1,30 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  inject,
-  input,
-  output,
-} from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
+import { FormValueControl } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-select',
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: SelectComponent,
-      multi: true,
-    },
-  ],
 })
-export class SelectComponent<T> implements ControlValueAccessor {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-
+export class SelectComponent<T> implements FormValueControl<T> {
   public readonly label = input.required<string>();
   public readonly options = input.required<readonly T[]>();
-  public readonly value = input<T | null>(null);
 
-  public readonly valueChange = output<T>();
+  public readonly value = model.required<T>();
 
-  public isDisabled = false;
-  private cvaValue: T | null = null;
-  private onCvaChange: (value: T) => void = () => {};
-  private onCvaTouched: () => void = () => {};
+  public readonly disabled = input<boolean>(false);
+  public readonly touch = output<void>();
 
-  public get selectedValue(): T | null {
-    return this.value() ?? this.cvaValue;
-  }
-
-  public onChange(selectedIndex: string) {
+  public onChange(selectedIndex: string): void {
     const index = Number(selectedIndex);
     const option = this.options()[index];
     if (option !== undefined) {
-      this.cvaValue = option;
-      this.valueChange.emit(option);
-      this.onCvaChange(option);
+      this.value.set(option);
     }
   }
 
-  public onTouched() {
-    this.onCvaTouched();
-  }
-
-  public writeValue(value: T | null): void {
-    this.cvaValue = value;
-    this.changeDetector.markForCheck();
-  }
-
-  public registerOnChange(fn: (value: T) => void): void {
-    this.onCvaChange = fn;
-  }
-
-  public registerOnTouched(fn: () => void): void {
-    this.onCvaTouched = fn;
-  }
-
-  public setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
-    this.changeDetector.markForCheck();
+  public onTouched(): void {
+    this.touch.emit();
   }
 }

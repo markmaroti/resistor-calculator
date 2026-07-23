@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FieldTree, FormField } from '@angular/forms/signals';
 
 import { SelectComponent } from '@shared/select/select.component';
 
-import { Color } from '@resistor/resistor.model';
+import { Color, ResistorBandsInput } from '@resistor/resistor.model';
 import { ResistorViewModel } from '@resistor/state/resistor.mappers';
 import { ResistorPreviewComponent } from '@resistor/components/resistor-preview/resistor-preview.component';
 
@@ -11,11 +11,11 @@ import { ResistorPreviewComponent } from '@resistor/components/resistor-preview/
   selector: 'app-forward-form',
   templateUrl: './forward-form.component.html',
   styleUrl: './forward-form.component.scss',
-  imports: [ReactiveFormsModule, SelectComponent, ResistorPreviewComponent],
+  imports: [FormField, SelectComponent, ResistorPreviewComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForwardFormComponent {
-  public readonly form = input.required<FormGroup>();
+  public readonly form = input.required<FieldTree<ResistorBandsInput>>();
   public readonly viewModel = input.required<ResistorViewModel>();
   public readonly digitColors = input.required<readonly Color[]>();
   public readonly multiplierColors = input.required<readonly Color[]>();

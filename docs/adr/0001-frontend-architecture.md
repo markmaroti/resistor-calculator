@@ -20,7 +20,7 @@ Current project constraints and practices:
 - Standalone components only, no NgModules.
 - Signals as the primary reactive model for UI and state projection.
 - Zoneless change detection.
-- Feature-scoped state stores (`ResistorStore`, `CircuitStore`) with reactive forms.
+- Feature-scoped state stores (`ResistorStore`, `CircuitStore`) with Signal Forms.
 - Domain calculation logic in services, not components.
 - Explicit mappers and validators in dedicated files.
 - Shared utilities, pipes, and reusable UI controls under `src/app/shared/`.

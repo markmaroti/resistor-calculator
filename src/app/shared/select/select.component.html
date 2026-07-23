@@ -5,12 +5,12 @@
     #select
     (change)="onChange(select.value)"
     (blur)="onTouched()"
-    [disabled]="isDisabled"
+    [disabled]="disabled()"
   >
     @for (option of optionList; track option; let index = $index) {
       <option
         [value]="index"
-        [selected]="selectedValue === option"
+        [selected]="value() === option"
       >
         {{ option }}
       </option>

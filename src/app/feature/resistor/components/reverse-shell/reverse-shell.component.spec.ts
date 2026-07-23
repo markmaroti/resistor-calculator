@@ -1,9 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Injector, signal } from '@angular/core';
+import { form } from '@angular/forms/signals';
 
 import { ResistanceValueErrorCode } from '@shared/utils/resistance-value.util';
 
-import { ReverseErrorCode, ReverseCandidate } from '@resistor/resistor.model';
+import {
+  ReverseErrorCode,
+  ReverseCandidate,
+  ReverseFormValue,
+  ReverseMode,
+} from '@resistor/resistor.model';
 import { ReverseViewModel } from '@resistor/state/resistor.mappers';
 
 import { ReverseShellComponent } from './reverse-shell.component';
@@ -55,13 +61,16 @@ describe('ReverseShellComponent', () => {
 
     fixture.componentRef.setInput(
       'reverseForm',
-      new FormGroup({
-        targetInput: new FormControl('', { nonNullable: true }),
-        bandCount: new FormControl(4, { nonNullable: true }),
-        tolerancePct: new FormControl<number | null>(null),
-        tcrPpm: new FormControl<number | null>(null),
-        mode: new FormControl('EXACT', { nonNullable: true }),
-      }),
+      form(
+        signal<ReverseFormValue>({
+          targetInput: '',
+          bandCount: 4,
+          tolerancePct: null,
+          tcrPpm: null,
+          mode: ReverseMode.Exact,
+        }),
+        { injector: TestBed.inject(Injector) },
+      ),
     );
     fixture.componentRef.setInput('reverseViewModel', defaultVm);
     fixture.componentRef.setInput('reverseValidationMessage', '');
