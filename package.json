@@ -10,7 +10,8 @@
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "prettier": {
     "printWidth": 100,
@@ -46,7 +47,9 @@
     "angular-eslint": "^22.1.0",
     "eslint": "^9.39.1",
     "eslint-plugin-import": "^2.32.0",
+    "husky": "^9.1.7",
     "jsdom": "^27.1.0",
+    "lint-staged": "^16.1.0",
     "prettier": "^3.6.2",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.46.2",
