@@ -3,28 +3,23 @@ import { parseResistanceValue } from '@shared/utils/resistance-value.util';
 import {
   CircuitErrorCode,
   CircuitServiceError,
+  CircuitServiceResult,
   DividerFormValue,
   DividerInput,
   DividerResult,
-  ParallelFormValue,
-  ParallelInput,
-  ParallelResult,
-  SeriesFormValue,
-  SeriesInput,
-  SeriesResult,
+  ResistorListData,
+  ResistorListFormValue,
+  ResistorListInput,
 } from '@circuit/circuit.model';
 
-export type SeriesViewModel = {
+export type ResistorListViewModel = {
   resistors: string[];
   totalOhms: number | null;
   error: CircuitServiceError<CircuitErrorCode> | null;
 };
 
-export type ParallelViewModel = {
-  resistors: string[];
-  totalOhms: number | null;
-  error: CircuitServiceError<CircuitErrorCode> | null;
-};
+export type SeriesViewModel = ResistorListViewModel;
+export type ParallelViewModel = ResistorListViewModel;
 
 export type DividerViewModel = {
   vin: string;
@@ -35,17 +30,14 @@ export type DividerViewModel = {
   error: CircuitServiceError<CircuitErrorCode> | null;
 };
 
-export function toSeriesInput(value: SeriesFormValue): SeriesInput {
+export function toResistorListInput(value: ResistorListFormValue): ResistorListInput {
   return {
     resistors: value.resistors.map((r) => parseResistanceToOhms(r)),
   };
 }
 
-export function toParallelInput(value: ParallelFormValue): ParallelInput {
-  return {
-    resistors: value.resistors.map((r) => parseResistanceToOhms(r)),
-  };
-}
+export const toSeriesInput = toResistorListInput;
+export const toParallelInput = toResistorListInput;
 
 export function toDividerInput(value: DividerFormValue): DividerInput {
   return {
@@ -55,7 +47,10 @@ export function toDividerInput(value: DividerFormValue): DividerInput {
   };
 }
 
-export function toSeriesViewModel(value: SeriesFormValue, result: SeriesResult): SeriesViewModel {
+export function toResistorListViewModel(
+  value: ResistorListFormValue,
+  result: CircuitServiceResult<ResistorListData, CircuitErrorCode>,
+): ResistorListViewModel {
   return {
     resistors: value.resistors,
     totalOhms: result.error ? null : result.data.totalOhms,
@@ -63,16 +58,8 @@ export function toSeriesViewModel(value: SeriesFormValue, result: SeriesResult):
   };
 }
 
-export function toParallelViewModel(
-  value: ParallelFormValue,
-  result: ParallelResult,
-): ParallelViewModel {
-  return {
-    resistors: value.resistors,
-    totalOhms: result.error ? null : result.data.totalOhms,
-    error: result.error,
-  };
-}
+export const toSeriesViewModel = toResistorListViewModel;
+export const toParallelViewModel = toResistorListViewModel;
 
 export function toDividerViewModel(
   value: DividerFormValue,

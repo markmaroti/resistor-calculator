@@ -3,7 +3,7 @@ import { FieldTree, FormField } from '@angular/forms/signals';
 
 import { OhmsPipe } from '@shared/pipes/ohms.pipe';
 
-import { SeriesFormValue } from '@circuit/circuit.model';
+import { ResistorListFormValue } from '@circuit/circuit.model';
 
 @Component({
   selector: 'app-resistor-list-panel',
@@ -13,7 +13,7 @@ import { SeriesFormValue } from '@circuit/circuit.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResistorListPanelComponent {
-  public readonly form = input.required<FieldTree<SeriesFormValue>>();
+  public readonly form = input.required<FieldTree<ResistorListFormValue>>();
   public readonly totalOhms = input.required<number | null>();
   public readonly validationMessage = input.required<string>();
 

@@ -19,6 +19,12 @@ import {
 } from '@resistor/resistor.model';
 import { getResistanceValidationMessage } from '@resistor/state/validation-messages';
 
+const DIGIT_TO_COLOR: Partial<Record<number, Color>> = Object.fromEntries(
+  (Object.entries(DIGIT_BY_COLOR) as [Color, number | null][])
+    .filter(([, digit]) => digit !== null)
+    .map(([color, digit]) => [digit as number, color]),
+);
+
 @Injectable({ providedIn: 'root' })
 export class ResistorService {
   private static readonly MAX_REVERSE_CANDIDATES = 50;
@@ -159,26 +165,32 @@ export class ResistorService {
           tcr: Color.Brown,
         };
 
+        // `ohms` depends only on the digits + multiplier (not tolerance/tcr), so it's
+        // computed once per (multiplier, significant) instead of once per candidate.
+        const ohms = significant * multiplier;
+        const deltaOhms = Math.abs(ohms - input.targetOhms);
+        const deltaPct = (deltaOhms / input.targetOhms) * 100;
+
+        if (input.mode === ReverseMode.Exact && deltaOhms !== 0) {
+          continue;
+        }
+
         for (const toleranceColor of toleranceColors) {
+          const tolerancePct = TOLERANCE_BY_COLOR[toleranceColor] ?? null;
+
           for (const tcrColor of tcrColors) {
+            const tcrPpm = input.bandCount === 6 ? (TCR_BY_COLOR[tcrColor] ?? null) : null;
             const bands: ResistorBandsInput = {
               ...bandInputBase,
               tolerance: toleranceColor,
               tcr: tcrColor,
             };
-            const resistance = this.calculateResistanceFromBands(bands);
-            const deltaOhms = Math.abs(resistance.ohms - input.targetOhms);
-            const deltaPct = (deltaOhms / input.targetOhms) * 100;
-
-            if (input.mode === ReverseMode.Exact && deltaOhms !== 0) {
-              continue;
-            }
 
             candidates.push({
               bands,
-              ohms: resistance.ohms,
-              tolerancePct: resistance.tolerancePct,
-              tcrPpm: resistance.tcrPpm,
+              ohms,
+              tolerancePct,
+              tcrPpm,
               deltaOhms,
               deltaPct,
             });
@@ -223,9 +235,7 @@ export class ResistorService {
   }
 
   private colorForDigit(digit: number): Color {
-    const color = (Object.keys(DIGIT_BY_COLOR) as Color[]).find(
-      (key) => DIGIT_BY_COLOR[key] === digit,
-    );
+    const color = DIGIT_TO_COLOR[digit];
     if (!color) {
       throw new Error(`Missing color mapping for digit ${digit}`);
     }

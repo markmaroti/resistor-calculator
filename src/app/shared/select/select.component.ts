@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  input,
+  model,
+  output,
+  viewChild,
+} from '@angular/core';
 import { FormValueControl } from '@angular/forms/signals';
 
 @Component({
@@ -8,6 +16,8 @@ import { FormValueControl } from '@angular/forms/signals';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectComponent<T> implements FormValueControl<T> {
+  private readonly selectRef = viewChild.required<ElementRef<HTMLSelectElement>>('select');
+
   public readonly label = input.required<string>();
   public readonly options = input.required<readonly T[]>();
 
@@ -26,5 +36,9 @@ export class SelectComponent<T> implements FormValueControl<T> {
 
   public onTouched(): void {
     this.touch.emit();
+  }
+
+  public focus(options?: FocusOptions): void {
+    this.selectRef().nativeElement.focus(options);
   }
 }

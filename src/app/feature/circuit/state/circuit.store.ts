@@ -1,4 +1,4 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, WritableSignal, computed, inject, signal } from '@angular/core';
 import { FieldTree, apply, applyEach, form } from '@angular/forms/signals';
 
 import { CircuitService } from '@circuit/services/circuit.service';
@@ -7,8 +7,8 @@ import {
   CircuitServiceError,
   CircuitTab,
   DividerFormValue,
-  ParallelFormValue,
-  SeriesFormValue,
+  ResistorListFormValue,
+  ResistorListTab,
 } from '@circuit/circuit.model';
 
 import {
@@ -28,13 +28,13 @@ export class CircuitStore {
 
   public readonly activeTab = signal<CircuitTab>('series');
 
-  private readonly seriesModel = signal<SeriesFormValue>({ resistors: ['', ''] });
+  private readonly seriesModel = signal<ResistorListFormValue>({ resistors: ['', ''] });
 
   public readonly seriesForm = form(this.seriesModel, (path) => {
     applyEach(path.resistors, resistorFieldSchema);
   });
 
-  private readonly parallelModel = signal<ParallelFormValue>({ resistors: ['', ''] });
+  private readonly parallelModel = signal<ResistorListFormValue>({ resistors: ['', ''] });
 
   public readonly parallelForm = form(this.parallelModel, (path) => {
     applyEach(path.resistors, resistorFieldSchema);
@@ -78,19 +78,13 @@ export class CircuitStore {
   );
 
   public readonly dividerValidationMessage = computed(() => {
-    const vinMessage = this.getFieldMessage(this.dividerForm.vin);
-    if (vinMessage) {
-      return vinMessage;
-    }
-
-    const r1Message = this.getFieldMessage(this.dividerForm.r1);
-    if (r1Message) {
-      return r1Message;
-    }
-
-    const r2Message = this.getFieldMessage(this.dividerForm.r2);
-    if (r2Message) {
-      return r2Message;
+    const fieldMessage = this.getFirstFieldMessage([
+      this.dividerForm.vin,
+      this.dividerForm.r1,
+      this.dividerForm.r2,
+    ]);
+    if (fieldMessage) {
+      return fieldMessage;
     }
 
     const error = this.dividerViewModel().error;
@@ -101,18 +95,22 @@ export class CircuitStore {
     this.activeTab.set(tab);
   }
 
-  public addResistor(formName: 'series' | 'parallel'): void {
-    const model = formName === 'series' ? this.seriesModel : this.parallelModel;
-    model.update((current) => ({ resistors: [...current.resistors, ''] }));
+  public addResistor(formName: ResistorListTab): void {
+    this.resistorListModel(formName).update((current) => ({
+      resistors: [...current.resistors, ''],
+    }));
   }
 
-  public removeResistor(formName: 'series' | 'parallel', index: number): void {
-    const model = formName === 'series' ? this.seriesModel : this.parallelModel;
-    model.update((current) =>
+  public removeResistor(formName: ResistorListTab, index: number): void {
+    this.resistorListModel(formName).update((current) =>
       current.resistors.length > 1
         ? { resistors: current.resistors.filter((_, i) => i !== index) }
         : current,
     );
+  }
+
+  public resistorCount(formName: ResistorListTab): number {
+    return this.resistorListForm(formName).resistors.length;
   }
 
   public resetForm(tab: CircuitTab): void {
@@ -133,17 +131,17 @@ export class CircuitStore {
     resistors: FieldTree<string[]>,
     error: CircuitServiceError<CircuitErrorCode> | null,
   ): string {
-    const formMessage = this.getResistorFormValidationMessage(resistors);
-    if (formMessage) {
-      return formMessage;
+    const fieldMessage = this.getFirstFieldMessage(resistors);
+    if (fieldMessage) {
+      return fieldMessage;
     }
 
     return error ? getCircuitValidationMessage(error.code) : '';
   }
 
-  private getResistorFormValidationMessage(resistors: FieldTree<string[]>): string {
-    for (const item of resistors) {
-      const message = this.getFieldMessage(item);
+  private getFirstFieldMessage(fields: Iterable<FieldTree<string>>): string {
+    for (const field of fields) {
+      const message = field().errors()[0]?.message ?? '';
       if (message) {
         return message;
       }
@@ -152,7 +150,11 @@ export class CircuitStore {
     return '';
   }
 
-  private getFieldMessage(field: FieldTree<string>): string {
-    return field().errors()[0]?.message ?? '';
+  private resistorListModel(formName: ResistorListTab): WritableSignal<ResistorListFormValue> {
+    return formName === 'series' ? this.seriesModel : this.parallelModel;
+  }
+
+  private resistorListForm(formName: ResistorListTab): FieldTree<ResistorListFormValue> {
+    return formName === 'series' ? this.seriesForm : this.parallelForm;
   }
 }

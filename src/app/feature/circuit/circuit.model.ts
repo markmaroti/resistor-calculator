@@ -1,3 +1,10 @@
+import type {
+  ServiceError as CircuitServiceError,
+  ServiceResult as CircuitServiceResult,
+} from '@shared/utils/service-result.util';
+
+export type { CircuitServiceError, CircuitServiceResult };
+
 export const CircuitErrorCode = {
   EmptyInput: 'EMPTY_INPUT',
   InvalidResistor: 'INVALID_RESISTOR',
@@ -6,21 +13,7 @@ export const CircuitErrorCode = {
 
 export type CircuitErrorCode = (typeof CircuitErrorCode)[keyof typeof CircuitErrorCode];
 
-export type CircuitServiceError<TCode extends string> = {
-  code: TCode;
-  message: string;
-};
-
-export type CircuitServiceResult<TData, TCode extends string> = {
-  data: TData;
-  error: CircuitServiceError<TCode> | null;
-};
-
-export type SeriesInput = {
-  resistors: number[];
-};
-
-export type ParallelInput = {
+export type ResistorListInput = {
   resistors: number[];
 };
 
@@ -30,11 +23,7 @@ export type DividerInput = {
   r2: number;
 };
 
-export type SeriesData = {
-  totalOhms: number;
-};
-
-export type ParallelData = {
+export type ResistorListData = {
   totalOhms: number;
 };
 
@@ -43,8 +32,8 @@ export type DividerData = {
   current: number;
 };
 
-export type SeriesResult = CircuitServiceResult<SeriesData, CircuitErrorCode>;
-export type ParallelResult = CircuitServiceResult<ParallelData, CircuitErrorCode>;
+export type SeriesResult = CircuitServiceResult<ResistorListData, CircuitErrorCode>;
+export type ParallelResult = CircuitServiceResult<ResistorListData, CircuitErrorCode>;
 export type DividerResult = CircuitServiceResult<DividerData, CircuitErrorCode>;
 
 export type CircuitResult = SeriesResult | ParallelResult | DividerResult;
@@ -59,11 +48,7 @@ export const CircuitValidationError = {
 export type CircuitValidationError =
   (typeof CircuitValidationError)[keyof typeof CircuitValidationError];
 
-export type SeriesFormValue = {
-  resistors: string[];
-};
-
-export type ParallelFormValue = {
+export type ResistorListFormValue = {
   resistors: string[];
 };
 
@@ -74,3 +59,5 @@ export type DividerFormValue = {
 };
 
 export type CircuitTab = 'series' | 'parallel' | 'divider';
+
+export type ResistorListTab = Exclude<CircuitTab, 'divider'>;

@@ -1,6 +1,8 @@
 import { EffectRef, Injectable, Injector, OnDestroy, Signal, effect, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ResettableTimer } from '@shared/utils/resettable-timer.util';
+
 import { ResistorStore } from '@resistor/state/resistor.store';
 import { fromQueryParams, toQueryParams } from '@resistor/state/url-state.mapper';
 import {
@@ -28,13 +30,13 @@ export class ResistorUrlStateService implements OnDestroy {
   private readonly router = inject(Router);
   private readonly store = inject(ResistorStore);
 
-  private urlSyncTimer: ReturnType<typeof setTimeout> | null = null;
+  private readonly urlSyncTimer = new ResettableTimer();
   private urlSyncEffectRef: EffectRef | null = null;
   private hasInitializedUrlSync = false;
   private lastScheduledUrlSyncFingerprint: string | null = null;
 
   public ngOnDestroy(): void {
-    this.clearUrlSyncTimer();
+    this.urlSyncTimer.clear();
     this.urlSyncEffectRef?.destroy();
     this.urlSyncEffectRef = null;
   }
@@ -68,7 +70,7 @@ export class ResistorUrlStateService implements OnDestroy {
 
         if (this.areManagedQueryParamsEqual(nextManagedParams, currentManagedParams)) {
           this.lastScheduledUrlSyncFingerprint = null;
-          this.clearUrlSyncTimer();
+          this.urlSyncTimer.clear();
           return;
         }
 
@@ -103,16 +105,8 @@ export class ResistorUrlStateService implements OnDestroy {
     return origin ? `${origin}${serializedUrl}` : serializedUrl;
   }
 
-  private clearUrlSyncTimer(): void {
-    if (this.urlSyncTimer !== null) {
-      clearTimeout(this.urlSyncTimer);
-      this.urlSyncTimer = null;
-    }
-  }
-
   private scheduleUrlSync(nextManagedParams: ResistorUrlQueryParamMap, fingerprint: string): void {
-    this.clearUrlSyncTimer();
-    this.urlSyncTimer = setTimeout(() => {
+    this.urlSyncTimer.schedule(() => {
       const currentQueryParams = this.getCurrentQueryParams();
       const currentManagedParams = toQueryParams(fromQueryParams(currentQueryParams));
 

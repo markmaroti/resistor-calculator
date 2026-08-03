@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy, signal } from '@angular/core';
 
 import { copyTextToClipboard } from '@shared/utils/clipboard.util';
+import { ResettableTimer } from '@shared/utils/resettable-timer.util';
 
 import { buildResistanceCopyText } from '@resistor/utils/resistance-copy-text.util';
 
@@ -14,47 +15,45 @@ export type ResistanceCopyInput = {
   tcrPpm: number | null;
 };
 
+/**
+ * Tracks a single "copied to clipboard" feedback signal that auto-resets to `idle`
+ * after a fixed delay, reusable across any number of independent copy actions.
+ */
+class TransientCopyState {
+  private readonly resetTimer = new ResettableTimer();
+
+  public readonly state = signal<ClipboardCopyState>('idle');
+
+  public trigger(copied: boolean): void {
+    this.state.set(copied ? 'success' : 'error');
+    this.resetTimer.schedule(() => this.state.set('idle'), COPY_STATE_RESET_MS);
+  }
+
+  public clearTimer(): void {
+    this.resetTimer.clear();
+  }
+}
+
 @Injectable()
 export class ResistorClipboardService implements OnDestroy {
-  private resultCopyTimer: ReturnType<typeof setTimeout> | null = null;
-  private shareLinkCopyTimer: ReturnType<typeof setTimeout> | null = null;
+  private readonly resultCopy = new TransientCopyState();
+  private readonly shareLinkCopy = new TransientCopyState();
 
-  public readonly resultCopyState = signal<ClipboardCopyState>('idle');
-  public readonly shareLinkCopyState = signal<ClipboardCopyState>('idle');
+  public readonly resultCopyState = this.resultCopy.state;
+  public readonly shareLinkCopyState = this.shareLinkCopy.state;
 
   public ngOnDestroy(): void {
-    this.clearResultCopyTimer();
-    this.clearShareLinkCopyTimer();
+    this.resultCopy.clearTimer();
+    this.shareLinkCopy.clearTimer();
   }
 
   public async copyResistanceResult(input: ResistanceCopyInput): Promise<void> {
     const copied = await copyTextToClipboard(buildResistanceCopyText(input));
-    this.resultCopyState.set(copied ? 'success' : 'error');
-    this.clearResultCopyTimer();
-    this.resultCopyTimer = setTimeout(() => this.resultCopyState.set('idle'), COPY_STATE_RESET_MS);
+    this.resultCopy.trigger(copied);
   }
 
   public async copyShareLink(url: string): Promise<void> {
     const copied = await copyTextToClipboard(url);
-    this.shareLinkCopyState.set(copied ? 'success' : 'error');
-    this.clearShareLinkCopyTimer();
-    this.shareLinkCopyTimer = setTimeout(
-      () => this.shareLinkCopyState.set('idle'),
-      COPY_STATE_RESET_MS,
-    );
-  }
-
-  private clearResultCopyTimer(): void {
-    if (this.resultCopyTimer !== null) {
-      clearTimeout(this.resultCopyTimer);
-      this.resultCopyTimer = null;
-    }
-  }
-
-  private clearShareLinkCopyTimer(): void {
-    if (this.shareLinkCopyTimer !== null) {
-      clearTimeout(this.shareLinkCopyTimer);
-      this.shareLinkCopyTimer = null;
-    }
+    this.shareLinkCopy.trigger(copied);
   }
 }

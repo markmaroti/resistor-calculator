@@ -1,5 +1,3 @@
-export const URL_STATE_SCHEMA_VERSION = 1 as const;
-
 export const URL_STATE_PARAM_KEY = {
   BandCount: 'bc',
   Digit1: 'd1',
@@ -75,22 +73,3 @@ export type ResistorUrlState = {
   forward?: ForwardUrlState;
   reverse?: ReverseUrlState;
 };
-
-/**
- * URL state v1 compatibility contract:
- * - Unknown query params are ignored.
- * - Missing or invalid params fall back to feature defaults.
- * - Forward-only params (d3, tc) are only relevant for matching band counts.
- * - Reverse params are only relevant when mode is "reverse".
- */
-export const URL_STATE_COMPATIBILITY = {
-  unknownQueryParams: 'ignore',
-  invalidOrMissingParams: 'fallback_to_defaults',
-  forward: {
-    digit3RelevantBandCounts: ['5', '6'],
-    tcrRelevantBandCounts: ['6'],
-  },
-  reverse: {
-    activeWhenCalculatorMode: URL_CALCULATOR_MODE.Reverse,
-  },
-} as const;

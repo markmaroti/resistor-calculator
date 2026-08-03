@@ -1,3 +1,7 @@
+import type { ServiceError, ServiceResult } from '@shared/utils/service-result.util';
+
+export type { ServiceError, ServiceResult };
+
 export const Color = {
   Black: 'Black',
   Brown: 'Brown',
@@ -117,16 +121,6 @@ export type ResistanceResult = {
   ohms: number;
   tolerancePct: number | null;
   tcrPpm: number | null;
-};
-
-export type ServiceError<TCode extends string> = {
-  code: TCode;
-  message: string;
-};
-
-export type ServiceResult<TData, TCode extends string> = {
-  data: TData;
-  error: ServiceError<TCode> | null;
 };
 
 export const ResistanceErrorCode = {
