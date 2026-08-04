@@ -58,6 +58,12 @@ export type DividerFormValue = {
   r2: string;
 };
 
-export type CircuitTab = 'series' | 'parallel' | 'divider';
+export const CircuitTab = {
+  Series: 'series',
+  Parallel: 'parallel',
+  Divider: 'divider',
+} as const;
 
-export type ResistorListTab = Exclude<CircuitTab, 'divider'>;
+export type CircuitTab = (typeof CircuitTab)[keyof typeof CircuitTab];
+
+export type ResistorListTab = Exclude<CircuitTab, typeof CircuitTab.Divider>;

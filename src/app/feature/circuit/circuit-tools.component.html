@@ -33,36 +33,38 @@
     }
   </div>
 
-  @if (store.activeTab() === 'series') {
-    <app-resistor-list-panel
-      [form]="store.seriesForm"
-      [totalOhms]="store.seriesViewModel().totalOhms"
-      [validationMessage]="store.seriesValidationMessage()"
-      (addResistor)="store.addResistor('series')"
-      (removeLastResistor)="removeLastResistor('series')"
-      (resetForm)="store.resetForm('series')"
-    />
-  }
-
-  @if (store.activeTab() === 'parallel') {
-    <app-resistor-list-panel
-      [form]="store.parallelForm"
-      [totalOhms]="store.parallelViewModel().totalOhms"
-      [validationMessage]="store.parallelValidationMessage()"
-      (addResistor)="store.addResistor('parallel')"
-      (removeLastResistor)="removeLastResistor('parallel')"
-      (resetForm)="store.resetForm('parallel')"
-    />
-  }
-
-  @if (store.activeTab() === 'divider') {
-    @let dividerVm = store.dividerViewModel();
-    <app-divider-panel
-      [form]="store.dividerForm"
-      [vout]="dividerVm.vout"
-      [current]="dividerVm.current"
-      [validationMessage]="store.dividerValidationMessage()"
-      (resetForm)="store.resetForm('divider')"
-    />
+  @let activeTab = store.activeTab();
+  @switch (activeTab) {
+    @case (CircuitTab.Series) {
+      <app-resistor-list-panel
+        [form]="store.seriesForm"
+        [totalOhms]="store.seriesViewModel().totalOhms"
+        [validationMessage]="store.seriesValidationMessage()"
+        (addResistor)="store.addResistor(CircuitTab.Series)"
+        (removeLastResistor)="removeLastResistor(CircuitTab.Series)"
+        (resetForm)="store.resetForm(CircuitTab.Series)"
+      />
+    }
+    @case (CircuitTab.Parallel) {
+      <app-resistor-list-panel
+        [form]="store.parallelForm"
+        [totalOhms]="store.parallelViewModel().totalOhms"
+        [validationMessage]="store.parallelValidationMessage()"
+        (addResistor)="store.addResistor(CircuitTab.Parallel)"
+        (removeLastResistor)="removeLastResistor(CircuitTab.Parallel)"
+        (resetForm)="store.resetForm(CircuitTab.Parallel)"
+      />
+    }
+    @case (CircuitTab.Divider) {
+      @let dividerVm = store.dividerViewModel();
+      <app-divider-panel
+        [form]="store.dividerForm"
+        [vout]="dividerVm.vout"
+        [current]="dividerVm.current"
+        [validationMessage]="store.dividerValidationMessage()"
+        (resetForm)="store.resetForm(CircuitTab.Divider)"
+      />
+    }
+    @default never;
   }
 </section>

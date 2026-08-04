@@ -26,7 +26,7 @@ import { getCircuitValidationMessage } from './validation-messages';
 export class CircuitStore {
   private readonly service = inject(CircuitService);
 
-  public readonly activeTab = signal<CircuitTab>('series');
+  public readonly activeTab = signal<CircuitTab>(CircuitTab.Series);
 
   private readonly seriesModel = signal<ResistorListFormValue>({ resistors: ['', ''] });
 
@@ -115,13 +115,13 @@ export class CircuitStore {
 
   public resetForm(tab: CircuitTab): void {
     switch (tab) {
-      case 'series':
+      case CircuitTab.Series:
         this.seriesForm().reset({ resistors: ['', ''] });
         break;
-      case 'parallel':
+      case CircuitTab.Parallel:
         this.parallelForm().reset({ resistors: ['', ''] });
         break;
-      case 'divider':
+      case CircuitTab.Divider:
         this.dividerForm().reset({ vin: '', r1: '', r2: '' });
         break;
     }
@@ -151,10 +151,10 @@ export class CircuitStore {
   }
 
   private resistorListModel(formName: ResistorListTab): WritableSignal<ResistorListFormValue> {
-    return formName === 'series' ? this.seriesModel : this.parallelModel;
+    return formName === CircuitTab.Series ? this.seriesModel : this.parallelModel;
   }
 
   private resistorListForm(formName: ResistorListTab): FieldTree<ResistorListFormValue> {
-    return formName === 'series' ? this.seriesForm : this.parallelForm;
+    return formName === CircuitTab.Series ? this.seriesForm : this.parallelForm;
   }
 }

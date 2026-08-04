@@ -3,6 +3,7 @@ import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 
+import { CircuitTab } from './circuit.model';
 import { CircuitToolsComponent } from './circuit-tools.component';
 
 describe('CircuitToolsComponent', () => {
@@ -28,12 +29,12 @@ describe('CircuitToolsComponent', () => {
     fixture.detectChanges();
     expect(fixture.debugElement.query(By.css('app-resistor-list-panel'))).toBeTruthy();
 
-    component.store.setActiveTab('parallel');
+    component.store.setActiveTab(CircuitTab.Parallel);
     fixture.detectChanges();
     await fixture.whenStable();
     expect(fixture.debugElement.query(By.css('app-resistor-list-panel'))).toBeTruthy();
 
-    component.store.setActiveTab('divider');
+    component.store.setActiveTab(CircuitTab.Divider);
     fixture.detectChanges();
     await fixture.whenStable();
     expect(fixture.debugElement.query(By.css('app-divider-panel'))).toBeTruthy();
@@ -49,20 +50,20 @@ describe('CircuitToolsComponent', () => {
   });
 
   it('removeLastResistor uses the last series index', async () => {
-    component.store.addResistor('series');
+    component.store.addResistor(CircuitTab.Series);
     const removeSpy = vi.spyOn(component.store, 'removeResistor');
 
-    component.removeLastResistor('series');
-    expect(removeSpy).toHaveBeenCalledWith('series', 2);
+    component.removeLastResistor(CircuitTab.Series);
+    expect(removeSpy).toHaveBeenCalledWith(CircuitTab.Series, 2);
   });
 
   it('removeLastResistor uses the last parallel index', async () => {
-    component.store.setActiveTab('parallel');
-    component.store.addResistor('parallel');
-    component.store.addResistor('parallel');
+    component.store.setActiveTab(CircuitTab.Parallel);
+    component.store.addResistor(CircuitTab.Parallel);
+    component.store.addResistor(CircuitTab.Parallel);
     const removeSpy = vi.spyOn(component.store, 'removeResistor');
 
-    component.removeLastResistor('parallel');
-    expect(removeSpy).toHaveBeenCalledWith('parallel', 3);
+    component.removeLastResistor(CircuitTab.Parallel);
+    expect(removeSpy).toHaveBeenCalledWith(CircuitTab.Parallel, 3);
   });
 });

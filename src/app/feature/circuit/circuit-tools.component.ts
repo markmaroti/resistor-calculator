@@ -7,11 +7,16 @@ import { ResistorListPanelComponent } from './components/resistor-list-panel/res
 import { DividerPanelComponent } from './components/divider-panel/divider-panel.component';
 import { CircuitTab, ResistorListTab } from './circuit.model';
 
-const TABS: { key: CircuitTab; label: string }[] = [
-  { key: 'series', label: 'Series' },
-  { key: 'parallel', label: 'Parallel' },
-  { key: 'divider', label: 'Divider' },
-];
+const CIRCUIT_TAB_LABEL: Record<CircuitTab, string> = {
+  [CircuitTab.Series]: 'Series',
+  [CircuitTab.Parallel]: 'Parallel',
+  [CircuitTab.Divider]: 'Divider',
+};
+
+const TABS: { key: CircuitTab; label: string }[] = Object.values(CircuitTab).map((key) => ({
+  key,
+  label: CIRCUIT_TAB_LABEL[key],
+}));
 
 @Component({
   selector: 'app-circuit-tools',
@@ -22,6 +27,8 @@ const TABS: { key: CircuitTab; label: string }[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CircuitToolsComponent {
+  protected readonly CircuitTab = CircuitTab;
+
   public readonly tabs = TABS;
   public readonly store = inject(CircuitStore);
 

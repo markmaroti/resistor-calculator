@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { describe, expect, it } from 'vitest';
 
+import { CircuitTab } from '@circuit/circuit.model';
 import { CircuitStore } from '@circuit/state/circuit.store';
 
 import { ResistorListPanelComponent } from './resistor-list-panel.component';
@@ -59,7 +60,7 @@ describe('ResistorListPanelComponent', () => {
   });
 
   it('hides remove button when only one resistor is present', async () => {
-    store.removeResistor('series', 1);
+    store.removeResistor(CircuitTab.Series, 1);
     fixture.componentRef.setInput('form', store.seriesForm);
     fixture.componentRef.setInput('totalOhms', null);
     fixture.componentRef.setInput('validationMessage', '');

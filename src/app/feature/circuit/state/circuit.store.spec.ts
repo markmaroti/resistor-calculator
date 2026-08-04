@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
 
+import { CircuitTab } from '@circuit/circuit.model';
+
 import { CircuitStore } from './circuit.store';
 
 describe('CircuitStore', () => {
@@ -38,16 +40,16 @@ describe('CircuitStore', () => {
   it('adds and removes resistor rows, keeping at least one row', () => {
     const store = createStore();
 
-    store.addResistor('series');
+    store.addResistor(CircuitTab.Series);
     expect(store.seriesForm().value().resistors.length).toBe(3);
 
-    store.removeResistor('series', 2);
+    store.removeResistor(CircuitTab.Series, 2);
     expect(store.seriesForm().value().resistors.length).toBe(2);
 
-    store.removeResistor('series', 0);
+    store.removeResistor(CircuitTab.Series, 0);
     expect(store.seriesForm().value().resistors.length).toBe(1);
 
-    store.removeResistor('series', 0);
+    store.removeResistor(CircuitTab.Series, 0);
     expect(store.seriesForm().value().resistors.length).toBe(1);
   });
 
@@ -63,7 +65,7 @@ describe('CircuitStore', () => {
     const store = createStore();
 
     store.seriesForm().value.set({ resistors: ['1k', '2k', '3k'] });
-    store.resetForm('series');
+    store.resetForm(CircuitTab.Series);
 
     expect(store.seriesForm().value()).toEqual({ resistors: ['', ''] });
     expect(store.seriesForm().dirty()).toBe(false);
@@ -90,7 +92,7 @@ describe('CircuitStore', () => {
     const store = createStore();
 
     store.dividerForm().value.set({ vin: '5', r1: '1k', r2: '2k' });
-    store.resetForm('divider');
+    store.resetForm(CircuitTab.Divider);
 
     expect(store.dividerForm().value()).toEqual({ vin: '', r1: '', r2: '' });
     expect(store.dividerForm().dirty()).toBe(false);
