@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import {
   CircuitErrorCode,
@@ -10,7 +10,7 @@ import {
   SeriesResult,
 } from '@circuit/circuit.model';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class CircuitService {
   public calculateSeries(input: ResistorListInput): SeriesResult {
     const error = CircuitService.validateResistorList(input.resistors);

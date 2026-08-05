@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import {
   BAND_COUNTS,
@@ -25,7 +25,7 @@ const DIGIT_TO_COLOR: Partial<Record<number, Color>> = Object.fromEntries(
     .map(([color, digit]) => [digit as number, color]),
 );
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ResistorService {
   private static readonly MAX_REVERSE_CANDIDATES = 50;
 

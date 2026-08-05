@@ -1,5 +1,5 @@
 import { httpResource } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { Color } from '@resistor/resistor.model';
 
@@ -15,7 +15,7 @@ const LOADING_DEFAULT: ResistorReference = {
   tcr: [],
 };
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ResistorReferenceService {
   public readonly reference = httpResource<ResistorReference>(() => '/resistor-reference.json', {
     defaultValue: LOADING_DEFAULT,
