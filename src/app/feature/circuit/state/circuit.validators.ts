@@ -8,8 +8,8 @@ import {
 import { CircuitValidationError } from '@circuit/circuit.model';
 
 import {
+  getCircuitFieldValidationMessage,
   getCircuitResistorValidationMessage,
-  getCircuitValidationMessage,
 } from './validation-messages';
 
 export type CircuitResistorValidationError = {
@@ -58,13 +58,8 @@ function isBlank(value: string): boolean {
   return !value || value.trim() === '';
 }
 
-const REQUIRED_MESSAGE = getCircuitValidationMessage(CircuitValidationError.EmptyInput);
+const REQUIRED_MESSAGE = getCircuitFieldValidationMessage(CircuitValidationError.EmptyInput);
 
-/**
- * Shared field-level rules for any string field that represents a resistor value
- * (series/parallel resistor list items, divider r1/r2). Apply with `apply()`/`applyEach()`
- * instead of repeating `required()` + `validate()` at every call site.
- */
 export const resistorFieldSchema = schema<string>((path) => {
   required(path, { message: REQUIRED_MESSAGE });
   validate(path, ({ value }) => {
@@ -77,7 +72,6 @@ export const resistorFieldSchema = schema<string>((path) => {
   });
 });
 
-/** Shared field-level rules for a plain numeric string field (divider vin). */
 export const circuitNumberFieldSchema = schema<string>((path) => {
   required(path, { message: REQUIRED_MESSAGE });
   validate(path, ({ value }) => {
@@ -86,6 +80,6 @@ export const circuitNumberFieldSchema = schema<string>((path) => {
       return null;
     }
 
-    return { kind: result.kind, message: getCircuitValidationMessage(result.code) };
+    return { kind: result.kind, message: getCircuitFieldValidationMessage(result.code) };
   });
 });

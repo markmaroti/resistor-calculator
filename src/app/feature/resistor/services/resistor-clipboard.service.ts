@@ -15,10 +15,6 @@ export type ResistanceCopyInput = {
   tcrPpm: number | null;
 };
 
-/**
- * Tracks a single "copied to clipboard" feedback signal that auto-resets to `idle`
- * after a fixed delay, reusable across any number of independent copy actions.
- */
 class TransientCopyState {
   private readonly resetTimer = new ResettableTimer();
 

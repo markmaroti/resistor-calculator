@@ -22,11 +22,10 @@ export const REVERSE_SERVICE_VALIDATION_MESSAGES: Record<ReverseErrorCode, strin
   [ReverseErrorCode.NoCandidates]: 'No matching resistor bands found for the selected input.',
 };
 
-export function getReverseValidationMessage(
-  code: ResistanceValueErrorCode | ReverseErrorCode,
-): string {
-  if (code in RESISTANCE_VALUE_MESSAGES) {
-    return RESISTANCE_VALUE_MESSAGES[code as ResistanceValueErrorCode];
-  }
-  return REVERSE_SERVICE_VALIDATION_MESSAGES[code as ReverseErrorCode];
+export function getReverseParseValidationMessage(code: ResistanceValueErrorCode): string {
+  return RESISTANCE_VALUE_MESSAGES[code];
+}
+
+export function getReverseServiceValidationMessage(code: ReverseErrorCode): string {
+  return REVERSE_SERVICE_VALIDATION_MESSAGES[code];
 }

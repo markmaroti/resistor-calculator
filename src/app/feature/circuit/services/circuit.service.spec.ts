@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
+import { CircuitErrorCode } from '@circuit/circuit.model';
+
 import { CircuitService } from './circuit.service';
 
 describe('CircuitService', () => {
@@ -36,7 +38,7 @@ describe('CircuitService', () => {
 
       expect(result.data.totalOhms).toBe(0);
       expect(result.error).not.toBeNull();
-      expect(result.error!.code).toBe('EMPTY_INPUT');
+      expect(result.error!.code).toBe(CircuitErrorCode.EmptyInput);
     });
 
     it('returns InvalidResistor error for zero', () => {
@@ -44,7 +46,7 @@ describe('CircuitService', () => {
 
       expect(result.data.totalOhms).toBe(0);
       expect(result.error).not.toBeNull();
-      expect(result.error!.code).toBe('INVALID_RESISTOR');
+      expect(result.error!.code).toBe(CircuitErrorCode.InvalidResistor);
     });
 
     it('returns InvalidResistor error for negative value', () => {
@@ -52,7 +54,7 @@ describe('CircuitService', () => {
 
       expect(result.data.totalOhms).toBe(0);
       expect(result.error).not.toBeNull();
-      expect(result.error!.code).toBe('INVALID_RESISTOR');
+      expect(result.error!.code).toBe(CircuitErrorCode.InvalidResistor);
     });
 
     it('returns InvalidResistor error for NaN', () => {
@@ -60,7 +62,7 @@ describe('CircuitService', () => {
 
       expect(result.data.totalOhms).toBe(0);
       expect(result.error).not.toBeNull();
-      expect(result.error!.code).toBe('INVALID_RESISTOR');
+      expect(result.error!.code).toBe(CircuitErrorCode.InvalidResistor);
     });
 
     it('returns InvalidResistor error for Infinity', () => {
@@ -68,7 +70,7 @@ describe('CircuitService', () => {
 
       expect(result.data.totalOhms).toBe(0);
       expect(result.error).not.toBeNull();
-      expect(result.error!.code).toBe('INVALID_RESISTOR');
+      expect(result.error!.code).toBe(CircuitErrorCode.InvalidResistor);
     });
   });
 
@@ -99,7 +101,7 @@ describe('CircuitService', () => {
 
       expect(result.data.totalOhms).toBe(0);
       expect(result.error).not.toBeNull();
-      expect(result.error!.code).toBe('EMPTY_INPUT');
+      expect(result.error!.code).toBe(CircuitErrorCode.EmptyInput);
     });
 
     it('returns InvalidResistor error for zero', () => {
@@ -107,7 +109,7 @@ describe('CircuitService', () => {
 
       expect(result.data.totalOhms).toBe(0);
       expect(result.error).not.toBeNull();
-      expect(result.error!.code).toBe('INVALID_RESISTOR');
+      expect(result.error!.code).toBe(CircuitErrorCode.InvalidResistor);
     });
 
     it('returns InvalidResistor error for NaN', () => {
@@ -115,7 +117,7 @@ describe('CircuitService', () => {
 
       expect(result.data.totalOhms).toBe(0);
       expect(result.error).not.toBeNull();
-      expect(result.error!.code).toBe('INVALID_RESISTOR');
+      expect(result.error!.code).toBe(CircuitErrorCode.InvalidResistor);
     });
 
     it('returns InvalidResistor error for Infinity', () => {
@@ -123,7 +125,7 @@ describe('CircuitService', () => {
 
       expect(result.data.totalOhms).toBe(0);
       expect(result.error).not.toBeNull();
-      expect(result.error!.code).toBe('INVALID_RESISTOR');
+      expect(result.error!.code).toBe(CircuitErrorCode.InvalidResistor);
     });
   });
 
@@ -150,7 +152,7 @@ describe('CircuitService', () => {
       expect(result.data.vout).toBe(0);
       expect(result.data.current).toBe(0);
       expect(result.error).not.toBeNull();
-      expect(result.error!.code).toBe('INVALID_RESISTOR');
+      expect(result.error!.code).toBe(CircuitErrorCode.InvalidResistor);
     });
 
     it('returns InvalidResistor error for zero R1', () => {
@@ -159,7 +161,7 @@ describe('CircuitService', () => {
       expect(result.data.vout).toBe(0);
       expect(result.data.current).toBe(0);
       expect(result.error).not.toBeNull();
-      expect(result.error!.code).toBe('INVALID_RESISTOR');
+      expect(result.error!.code).toBe(CircuitErrorCode.InvalidResistor);
     });
 
     it('returns InvalidResistor error for zero R2', () => {
@@ -168,7 +170,7 @@ describe('CircuitService', () => {
       expect(result.data.vout).toBe(0);
       expect(result.data.current).toBe(0);
       expect(result.error).not.toBeNull();
-      expect(result.error!.code).toBe('INVALID_RESISTOR');
+      expect(result.error!.code).toBe(CircuitErrorCode.InvalidResistor);
     });
 
     it('returns InvalidResistor error for NaN', () => {
@@ -177,7 +179,7 @@ describe('CircuitService', () => {
       expect(result.data.vout).toBe(0);
       expect(result.data.current).toBe(0);
       expect(result.error).not.toBeNull();
-      expect(result.error!.code).toBe('INVALID_RESISTOR');
+      expect(result.error!.code).toBe(CircuitErrorCode.InvalidResistor);
     });
 
     it('returns InvalidResistor error for Infinity', () => {
@@ -186,7 +188,7 @@ describe('CircuitService', () => {
       expect(result.data.vout).toBe(0);
       expect(result.data.current).toBe(0);
       expect(result.error).not.toBeNull();
-      expect(result.error!.code).toBe('INVALID_RESISTOR');
+      expect(result.error!.code).toBe(CircuitErrorCode.InvalidResistor);
     });
   });
 });

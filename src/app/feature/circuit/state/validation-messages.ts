@@ -16,17 +16,16 @@ export function getCircuitResistorValidationMessage(code: ResistanceValueErrorCo
   return RESISTANCE_VALUE_MESSAGES[code];
 }
 
+export function getCircuitFieldValidationMessage(code: CircuitValidationError): string {
+  return CIRCUIT_VALIDATION_MESSAGES[code];
+}
+
 export const CIRCUIT_SERVICE_MESSAGES: Record<CircuitErrorCode, string> = {
   [CircuitErrorCode.EmptyInput]: 'At least one resistor is required.',
   [CircuitErrorCode.InvalidResistor]: 'All resistor values must be valid numbers greater than 0.',
   [CircuitErrorCode.DivisionByZero]: 'Calculation resulted in division by zero.',
 };
 
-export function getCircuitValidationMessage(
-  code: CircuitValidationError | CircuitErrorCode,
-): string {
-  if (code in CIRCUIT_VALIDATION_MESSAGES) {
-    return CIRCUIT_VALIDATION_MESSAGES[code as CircuitValidationError];
-  }
-  return CIRCUIT_SERVICE_MESSAGES[code as CircuitErrorCode];
+export function getCircuitServiceValidationMessage(code: CircuitErrorCode): string {
+  return CIRCUIT_SERVICE_MESSAGES[code];
 }

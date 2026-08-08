@@ -17,7 +17,11 @@ import {
 
 import { toReverseInput, toReverseViewModel, toViewModel } from './resistor.mappers';
 import { ResistorUrlState, UrlBandCountValue } from './url-state.model';
-import { getResistanceValidationMessage, getReverseValidationMessage } from './validation-messages';
+import {
+  getReverseParseValidationMessage,
+  getReverseServiceValidationMessage,
+  getResistanceValidationMessage,
+} from './validation-messages';
 
 @Injectable()
 export class ResistorStore {
@@ -88,10 +92,10 @@ export class ResistorStore {
   public readonly reverseValidationMessage = computed(() => {
     const vm = this.reverseViewModel();
     if (vm.parseErrorCode) {
-      return getReverseValidationMessage(vm.parseErrorCode);
+      return getReverseParseValidationMessage(vm.parseErrorCode);
     }
     if (vm.serviceErrorCode) {
-      return getReverseValidationMessage(vm.serviceErrorCode);
+      return getReverseServiceValidationMessage(vm.serviceErrorCode);
     }
 
     return '';

@@ -20,7 +20,7 @@ import {
   toSeriesViewModel,
 } from './circuit.mappers';
 import { circuitNumberFieldSchema, resistorFieldSchema } from './circuit.validators';
-import { getCircuitValidationMessage } from './validation-messages';
+import { getCircuitServiceValidationMessage } from './validation-messages';
 
 @Injectable()
 export class CircuitStore {
@@ -88,7 +88,7 @@ export class CircuitStore {
     }
 
     const error = this.dividerViewModel().error;
-    return error ? getCircuitValidationMessage(error.code) : '';
+    return error ? getCircuitServiceValidationMessage(error.code) : '';
   });
 
   public setActiveTab(tab: CircuitTab): void {
@@ -136,7 +136,7 @@ export class CircuitStore {
       return fieldMessage;
     }
 
-    return error ? getCircuitValidationMessage(error.code) : '';
+    return error ? getCircuitServiceValidationMessage(error.code) : '';
   }
 
   private getFirstFieldMessage(fields: Iterable<FieldTree<string>>): string {
