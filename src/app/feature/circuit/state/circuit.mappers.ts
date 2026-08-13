@@ -41,7 +41,7 @@ export const toParallelInput = toResistorListInput;
 
 export function toDividerInput(value: DividerFormValue): DividerInput {
   return {
-    vin: parseFloat(value.vin),
+    vin: parseCircuitNumber(value.vin),
     r1: parseResistanceToOhms(value.r1),
     r2: parseResistanceToOhms(value.r2),
   };
@@ -73,6 +73,12 @@ export function toDividerViewModel(
     current: result.error ? null : result.data.current,
     error: result.error,
   };
+}
+
+const NON_DECIMAL_NUMERIC_LITERAL = /^[+-]?0[bBoOxX]/;
+
+export function parseCircuitNumber(value: string): number {
+  return NON_DECIMAL_NUMERIC_LITERAL.test(value.trim()) ? NaN : Number(value);
 }
 
 function parseResistanceToOhms(value: string): number {

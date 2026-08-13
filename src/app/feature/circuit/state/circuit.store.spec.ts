@@ -88,6 +88,15 @@ describe('CircuitStore', () => {
     expect(store.dividerValidationMessage()).toBe('Enter a valid number.');
   });
 
+  it('rejects an SI-suffixed vin value instead of silently truncating it', () => {
+    const store = createStore();
+
+    store.dividerForm().value.set({ vin: '4.7k', r1: '1k', r2: '1k' });
+
+    expect(store.dividerValidationMessage()).toBe('Enter a valid number.');
+    expect(store.dividerViewModel().vout).toBeNull();
+  });
+
   it('resets divider form back to empty values', () => {
     const store = createStore();
 

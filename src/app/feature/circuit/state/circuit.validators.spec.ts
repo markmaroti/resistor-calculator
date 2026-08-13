@@ -35,8 +35,26 @@ describe('validateCircuitNumberValue', () => {
     expect(validateCircuitNumberValue('12.5')).toBeNull();
   });
 
-  it('keeps parseFloat behavior for SI-like vin input', () => {
-    expect(validateCircuitNumberValue('4.7k')).toBeNull();
+  it('rejects SI-suffixed input for a plain number field', () => {
+    expect(validateCircuitNumberValue('4.7k')).toEqual({
+      kind: 'circuitNumber',
+      code: CircuitValidationError.InvalidFormat,
+    });
+  });
+
+  it('rejects hex/octal/binary numeric literal syntax', () => {
+    expect(validateCircuitNumberValue('0x10')).toEqual({
+      kind: 'circuitNumber',
+      code: CircuitValidationError.InvalidFormat,
+    });
+    expect(validateCircuitNumberValue('0b101')).toEqual({
+      kind: 'circuitNumber',
+      code: CircuitValidationError.InvalidFormat,
+    });
+    expect(validateCircuitNumberValue('0o17')).toEqual({
+      kind: 'circuitNumber',
+      code: CircuitValidationError.InvalidFormat,
+    });
   });
 
   it('returns INVALID_FORMAT for non-numeric input', () => {

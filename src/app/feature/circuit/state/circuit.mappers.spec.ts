@@ -37,15 +37,19 @@ describe('circuit mappers', () => {
     });
   });
 
-  it('keeps vin numeric parse behavior via parseFloat scope', () => {
+  it('rejects SI-suffixed vin input instead of silently truncating it', () => {
     const result = toDividerInput({
       vin: '4.7k',
       r1: '1k',
       r2: '2k',
     });
 
-    expect(result.vin).toBe(4.7);
+    expect(result.vin).toBeNaN();
     expect(result.r1).toBe(1_000);
     expect(result.r2).toBe(2_000);
+  });
+
+  it('rejects hex/octal/binary numeric literal syntax for vin', () => {
+    expect(toDividerInput({ vin: '0x10', r1: '1k', r2: '2k' }).vin).toBeNaN();
   });
 });

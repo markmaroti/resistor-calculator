@@ -7,6 +7,7 @@ import {
 
 import { CircuitValidationError } from '@circuit/circuit.model';
 
+import { parseCircuitNumber } from './circuit.mappers';
 import {
   getCircuitFieldValidationMessage,
   getCircuitResistorValidationMessage,
@@ -40,7 +41,7 @@ export function validateCircuitNumberValue(value: string): CircuitNumberValidati
     return null;
   }
 
-  const parsed = parseFloat(value);
+  const parsed = parseCircuitNumber(value);
   if (Number.isNaN(parsed)) {
     return { kind: 'circuitNumber', code: CircuitValidationError.InvalidFormat };
   }
