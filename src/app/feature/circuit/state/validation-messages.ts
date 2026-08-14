@@ -23,7 +23,6 @@ export function getCircuitFieldValidationMessage(code: CircuitValidationError): 
 export const CIRCUIT_SERVICE_MESSAGES: Record<CircuitErrorCode, string> = {
   [CircuitErrorCode.EmptyInput]: 'At least one resistor is required.',
   [CircuitErrorCode.InvalidResistor]: 'All resistor values must be valid numbers greater than 0.',
-  [CircuitErrorCode.DivisionByZero]: 'Calculation resulted in division by zero.',
 };
 
 export function getCircuitServiceValidationMessage(code: CircuitErrorCode): string {

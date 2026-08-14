@@ -71,10 +71,6 @@ export class ResistorService {
     };
   }
 
-  public calculateResistanceFromBands(input: ResistorBandsInput): ResistanceResult {
-    return this.calculateResistance(input).data;
-  }
-
   public calculateBandsFromResistance(input: ReverseInput): ReverseResult {
     if (!Number.isFinite(input.targetOhms) || input.targetOhms <= 0) {
       return {

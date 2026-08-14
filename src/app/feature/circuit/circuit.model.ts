@@ -8,7 +8,6 @@ export type { CircuitServiceError, CircuitServiceResult };
 export const CircuitErrorCode = {
   EmptyInput: 'EMPTY_INPUT',
   InvalidResistor: 'INVALID_RESISTOR',
-  DivisionByZero: 'DIVISION_BY_ZERO',
 } as const;
 
 export type CircuitErrorCode = (typeof CircuitErrorCode)[keyof typeof CircuitErrorCode];
@@ -35,8 +34,6 @@ export type DividerData = {
 export type SeriesResult = CircuitServiceResult<ResistorListData, CircuitErrorCode>;
 export type ParallelResult = CircuitServiceResult<ResistorListData, CircuitErrorCode>;
 export type DividerResult = CircuitServiceResult<DividerData, CircuitErrorCode>;
-
-export type CircuitResult = SeriesResult | ParallelResult | DividerResult;
 
 export const CircuitValidationError = {
   EmptyInput: 'EMPTY_INPUT',

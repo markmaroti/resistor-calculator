@@ -13,7 +13,7 @@ describe('ResistorService', () => {
   const service = new ResistorService();
 
   const buildInput = (
-    overrides: Partial<Parameters<ResistorService['calculateResistanceFromBands']>[0]> = {},
+    overrides: Partial<Parameters<ResistorService['calculateResistance']>[0]> = {},
   ) => ({
     bandCount: 4 as BandCount,
     digit1: Color.Brown,
@@ -35,7 +35,7 @@ describe('ResistorService', () => {
   });
 
   it('calculates resistance for 4-band input', () => {
-    const result = service.calculateResistanceFromBands(
+    const result = service.calculateResistance(
       buildInput({
         bandCount: 4,
         digit1: Color.Brown,
@@ -43,7 +43,7 @@ describe('ResistorService', () => {
         multiplier: Color.Red,
         tolerance: Color.Gold,
       }),
-    );
+    ).data;
 
     expect(result.ohms).toBe(1_000);
     expect(result.tolerancePct).toBe(5);
@@ -51,7 +51,7 @@ describe('ResistorService', () => {
   });
 
   it('calculates resistance for 5-band input', () => {
-    const result = service.calculateResistanceFromBands(
+    const result = service.calculateResistance(
       buildInput({
         bandCount: 5,
         digit1: Color.Red,
@@ -60,7 +60,7 @@ describe('ResistorService', () => {
         multiplier: Color.Brown,
         tolerance: Color.Red,
       }),
-    );
+    ).data;
 
     expect(result.ohms).toBe(2_500);
     expect(result.tolerancePct).toBe(2);
@@ -68,7 +68,7 @@ describe('ResistorService', () => {
   });
 
   it('calculates resistance for 6-band input', () => {
-    const result = service.calculateResistanceFromBands(
+    const result = service.calculateResistance(
       buildInput({
         bandCount: 6,
         digit1: Color.Orange,
@@ -78,21 +78,11 @@ describe('ResistorService', () => {
         tolerance: Color.Brown,
         tcr: Color.Violet,
       }),
-    );
+    ).data;
 
     expect(result.ohms).toBe(3_300);
     expect(result.tolerancePct).toBe(1);
     expect(result.tcrPpm).toBe(5);
-  });
-
-  it('returns zero when digit colors are invalid', () => {
-    const result = service.calculateResistanceFromBands(
-      buildInput({
-        digit1: Color.Gold,
-      }),
-    );
-
-    expect(result).toEqual({ ohms: 0, tolerancePct: null, tcrPpm: null });
   });
 
   it('returns explicit error when digit colors are invalid', () => {

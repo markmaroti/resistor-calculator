@@ -45,10 +45,4 @@ describe('getCircuitServiceValidationMessage', () => {
       'All resistor values must be valid numbers greater than 0.',
     );
   });
-
-  it('resolves the message for a division-by-zero result', () => {
-    expect(getCircuitServiceValidationMessage(CircuitErrorCode.DivisionByZero)).toBe(
-      'Calculation resulted in division by zero.',
-    );
-  });
 });

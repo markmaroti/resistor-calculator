@@ -121,7 +121,6 @@ export class ResistorStore {
 
   public applyCandidate(candidate: ReverseCandidate): void {
     this.formModel.set({ ...candidate.bands });
-    this.form().markAsDirty();
   }
 
   public hydrateFromUrlState(state: ResistorUrlState): void {
