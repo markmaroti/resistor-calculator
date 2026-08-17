@@ -1,5 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { form } from '@angular/forms/signals';
+import { apply, form } from '@angular/forms/signals';
 
 import { parseResistanceValue } from '@shared/utils/resistance-value.util';
 
@@ -17,8 +17,8 @@ import {
 
 import { toReverseInput, toReverseViewModel, toViewModel } from './resistor.mappers';
 import { ResistorUrlState, UrlBandCountValue } from './url-state.model';
+import { resistorBandsSchema, reverseTargetInputSchema } from './resistor.validators';
 import {
-  getReverseParseValidationMessage,
   getReverseServiceValidationMessage,
   getResistanceValidationMessage,
 } from './validation-messages';
@@ -44,7 +44,9 @@ export class ResistorStore {
 
   private readonly formModel = signal<ResistorBandsInput>({ ...this.defaultBandsInput });
 
-  public readonly form = form(this.formModel);
+  public readonly form = form(this.formModel, (path) => {
+    apply(path, resistorBandsSchema);
+  });
 
   private readonly defaultReverseFormValue: ReverseFormValue = {
     targetInput: '1k',
@@ -58,7 +60,9 @@ export class ResistorStore {
     ...this.defaultReverseFormValue,
   });
 
-  public readonly reverseForm = form(this.reverseFormModel);
+  public readonly reverseForm = form(this.reverseFormModel, (path) => {
+    apply(path.targetInput, reverseTargetInputSchema);
+  });
 
   public readonly viewModel = computed(() => {
     const input = this.form().value();
@@ -68,6 +72,11 @@ export class ResistorStore {
   });
 
   public readonly validationMessage = computed(() => {
+    const fieldMessage = this.form().errorSummary()[0]?.message ?? '';
+    if (fieldMessage) {
+      return fieldMessage;
+    }
+
     const calculationError = this.viewModel().calculationError;
     if (!calculationError) {
       return '';
@@ -90,10 +99,12 @@ export class ResistorStore {
   });
 
   public readonly reverseValidationMessage = computed(() => {
-    const vm = this.reverseViewModel();
-    if (vm.parseErrorCode) {
-      return getReverseParseValidationMessage(vm.parseErrorCode);
+    const fieldMessage = this.reverseForm().errorSummary()[0]?.message ?? '';
+    if (fieldMessage) {
+      return fieldMessage;
     }
+
+    const vm = this.reverseViewModel();
     if (vm.serviceErrorCode) {
       return getReverseServiceValidationMessage(vm.serviceErrorCode);
     }

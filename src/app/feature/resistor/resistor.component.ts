@@ -34,6 +34,7 @@ import {
   BAND_COUNTS,
   ReverseMode,
   ReverseCandidate,
+  isDigitColor,
 } from './resistor.model';
 
 @Component({
@@ -84,9 +85,7 @@ export class ResistorComponent implements OnDestroy {
 
   public readonly isCopyEnabled = computed(() => this.viewModel().ohms > 0);
 
-  public readonly digitColors = (Object.keys(DIGIT_BY_COLOR) as Color[]).filter(
-    (c) => DIGIT_BY_COLOR[c] !== null,
-  );
+  public readonly digitColors = (Object.keys(DIGIT_BY_COLOR) as Color[]).filter(isDigitColor);
   public readonly multiplierColors = Object.keys(MULTIPLIER_BY_COLOR) as Color[];
   public readonly toleranceColors = Object.keys(TOLERANCE_BY_COLOR) as Color[];
   public readonly tcrColors = Object.keys(TCR_BY_COLOR) as Color[];

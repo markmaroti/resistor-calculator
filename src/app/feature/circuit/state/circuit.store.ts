@@ -78,11 +78,7 @@ export class CircuitStore {
   );
 
   public readonly dividerValidationMessage = computed(() => {
-    const fieldMessage = this.getFirstFieldMessage([
-      this.dividerForm.vin,
-      this.dividerForm.r1,
-      this.dividerForm.r2,
-    ]);
+    const fieldMessage = this.dividerForm().errorSummary()[0]?.message ?? '';
     if (fieldMessage) {
       return fieldMessage;
     }
@@ -131,23 +127,12 @@ export class CircuitStore {
     resistors: FieldTree<string[]>,
     error: CircuitServiceError<CircuitErrorCode> | null,
   ): string {
-    const fieldMessage = this.getFirstFieldMessage(resistors);
+    const fieldMessage = resistors().errorSummary()[0]?.message ?? '';
     if (fieldMessage) {
       return fieldMessage;
     }
 
     return error ? getCircuitServiceValidationMessage(error.code) : '';
-  }
-
-  private getFirstFieldMessage(fields: Iterable<FieldTree<string>>): string {
-    for (const field of fields) {
-      const message = field().errors()[0]?.message ?? '';
-      if (message) {
-        return message;
-      }
-    }
-
-    return '';
   }
 
   private resistorListModel(formName: ResistorListTab): WritableSignal<ResistorListFormValue> {

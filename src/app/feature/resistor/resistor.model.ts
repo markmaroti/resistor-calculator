@@ -34,6 +34,10 @@ export const DIGIT_BY_COLOR: Record<Color, number | null> = {
   [Color.Silver]: null,
 };
 
+export function isDigitColor(color: Color): boolean {
+  return DIGIT_BY_COLOR[color] !== null;
+}
+
 export const MULTIPLIER_BY_COLOR: Record<Color, number> = {
   [Color.Black]: 1,
   [Color.Brown]: 10,

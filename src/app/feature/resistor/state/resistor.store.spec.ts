@@ -218,6 +218,48 @@ describe('ResistorStore', () => {
     expect(store.viewModel().ohms).toBe(10);
   });
 
+  it('flags digit1 as invalid via the field-level schema for a Gold band', () => {
+    const store = createStore();
+
+    // Gold passes `toColor()` (it's a real `Color`), but isn't a valid digit color.
+    store.hydrateFromUrlState({ forward: { digit1: Color.Gold } });
+
+    expect(store.form.digit1().invalid()).toBe(true);
+    expect(store.form.digit1().errors()[0]?.message).toBe(
+      'Digit bands must be a valid color (not Gold/Silver).',
+    );
+    expect(store.validationMessage()).toBe('Digit bands must be a valid color (not Gold/Silver).');
+  });
+
+  it('ignores an invalid digit3 color for a 4-band resistor but flags it for 5/6-band', () => {
+    const store = createStore();
+
+    store.hydrateFromUrlState({ forward: { bandCount: '4', digit3: Color.Gold } });
+    expect(store.form.digit3().invalid()).toBe(false);
+    expect(store.validationMessage()).toBe('');
+
+    store.hydrateFromUrlState({ forward: { bandCount: '5', digit3: Color.Gold } });
+    expect(store.form.digit3().invalid()).toBe(true);
+    expect(store.validationMessage()).toBe(
+      'Band 3 must be a valid digit color for 5- and 6-band resistors.',
+    );
+  });
+
+  it('exposes reverse target input errors through field-level schema validation', () => {
+    const store = createStore();
+    store.reverseForm().value.update((current) => ({ ...current, targetInput: '' }));
+
+    expect(store.reverseForm.targetInput().invalid()).toBe(true);
+    expect(store.reverseForm.targetInput().errors()[0]?.message).toBe(
+      'Resistance value is required.',
+    );
+
+    store.reverseForm().value.update((current) => ({ ...current, targetInput: '5V' }));
+
+    expect(store.reverseForm.targetInput().invalid()).toBe(true);
+    expect(store.reverseValidationMessage()).toBe('Unsupported unit. Use Ω, kΩ, MΩ, or GΩ.');
+  });
+
   it('memoizes forward view model between unchanged reads', () => {
     const store = createStore();
     const service = TestBed.inject(ResistorService);

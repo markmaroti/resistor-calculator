@@ -4,6 +4,7 @@ import {
   ResistanceValueErrorCode,
   parseResistanceValue,
 } from '@shared/utils/resistance-value.util';
+import { toValidationError } from '@shared/utils/signal-forms.util';
 
 import { CircuitValidationError } from '@circuit/circuit.model';
 
@@ -63,24 +64,14 @@ const REQUIRED_MESSAGE = getCircuitFieldValidationMessage(CircuitValidationError
 
 export const resistorFieldSchema = schema<string>((path) => {
   required(path, { message: REQUIRED_MESSAGE });
-  validate(path, ({ value }) => {
-    const result = validateCircuitResistorValue(value());
-    if (!result) {
-      return null;
-    }
-
-    return { kind: result.kind, message: getCircuitResistorValidationMessage(result.code) };
-  });
+  validate(path, ({ value }) =>
+    toValidationError(validateCircuitResistorValue(value()), getCircuitResistorValidationMessage),
+  );
 });
 
 export const circuitNumberFieldSchema = schema<string>((path) => {
   required(path, { message: REQUIRED_MESSAGE });
-  validate(path, ({ value }) => {
-    const result = validateCircuitNumberValue(value());
-    if (!result) {
-      return null;
-    }
-
-    return { kind: result.kind, message: getCircuitFieldValidationMessage(result.code) };
-  });
+  validate(path, ({ value }) =>
+    toValidationError(validateCircuitNumberValue(value()), getCircuitFieldValidationMessage),
+  );
 });
