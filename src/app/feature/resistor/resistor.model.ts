@@ -19,6 +19,10 @@ export const Color = {
 
 export type Color = (typeof Color)[keyof typeof Color];
 
+export function isColor(value: string): value is Color {
+  return Object.hasOwn(Color, value);
+}
+
 export const DIGIT_BY_COLOR: Record<Color, number | null> = {
   [Color.Black]: 0,
   [Color.Brown]: 1,
@@ -64,6 +68,10 @@ export const TOLERANCE_BY_COLOR: Partial<Record<Color, number>> = {
   [Color.Silver]: 10,
 };
 
+export function isToleranceColor(color: Color): boolean {
+  return Object.hasOwn(TOLERANCE_BY_COLOR, color);
+}
+
 export const TCR_BY_COLOR: Partial<Record<Color, number>> = {
   [Color.Brown]: 100,
   [Color.Red]: 50,
@@ -72,6 +80,10 @@ export const TCR_BY_COLOR: Partial<Record<Color, number>> = {
   [Color.Blue]: 10,
   [Color.Violet]: 5,
 };
+
+export function isTcrColor(color: Color): boolean {
+  return Object.hasOwn(TCR_BY_COLOR, color);
+}
 
 export const COLOR_HEX: Record<Color, string> = {
   [Color.Black]: '#1f1f1f',
@@ -104,6 +116,10 @@ export const BAND_COLOR_KEYS: Record<BandCount, readonly BandColorKey[]> = {
   5: ['digit1', 'digit2', 'digit3', 'multiplier', 'tolerance'],
   6: ['digit1', 'digit2', 'digit3', 'multiplier', 'tolerance', 'tcr'],
 };
+
+export function isBandColorRelevant(bandCount: BandCount, key: BandColorKey): boolean {
+  return BAND_COLOR_KEYS[bandCount].includes(key);
+}
 
 export function buildBandColors(count: BandCount, colors: Record<BandColorKey, Color>): Color[] {
   return BAND_COLOR_KEYS[count].map((key) => colors[key]);

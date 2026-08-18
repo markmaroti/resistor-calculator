@@ -188,7 +188,7 @@ describe('ResistorStore', () => {
     });
   });
 
-  it('keeps stable 4-band state when hydration contains digit3 and tcr values', () => {
+  it('ignores irrelevant digit3/tcr url values for 4-band hydration', () => {
     const store = createStore();
 
     store.hydrateFromUrlState({
@@ -207,10 +207,10 @@ describe('ResistorStore', () => {
       bandCount: 4,
       digit1: Color.Brown,
       digit2: Color.Black,
-      digit3: Color.Red,
+      digit3: Color.Black,
       multiplier: Color.Black,
       tolerance: Color.Gold,
-      tcr: Color.Blue,
+      tcr: Color.Brown,
     });
     expect(store.validationMessage()).toBe('');
     expect(store.viewModel().showDigit3).toBe(false);
@@ -218,31 +218,50 @@ describe('ResistorStore', () => {
     expect(store.viewModel().ohms).toBe(10);
   });
 
-  it('flags digit1 as invalid via the field-level schema for a Gold band', () => {
+  it('ignores invalid digit colors during hydration to keep form state and select options aligned', () => {
     const store = createStore();
 
-    // Gold passes `toColor()` (it's a real `Color`), but isn't a valid digit color.
-    store.hydrateFromUrlState({ forward: { digit1: Color.Gold } });
+    store.hydrateFromUrlState({
+      forward: {
+        digit1: Color.Gold,
+        digit2: Color.Silver,
+      },
+    });
 
-    expect(store.form.digit1().invalid()).toBe(true);
-    expect(store.form.digit1().errors()[0]?.message).toBe(
-      'Digit bands must be a valid color (not Gold/Silver).',
-    );
-    expect(store.validationMessage()).toBe('Digit bands must be a valid color (not Gold/Silver).');
+    expect(store.form().value().digit1).toBe(Color.Brown);
+    expect(store.form().value().digit2).toBe(Color.Black);
+    expect(store.form.digit1().invalid()).toBe(false);
+    expect(store.form.digit2().invalid()).toBe(false);
+    expect(store.validationMessage()).toBe('');
   });
 
-  it('ignores an invalid digit3 color for a 4-band resistor but flags it for 5/6-band', () => {
+  it('hydrates tcr only for 6-band mode and ignores it for 4/5-band', () => {
     const store = createStore();
 
-    store.hydrateFromUrlState({ forward: { bandCount: '4', digit3: Color.Gold } });
-    expect(store.form.digit3().invalid()).toBe(false);
-    expect(store.validationMessage()).toBe('');
+    store.hydrateFromUrlState({ forward: { bandCount: '4', tcr: Color.Blue } });
+    expect(store.form().value().tcr).toBe(Color.Brown);
 
-    store.hydrateFromUrlState({ forward: { bandCount: '5', digit3: Color.Gold } });
-    expect(store.form.digit3().invalid()).toBe(true);
-    expect(store.validationMessage()).toBe(
-      'Band 3 must be a valid digit color for 5- and 6-band resistors.',
-    );
+    store.hydrateFromUrlState({ forward: { bandCount: '5', tcr: Color.Red } });
+    expect(store.form().value().tcr).toBe(Color.Brown);
+
+    store.hydrateFromUrlState({ forward: { bandCount: '6', tcr: Color.Blue } });
+    expect(store.form().value().tcr).toBe(Color.Blue);
+    expect(store.validationMessage()).toBe('');
+  });
+
+  it('hydrates field-specific non-digit colors only when valid for that field', () => {
+    const store = createStore();
+
+    store.hydrateFromUrlState({
+      forward: {
+        multiplier: Color.Silver,
+        tolerance: Color.White,
+      },
+    });
+
+    expect(store.form().value().multiplier).toBe(Color.Silver);
+    expect(store.form().value().tolerance).toBe(Color.Gold);
+    expect(store.validationMessage()).toBe('');
   });
 
   it('exposes reverse target input errors through field-level schema validation', () => {

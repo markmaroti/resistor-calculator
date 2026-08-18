@@ -12,6 +12,11 @@ import {
   ReverseFormValue,
   ReverseMode,
   ReverseResult,
+  isBandColorRelevant,
+  isColor,
+  isDigitColor,
+  isTcrColor,
+  isToleranceColor,
   type BandCount,
 } from '@resistor/resistor.model';
 
@@ -135,85 +140,73 @@ export class ResistorStore {
   }
 
   public hydrateFromUrlState(state: ResistorUrlState): void {
-    const forwardPatch = this.toForwardFormPatch(state.forward);
+    const forwardPatch = this.toForwardFormPatch(state.forward, this.form().value());
     if (Object.keys(forwardPatch).length > 0) {
       this.formModel.update((current) => ({ ...current, ...forwardPatch }));
     }
 
-    const reversePatch = this.toReverseFormPatch(state.reverse);
+    const reversePatch = this.toReverseFormPatch(state.reverse, this.reverseForm().value());
     if (Object.keys(reversePatch).length > 0) {
       this.reverseFormModel.update((current) => ({ ...current, ...reversePatch }));
     }
   }
 
-  private toForwardFormPatch(state: ResistorUrlState['forward']): Partial<ResistorBandsInput> {
+  private toForwardFormPatch(
+    state: ResistorUrlState['forward'],
+    current: ResistorBandsInput,
+  ): Partial<ResistorBandsInput> {
     const patch: Partial<ResistorBandsInput> = {};
 
     const bandCount = this.toBandCount(state?.bandCount);
-    if (bandCount !== undefined) {
-      patch.bandCount = bandCount;
+    this.setPatchValueIfChanged(patch, current, 'bandCount', bandCount);
+
+    const effectiveBandCount = bandCount ?? current.bandCount;
+
+    const digit1 = this.toColorIf(state?.digit1, isDigitColor);
+    this.setPatchValueIfChanged(patch, current, 'digit1', digit1);
+
+    const digit2 = this.toColorIf(state?.digit2, isDigitColor);
+    this.setPatchValueIfChanged(patch, current, 'digit2', digit2);
+
+    if (isBandColorRelevant(effectiveBandCount, 'digit3')) {
+      const digit3 = this.toColorIf(state?.digit3, isDigitColor);
+      this.setPatchValueIfChanged(patch, current, 'digit3', digit3);
     }
 
-    const digit1 = this.toColor(state?.digit1);
-    if (digit1 !== undefined) {
-      patch.digit1 = digit1;
-    }
+    const multiplier = this.toKnownColor(state?.multiplier);
+    this.setPatchValueIfChanged(patch, current, 'multiplier', multiplier);
 
-    const digit2 = this.toColor(state?.digit2);
-    if (digit2 !== undefined) {
-      patch.digit2 = digit2;
-    }
+    const tolerance = this.toColorIf(state?.tolerance, isToleranceColor);
+    this.setPatchValueIfChanged(patch, current, 'tolerance', tolerance);
 
-    const digit3 = this.toColor(state?.digit3);
-    if (digit3 !== undefined) {
-      patch.digit3 = digit3;
-    }
-
-    const multiplier = this.toColor(state?.multiplier);
-    if (multiplier !== undefined) {
-      patch.multiplier = multiplier;
-    }
-
-    const tolerance = this.toColor(state?.tolerance);
-    if (tolerance !== undefined) {
-      patch.tolerance = tolerance;
-    }
-
-    const tcr = this.toColor(state?.tcr);
-    if (tcr !== undefined) {
-      patch.tcr = tcr;
+    if (isBandColorRelevant(effectiveBandCount, 'tcr')) {
+      const tcr = this.toColorIf(state?.tcr, isTcrColor);
+      this.setPatchValueIfChanged(patch, current, 'tcr', tcr);
     }
 
     return patch;
   }
 
-  private toReverseFormPatch(state: ResistorUrlState['reverse']): Partial<ReverseFormValue> {
+  private toReverseFormPatch(
+    state: ResistorUrlState['reverse'],
+    current: ReverseFormValue,
+  ): Partial<ReverseFormValue> {
     const patch: Partial<ReverseFormValue> = {};
 
     const targetInput = this.toNonEmptyString(state?.targetInput);
-    if (targetInput !== undefined) {
-      patch.targetInput = targetInput;
-    }
+    this.setPatchValueIfChanged(patch, current, 'targetInput', targetInput);
 
     const bandCount = this.toBandCount(state?.bandCount);
-    if (bandCount !== undefined) {
-      patch.bandCount = bandCount;
-    }
+    this.setPatchValueIfChanged(patch, current, 'bandCount', bandCount);
 
     const tolerancePct = this.toPositiveNumber(state?.tolerancePct);
-    if (tolerancePct !== undefined) {
-      patch.tolerancePct = tolerancePct;
-    }
+    this.setPatchValueIfChanged(patch, current, 'tolerancePct', tolerancePct);
 
     const tcrPpm = this.toPositiveNumber(state?.tcrPpm);
-    if (tcrPpm !== undefined) {
-      patch.tcrPpm = tcrPpm;
-    }
+    this.setPatchValueIfChanged(patch, current, 'tcrPpm', tcrPpm);
 
     const mode = this.toReverseMode(state?.mode);
-    if (mode !== undefined) {
-      patch.mode = mode;
-    }
+    this.setPatchValueIfChanged(patch, current, 'mode', mode);
 
     return patch;
   }
@@ -227,8 +220,16 @@ export class ResistorStore {
     return parsed === 4 || parsed === 5 || parsed === 6 ? parsed : undefined;
   }
 
-  private toColor(value: string | undefined): Color | undefined {
-    return value !== undefined && value in Color ? (value as Color) : undefined;
+  private toKnownColor(value: string | undefined): Color | undefined {
+    return value !== undefined && isColor(value) ? value : undefined;
+  }
+
+  private toColorIf(
+    value: string | undefined,
+    isValid: (color: Color) => boolean,
+  ): Color | undefined {
+    const color = this.toKnownColor(value);
+    return color !== undefined && isValid(color) ? color : undefined;
   }
 
   private toReverseMode(value: string | undefined): ReverseMode | undefined {
@@ -255,5 +256,16 @@ export class ResistorStore {
 
     const parsed = Number(value);
     return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
+  }
+
+  private setPatchValueIfChanged<T extends object, K extends keyof T>(
+    patch: Partial<T>,
+    current: T,
+    key: K,
+    nextValue: T[K] | undefined,
+  ): void {
+    if (nextValue !== undefined && nextValue !== current[key]) {
+      patch[key] = nextValue;
+    }
   }
 }
