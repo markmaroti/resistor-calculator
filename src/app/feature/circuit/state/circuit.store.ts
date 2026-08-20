@@ -1,7 +1,7 @@
 import { Injectable, WritableSignal, computed, inject, signal } from '@angular/core';
 import { FieldTree, apply, applyEach, form } from '@angular/forms/signals';
 
-import { isBlank } from '@shared/utils/signal-forms.util';
+import { firstFieldErrorMessageInPriorityOrder, isBlank } from '@shared/utils/signal-forms.util';
 
 import { CircuitService } from '@circuit/services/circuit.service';
 import {
@@ -98,7 +98,11 @@ export class CircuitStore {
       return '';
     }
 
-    const fieldMessage = this.dividerForm().errorSummary()[0]?.message ?? '';
+    const fieldMessage = firstFieldErrorMessageInPriorityOrder([
+      this.dividerForm.vin,
+      this.dividerForm.r1,
+      this.dividerForm.r2,
+    ]);
     if (fieldMessage) {
       return fieldMessage;
     }
