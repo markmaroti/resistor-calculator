@@ -4,7 +4,7 @@ import {
   ResistanceValueErrorCode,
   parseResistanceValue,
 } from '@shared/utils/resistance-value.util';
-import { toValidationError } from '@shared/utils/signal-forms.util';
+import { isBlank, toValidationError } from '@shared/utils/signal-forms.util';
 
 import {
   BandCount,
@@ -62,10 +62,6 @@ export function validateReverseTargetInput(
   }
 
   return null;
-}
-
-function isBlank(value: string): boolean {
-  return !value || value.trim() === '';
 }
 
 const REQUIRED_TARGET_MESSAGE = getReverseParseValidationMessage(

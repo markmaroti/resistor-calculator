@@ -11,3 +11,8 @@ export function toValidationError<Code extends string>(
 
   return { kind: result.kind, message: getMessage(result.code) };
 }
+
+/** Treats a field value as empty if it's unset or contains only whitespace. */
+export function isBlank(value: string): boolean {
+  return !value || value.trim() === '';
+}

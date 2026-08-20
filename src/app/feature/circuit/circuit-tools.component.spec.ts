@@ -40,13 +40,15 @@ describe('CircuitToolsComponent', () => {
     expect(fixture.debugElement.query(By.css('app-divider-panel'))).toBeTruthy();
   });
 
-  it('shows series validation message from store state', async () => {
+  it('shows placeholder before user input instead of immediate validation error', async () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    const errorEl = fixture.debugElement.query(By.css('.circuit-error'));
-    expect(errorEl).toBeTruthy();
-    expect(errorEl.nativeElement.textContent.trim()).toBe('Resistance value is required.');
+    const placeholderEl = fixture.debugElement.query(By.css('.circuit-placeholder'));
+    expect(placeholderEl).toBeTruthy();
+    expect(placeholderEl.nativeElement.textContent.trim()).toBe(
+      'Enter resistor values to calculate.',
+    );
   });
 
   it('removeLastResistor uses the last series index', async () => {

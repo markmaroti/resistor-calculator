@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
 
-import { CircuitTab } from '@circuit/circuit.model';
+import { CircuitTab, CircuitValidationError } from '@circuit/circuit.model';
 
+import { getCircuitFieldValidationMessage } from './validation-messages';
 import { CircuitStore } from './circuit.store';
 
 describe('CircuitStore', () => {
@@ -21,11 +22,22 @@ describe('CircuitStore', () => {
     expect(store.parallelForm().value()).toEqual({ resistors: ['', ''] });
   });
 
-  it('shows a required message before any resistor value is entered', () => {
+  it('shows no validation message before any resistor value is entered', () => {
     const store = createStore();
 
-    expect(store.seriesValidationMessage()).toBe('Resistance value is required.');
-    expect(store.parallelValidationMessage()).toBe('Resistance value is required.');
+    expect(store.seriesValidationMessage()).toBe('');
+    expect(store.parallelValidationMessage()).toBe('');
+    expect(store.dividerValidationMessage()).toBe('');
+  });
+
+  it('shows validation message after user interaction makes series form invalid', () => {
+    const store = createStore();
+
+    store.seriesForm().value.set({ resistors: ['1k', ''] });
+
+    expect(store.seriesValidationMessage()).toBe(
+      getCircuitFieldValidationMessage(CircuitValidationError.EmptyInput),
+    );
   });
 
   it('computes the series total once valid resistor values are provided', () => {

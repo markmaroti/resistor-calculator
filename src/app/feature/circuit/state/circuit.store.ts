@@ -1,6 +1,8 @@
 import { Injectable, WritableSignal, computed, inject, signal } from '@angular/core';
 import { FieldTree, apply, applyEach, form } from '@angular/forms/signals';
 
+import { isBlank } from '@shared/utils/signal-forms.util';
+
 import { CircuitService } from '@circuit/services/circuit.service';
 import {
   CircuitErrorCode,
@@ -69,15 +71,33 @@ export class CircuitStore {
     return toDividerViewModel(value, result);
   });
 
-  public readonly seriesValidationMessage = computed(() =>
-    this.resistorListValidationMessage(this.seriesForm.resistors, this.seriesViewModel().error),
-  );
+  public readonly seriesValidationMessage = computed(() => {
+    if (!this.hasAnyResistorInput(this.seriesForm)) {
+      return '';
+    }
 
-  public readonly parallelValidationMessage = computed(() =>
-    this.resistorListValidationMessage(this.parallelForm.resistors, this.parallelViewModel().error),
-  );
+    return this.resistorListValidationMessage(
+      this.seriesForm.resistors,
+      this.seriesViewModel().error,
+    );
+  });
+
+  public readonly parallelValidationMessage = computed(() => {
+    if (!this.hasAnyResistorInput(this.parallelForm)) {
+      return '';
+    }
+
+    return this.resistorListValidationMessage(
+      this.parallelForm.resistors,
+      this.parallelViewModel().error,
+    );
+  });
 
   public readonly dividerValidationMessage = computed(() => {
+    if (!this.hasAnyInput(Object.values(this.dividerForm().value()))) {
+      return '';
+    }
+
     const fieldMessage = this.dividerForm().errorSummary()[0]?.message ?? '';
     if (fieldMessage) {
       return fieldMessage;
@@ -141,5 +161,13 @@ export class CircuitStore {
 
   private resistorListForm(formName: ResistorListTab): FieldTree<ResistorListFormValue> {
     return formName === CircuitTab.Series ? this.seriesForm : this.parallelForm;
+  }
+
+  private hasAnyResistorInput(formTree: FieldTree<ResistorListFormValue>): boolean {
+    return this.hasAnyInput(formTree().value().resistors);
+  }
+
+  private hasAnyInput(values: readonly string[]): boolean {
+    return values.some((value) => !isBlank(value));
   }
 }
