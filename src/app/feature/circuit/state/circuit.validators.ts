@@ -1,5 +1,6 @@
 import { schema, required, validate } from '@angular/forms/signals';
 
+import { parseStrictNumber } from '@shared/utils/numeric-value.util';
 import {
   ResistanceValueErrorCode,
   parseResistanceValue,
@@ -8,7 +9,6 @@ import { isBlank, toValidationError } from '@shared/utils/signal-forms.util';
 
 import { CircuitValidationError } from '@circuit/circuit.model';
 
-import { parseCircuitNumber } from './circuit.mappers';
 import {
   getCircuitFieldValidationMessage,
   getCircuitResistorValidationMessage,
@@ -42,7 +42,7 @@ export function validateCircuitNumberValue(value: string): CircuitNumberValidati
     return null;
   }
 
-  const parsed = parseCircuitNumber(value);
+  const parsed = parseStrictNumber(value);
   if (Number.isNaN(parsed)) {
     return { kind: 'circuitNumber', code: CircuitValidationError.InvalidFormat };
   }
