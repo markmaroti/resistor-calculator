@@ -103,7 +103,16 @@ export const COLOR_HEX: Record<Color, string> = {
 export const BAND_COUNTS = [4, 5, 6] as const;
 export type BandCount = (typeof BAND_COUNTS)[number];
 
-export type BandColorKey = 'digit1' | 'digit2' | 'digit3' | 'multiplier' | 'tolerance' | 'tcr';
+export const BAND_COLOR_KEY = {
+  Digit1: 'digit1',
+  Digit2: 'digit2',
+  Digit3: 'digit3',
+  Multiplier: 'multiplier',
+  Tolerance: 'tolerance',
+  Tcr: 'tcr',
+} as const;
+
+export type BandColorKey = (typeof BAND_COLOR_KEY)[keyof typeof BAND_COLOR_KEY];
 
 export const BAND_LAYOUTS: Record<BandCount, { xs: number[]; width: number }> = {
   4: { xs: [200, 250, 330, 425], width: 28 },
@@ -112,9 +121,27 @@ export const BAND_LAYOUTS: Record<BandCount, { xs: number[]; width: number }> = 
 };
 
 export const BAND_COLOR_KEYS: Record<BandCount, readonly BandColorKey[]> = {
-  4: ['digit1', 'digit2', 'multiplier', 'tolerance'],
-  5: ['digit1', 'digit2', 'digit3', 'multiplier', 'tolerance'],
-  6: ['digit1', 'digit2', 'digit3', 'multiplier', 'tolerance', 'tcr'],
+  4: [
+    BAND_COLOR_KEY.Digit1,
+    BAND_COLOR_KEY.Digit2,
+    BAND_COLOR_KEY.Multiplier,
+    BAND_COLOR_KEY.Tolerance,
+  ],
+  5: [
+    BAND_COLOR_KEY.Digit1,
+    BAND_COLOR_KEY.Digit2,
+    BAND_COLOR_KEY.Digit3,
+    BAND_COLOR_KEY.Multiplier,
+    BAND_COLOR_KEY.Tolerance,
+  ],
+  6: [
+    BAND_COLOR_KEY.Digit1,
+    BAND_COLOR_KEY.Digit2,
+    BAND_COLOR_KEY.Digit3,
+    BAND_COLOR_KEY.Multiplier,
+    BAND_COLOR_KEY.Tolerance,
+    BAND_COLOR_KEY.Tcr,
+  ],
 };
 
 export function isBandColorRelevant(bandCount: BandCount, key: BandColorKey): boolean {

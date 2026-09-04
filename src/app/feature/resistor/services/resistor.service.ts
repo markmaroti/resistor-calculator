@@ -1,6 +1,7 @@
 import { Service } from '@angular/core';
 
 import {
+  BAND_COLOR_KEY,
   BAND_COUNTS,
   Color,
   DIGIT_BY_COLOR,
@@ -15,6 +16,7 @@ import {
   ResistorBandsInput,
   TCR_BY_COLOR,
   TOLERANCE_BY_COLOR,
+  isBandColorRelevant,
   type BandCount,
 } from '@resistor/resistor.model';
 import { getResistanceValidationMessage } from '@resistor/state/validation-messages';
@@ -44,7 +46,7 @@ export class ResistorService {
       };
     }
 
-    if (input.bandCount !== 4 && digit3 === null) {
+    if (isBandColorRelevant(input.bandCount, BAND_COLOR_KEY.Digit3) && digit3 === null) {
       return {
         data: this.emptyResistanceResult(),
         error: {
@@ -63,7 +65,9 @@ export class ResistorService {
 
     const ohms = significantValue * MULTIPLIER_BY_COLOR[input.multiplier];
     const tolerancePct = TOLERANCE_BY_COLOR[input.tolerance] ?? null;
-    const tcrPpm = input.bandCount === 6 ? (TCR_BY_COLOR[input.tcr] ?? null) : null;
+    const tcrPpm = isBandColorRelevant(input.bandCount, BAND_COLOR_KEY.Tcr)
+      ? (TCR_BY_COLOR[input.tcr] ?? null)
+      : null;
 
     return {
       data: { ohms, tolerancePct, tcrPpm },
@@ -117,6 +121,7 @@ export class ResistorService {
     const digitCount = input.bandCount === 4 ? 2 : 3;
     const minSignificant = digitCount === 2 ? 10 : 100;
     const maxSignificant = digitCount === 2 ? 99 : 999;
+    const tcrRelevant = isBandColorRelevant(input.bandCount, BAND_COLOR_KEY.Tcr);
     const candidates: ReverseResult['data']['candidates'] = [];
 
     for (const [multiplierColor, multiplier] of Object.entries(MULTIPLIER_BY_COLOR) as [
@@ -175,7 +180,7 @@ export class ResistorService {
           const tolerancePct = TOLERANCE_BY_COLOR[toleranceColor] ?? null;
 
           for (const tcrColor of tcrColors) {
-            const tcrPpm = input.bandCount === 6 ? (TCR_BY_COLOR[tcrColor] ?? null) : null;
+            const tcrPpm = tcrRelevant ? (TCR_BY_COLOR[tcrColor] ?? null) : null;
             const bands: ResistorBandsInput = {
               ...bandInputBase,
               tolerance: toleranceColor,
@@ -262,7 +267,7 @@ export class ResistorService {
   }
 
   private getTcrColors(bandCount: BandCount, tcrPpm: number | null): Color[] {
-    if (bandCount !== 6) {
+    if (!isBandColorRelevant(bandCount, BAND_COLOR_KEY.Tcr)) {
       return [Color.Brown];
     }
 

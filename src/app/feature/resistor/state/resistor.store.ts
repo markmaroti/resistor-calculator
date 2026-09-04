@@ -5,6 +5,7 @@ import { parseResistanceValue } from '@shared/utils/resistance-value.util';
 
 import { ResistorService } from '@resistor/services/resistor.service';
 import {
+  BAND_COLOR_KEY,
   Color,
   DEFAULT_BAND_COUNT,
   ResistorBandsInput,
@@ -21,7 +22,7 @@ import {
 } from '@resistor/resistor.model';
 
 import { toReverseInput, toReverseViewModel, toViewModel } from './resistor.mappers';
-import { ResistorUrlState, UrlBandCountValue } from './url-state.model';
+import { ResistorUrlState, UrlBandCountValue, toBandCount } from './url-state.model';
 import { resistorBandsSchema, reverseTargetInputSchema } from './resistor.validators';
 import {
   getReverseServiceValidationMessage,
@@ -157,7 +158,7 @@ export class ResistorStore {
   ): Partial<ResistorBandsInput> {
     const patch: Partial<ResistorBandsInput> = {};
 
-    const bandCount = this.toBandCount(state?.bandCount);
+    const bandCount = this.toOptionalBandCount(state?.bandCount);
     this.setPatchValueIfChanged(patch, current, 'bandCount', bandCount);
 
     const effectiveBandCount = bandCount ?? current.bandCount;
@@ -168,7 +169,7 @@ export class ResistorStore {
     const digit2 = this.toColorIf(state?.digit2, isDigitColor);
     this.setPatchValueIfChanged(patch, current, 'digit2', digit2);
 
-    if (isBandColorRelevant(effectiveBandCount, 'digit3')) {
+    if (isBandColorRelevant(effectiveBandCount, BAND_COLOR_KEY.Digit3)) {
       const digit3 = this.toColorIf(state?.digit3, isDigitColor);
       this.setPatchValueIfChanged(patch, current, 'digit3', digit3);
     }
@@ -179,7 +180,7 @@ export class ResistorStore {
     const tolerance = this.toColorIf(state?.tolerance, isToleranceColor);
     this.setPatchValueIfChanged(patch, current, 'tolerance', tolerance);
 
-    if (isBandColorRelevant(effectiveBandCount, 'tcr')) {
+    if (isBandColorRelevant(effectiveBandCount, BAND_COLOR_KEY.Tcr)) {
       const tcr = this.toColorIf(state?.tcr, isTcrColor);
       this.setPatchValueIfChanged(patch, current, 'tcr', tcr);
     }
@@ -196,7 +197,7 @@ export class ResistorStore {
     const targetInput = this.toNonEmptyString(state?.targetInput);
     this.setPatchValueIfChanged(patch, current, 'targetInput', targetInput);
 
-    const bandCount = this.toBandCount(state?.bandCount);
+    const bandCount = this.toOptionalBandCount(state?.bandCount);
     this.setPatchValueIfChanged(patch, current, 'bandCount', bandCount);
 
     const tolerancePct = this.toPositiveNumber(state?.tolerancePct);
@@ -211,13 +212,8 @@ export class ResistorStore {
     return patch;
   }
 
-  private toBandCount(value: UrlBandCountValue | undefined): BandCount | undefined {
-    if (value === undefined) {
-      return undefined;
-    }
-
-    const parsed = Number(value);
-    return parsed === 4 || parsed === 5 || parsed === 6 ? parsed : undefined;
+  private toOptionalBandCount(value: UrlBandCountValue | undefined): BandCount | undefined {
+    return value === undefined ? undefined : toBandCount(value);
   }
 
   private toKnownColor(value: string | undefined): Color | undefined {

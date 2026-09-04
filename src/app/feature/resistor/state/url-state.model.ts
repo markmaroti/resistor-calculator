@@ -1,3 +1,5 @@
+import type { BandCount } from '@resistor/resistor.model';
+
 export const URL_STATE_PARAM_KEY = {
   BandCount: 'bc',
   Digit1: 'd1',
@@ -47,6 +49,17 @@ export const URL_REVERSE_MODE = {
 export type UrlReverseMode = (typeof URL_REVERSE_MODE)[keyof typeof URL_REVERSE_MODE];
 
 export type UrlBandCountValue = '4' | '5' | '6';
+
+const BAND_COUNT_BY_URL_VALUE: Record<UrlBandCountValue, BandCount> = {
+  '4': 4,
+  '5': 5,
+  '6': 6,
+};
+
+/** Converts a validated URL band-count string into its numeric `BandCount`, without an unchecked cast. */
+export function toBandCount(value: UrlBandCountValue): BandCount {
+  return BAND_COUNT_BY_URL_VALUE[value];
+}
 
 export type ResistorUrlQueryParamMap = Partial<Record<UrlStateParamKey, string>>;
 

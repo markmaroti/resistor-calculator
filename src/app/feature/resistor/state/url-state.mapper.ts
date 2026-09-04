@@ -1,9 +1,12 @@
 import {
+  BAND_COLOR_KEY,
   BAND_COUNTS,
+  BandColorKey,
   DIGIT_BY_COLOR,
   MULTIPLIER_BY_COLOR,
   TCR_BY_COLOR,
   TOLERANCE_BY_COLOR,
+  isBandColorRelevant,
 } from '@resistor/resistor.model';
 
 import {
@@ -19,6 +22,7 @@ import {
   UrlCalculatorMode,
   UrlStateParamKey,
   UrlReverseMode,
+  toBandCount,
 } from './url-state.model';
 
 const BAND_COUNT_VALUES = new Set(BAND_COUNTS.map((count) => String(count)));
@@ -43,13 +47,13 @@ export function toQueryParams(state: ResistorUrlState): ResistorUrlQueryParamMap
     [URL_STATE_PARAM_KEY.Digit1]: normalizeDigitColor(forward?.digit1),
     [URL_STATE_PARAM_KEY.Digit2]: normalizeDigitColor(forward?.digit2),
     [URL_STATE_PARAM_KEY.Digit3]:
-      bandCount && isForwardDigit3RelevantBandCount(bandCount)
+      bandCount && isForwardBandColorRelevant(bandCount, BAND_COLOR_KEY.Digit3)
         ? normalizeDigitColor(forward?.digit3)
         : undefined,
     [URL_STATE_PARAM_KEY.Multiplier]: normalizeMultiplierColor(forward?.multiplier),
     [URL_STATE_PARAM_KEY.Tolerance]: normalizeToleranceColor(forward?.tolerance),
     [URL_STATE_PARAM_KEY.Tcr]:
-      bandCount && isForwardTcrRelevantBandCount(bandCount)
+      bandCount && isForwardBandColorRelevant(bandCount, BAND_COLOR_KEY.Tcr)
         ? normalizeTcrColor(forward?.tcr)
         : undefined,
     [URL_STATE_PARAM_KEY.ReverseTargetInput]:
@@ -93,7 +97,7 @@ export function fromQueryParams(
     digit1: normalizeDigitColor(getSingleQueryValue(query, URL_STATE_PARAM_KEY.Digit1)),
     digit2: normalizeDigitColor(getSingleQueryValue(query, URL_STATE_PARAM_KEY.Digit2)),
     digit3:
-      forwardBandCount && isForwardDigit3RelevantBandCount(forwardBandCount)
+      forwardBandCount && isForwardBandColorRelevant(forwardBandCount, BAND_COLOR_KEY.Digit3)
         ? normalizeDigitColor(getSingleQueryValue(query, URL_STATE_PARAM_KEY.Digit3))
         : undefined,
     multiplier: normalizeMultiplierColor(
@@ -101,7 +105,7 @@ export function fromQueryParams(
     ),
     tolerance: normalizeToleranceColor(getSingleQueryValue(query, URL_STATE_PARAM_KEY.Tolerance)),
     tcr:
-      forwardBandCount && isForwardTcrRelevantBandCount(forwardBandCount)
+      forwardBandCount && isForwardBandColorRelevant(forwardBandCount, BAND_COLOR_KEY.Tcr)
         ? normalizeTcrColor(getSingleQueryValue(query, URL_STATE_PARAM_KEY.Tcr))
         : undefined,
   });
@@ -241,12 +245,8 @@ function isTcrColor(value: string): boolean {
   return TCR_COLORS.has(value);
 }
 
-function isForwardDigit3RelevantBandCount(bandCount: UrlBandCountValue): boolean {
-  return bandCount !== '4';
-}
-
-function isForwardTcrRelevantBandCount(bandCount: UrlBandCountValue): boolean {
-  return bandCount === '6';
+function isForwardBandColorRelevant(bandCount: UrlBandCountValue, key: BandColorKey): boolean {
+  return isBandColorRelevant(toBandCount(bandCount), key);
 }
 
 function compactObject<T extends object>(value: T): T | undefined {

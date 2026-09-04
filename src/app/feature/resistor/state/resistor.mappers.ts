@@ -12,6 +12,8 @@ import {
   ResistorBandsInput,
   ServiceError,
   ResistanceErrorCode,
+  BAND_COLOR_KEY,
+  isBandColorRelevant,
 } from '@resistor/resistor.model';
 
 export type ResistorViewModel = {
@@ -60,8 +62,8 @@ export function toViewModel(
     tolerancePct: result.data.tolerancePct,
     tcrPpm: result.data.tcrPpm,
     calculationError: result.error,
-    showDigit3: input.bandCount !== 4,
-    showTcr: input.bandCount === 6,
+    showDigit3: isBandColorRelevant(input.bandCount, BAND_COLOR_KEY.Digit3),
+    showTcr: isBandColorRelevant(input.bandCount, BAND_COLOR_KEY.Tcr),
   };
 }
 
@@ -93,6 +95,6 @@ export function toReverseViewModel(
     parseErrorCode,
     serviceErrorCode,
     candidates: reverseResult.data.candidates,
-    showTcr: formValue.bandCount === 6,
+    showTcr: isBandColorRelevant(formValue.bandCount, BAND_COLOR_KEY.Tcr),
   };
 }
