@@ -19,9 +19,6 @@ export type ResistorListViewModel = {
   error: CircuitServiceError<CircuitErrorCode> | null;
 };
 
-export type SeriesViewModel = ResistorListViewModel;
-export type ParallelViewModel = ResistorListViewModel;
-
 export type DividerViewModel = {
   vin: string;
   r1: string;
@@ -36,9 +33,6 @@ export function toResistorListInput(value: ResistorListFormValue): ResistorListI
     resistors: value.resistors.map((r) => parseResistanceToOhms(r)),
   };
 }
-
-export const toSeriesInput = toResistorListInput;
-export const toParallelInput = toResistorListInput;
 
 export function toDividerInput(value: DividerFormValue): DividerInput {
   return {
@@ -58,9 +52,6 @@ export function toResistorListViewModel(
     error: result.error,
   };
 }
-
-export const toSeriesViewModel = toResistorListViewModel;
-export const toParallelViewModel = toResistorListViewModel;
 
 export function toDividerViewModel(
   value: DividerFormValue,

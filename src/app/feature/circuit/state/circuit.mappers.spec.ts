@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { toDividerInput, toParallelInput, toSeriesInput } from './circuit.mappers';
+import { toDividerInput, toResistorListInput } from './circuit.mappers';
 
 describe('circuit mappers', () => {
-  it('maps series resistor inputs through shared SI parser', () => {
-    const result = toSeriesInput({
+  it('maps resistor list inputs through shared SI parser', () => {
+    const result = toResistorListInput({
       resistors: ['4.7k', '330'],
     });
 
@@ -13,8 +13,8 @@ describe('circuit mappers', () => {
     });
   });
 
-  it('maps parallel resistor inputs through shared SI parser', () => {
-    const result = toParallelInput({
+  it('parses mixed-magnitude SI suffixes (M and k) in a resistor list', () => {
+    const result = toResistorListInput({
       resistors: ['1M', '2.2k'],
     });
 

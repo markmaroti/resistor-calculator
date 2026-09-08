@@ -1,4 +1,4 @@
-import { Injectable, WritableSignal, computed, inject, signal } from '@angular/core';
+import { Injectable, Signal, WritableSignal, computed, inject, signal } from '@angular/core';
 import { FieldTree, apply, applyEach, form } from '@angular/forms/signals';
 
 import { firstFieldErrorMessageInPriorityOrder, isBlank } from '@shared/utils/signal-forms.util';
@@ -10,16 +10,16 @@ import {
   CircuitTab,
   DividerFormValue,
   ResistorListFormValue,
+  ResistorListInput,
   ResistorListTab,
 } from '@circuit/circuit.model';
 
 import {
+  ResistorListViewModel,
   toDividerInput,
   toDividerViewModel,
-  toParallelInput,
-  toParallelViewModel,
-  toSeriesInput,
-  toSeriesViewModel,
+  toResistorListInput,
+  toResistorListViewModel,
 } from './circuit.mappers';
 import { circuitNumberFieldSchema, resistorFieldSchema } from './circuit.validators';
 import { getCircuitServiceValidationMessage } from './validation-messages';
@@ -50,19 +50,9 @@ export class CircuitStore {
     apply(path.r2, resistorFieldSchema);
   });
 
-  public readonly seriesViewModel = computed(() => {
-    const value = this.seriesForm().value();
-    const input = toSeriesInput(value);
-    const result = this.service.calculateSeries(input);
-    return toSeriesViewModel(value, result);
-  });
+  public readonly seriesViewModel = this.createResistorListViewModel(CircuitTab.Series);
 
-  public readonly parallelViewModel = computed(() => {
-    const value = this.parallelForm().value();
-    const input = toParallelInput(value);
-    const result = this.service.calculateParallel(input);
-    return toParallelViewModel(value, result);
-  });
+  public readonly parallelViewModel = this.createResistorListViewModel(CircuitTab.Parallel);
 
   public readonly dividerViewModel = computed(() => {
     const value = this.dividerForm().value();
@@ -71,27 +61,13 @@ export class CircuitStore {
     return toDividerViewModel(value, result);
   });
 
-  public readonly seriesValidationMessage = computed(() => {
-    if (!this.hasAnyResistorInput(this.seriesForm)) {
-      return '';
-    }
+  public readonly seriesValidationMessage = this.createResistorListValidationMessage(
+    CircuitTab.Series,
+  );
 
-    return this.resistorListValidationMessage(
-      this.seriesForm.resistors,
-      this.seriesViewModel().error,
-    );
-  });
-
-  public readonly parallelValidationMessage = computed(() => {
-    if (!this.hasAnyResistorInput(this.parallelForm)) {
-      return '';
-    }
-
-    return this.resistorListValidationMessage(
-      this.parallelForm.resistors,
-      this.parallelViewModel().error,
-    );
-  });
+  public readonly parallelValidationMessage = this.createResistorListValidationMessage(
+    CircuitTab.Parallel,
+  );
 
   public readonly dividerValidationMessage = computed(() => {
     if (!this.hasAnyInput(Object.values(this.dividerForm().value()))) {
@@ -165,6 +141,40 @@ export class CircuitStore {
 
   private resistorListForm(formName: ResistorListTab): FieldTree<ResistorListFormValue> {
     return formName === CircuitTab.Series ? this.seriesForm : this.parallelForm;
+  }
+
+  /** Looks up the already-created (memoized) view model signal for `formName` — does NOT create a new one. */
+  private getResistorListViewModel(formName: ResistorListTab): Signal<ResistorListViewModel> {
+    return formName === CircuitTab.Series ? this.seriesViewModel : this.parallelViewModel;
+  }
+
+  /** Creates a new memoized view model `computed()` for `formName`. Call once per tab at field-init time. */
+  private createResistorListViewModel(formName: ResistorListTab): Signal<ResistorListViewModel> {
+    return computed(() => {
+      const value = this.resistorListForm(formName)().value();
+      const input = toResistorListInput(value);
+      const result = this.calculateResistorList(formName, input);
+      return toResistorListViewModel(value, result);
+    });
+  }
+
+  private createResistorListValidationMessage(formName: ResistorListTab): Signal<string> {
+    return computed(() => {
+      if (!this.hasAnyResistorInput(this.resistorListForm(formName))) {
+        return '';
+      }
+
+      return this.resistorListValidationMessage(
+        this.resistorListForm(formName).resistors,
+        this.getResistorListViewModel(formName)().error,
+      );
+    });
+  }
+
+  private calculateResistorList(formName: ResistorListTab, input: ResistorListInput) {
+    return formName === CircuitTab.Series
+      ? this.service.calculateSeries(input)
+      : this.service.calculateParallel(input);
   }
 
   private hasAnyResistorInput(formTree: FieldTree<ResistorListFormValue>): boolean {
