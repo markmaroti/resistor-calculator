@@ -10,10 +10,10 @@ import {
   ReverseInput,
   ReverseMode,
   ReverseResult,
-  ResistanceCalculationResult,
-  ResistanceErrorCode,
   ResistanceResult,
-  ResistorBandsInput,
+  ResistanceErrorCode,
+  ResistanceData,
+  ResistorBandsFormValue,
   TCR_BY_COLOR,
   TOLERANCE_BY_COLOR,
   isBandColorRelevant,
@@ -31,14 +31,14 @@ const DIGIT_TO_COLOR: Partial<Record<number, Color>> = Object.fromEntries(
 export class ResistorService {
   private static readonly MAX_REVERSE_CANDIDATES = 50;
 
-  public calculateResistance(input: ResistorBandsInput): ResistanceCalculationResult {
+  public calculateResistance(input: ResistorBandsFormValue): ResistanceResult {
     const digit1 = DIGIT_BY_COLOR[input.digit1];
     const digit2 = DIGIT_BY_COLOR[input.digit2];
     const digit3 = DIGIT_BY_COLOR[input.digit3];
 
     if (digit1 === null || digit2 === null) {
       return {
-        data: this.emptyResistanceResult(),
+        data: this.emptyResistanceData(),
         error: {
           code: ResistanceErrorCode.InvalidDigitColor,
           message: getResistanceValidationMessage(ResistanceErrorCode.InvalidDigitColor),
@@ -48,7 +48,7 @@ export class ResistorService {
 
     if (isBandColorRelevant(input.bandCount, BAND_COLOR_KEY.Digit3) && digit3 === null) {
       return {
-        data: this.emptyResistanceResult(),
+        data: this.emptyResistanceData(),
         error: {
           code: ResistanceErrorCode.InvalidThirdDigitColor,
           message: getResistanceValidationMessage(ResistanceErrorCode.InvalidThirdDigitColor),
@@ -156,7 +156,7 @@ export class ResistorService {
           continue;
         }
 
-        const bandInputBase: ResistorBandsInput = {
+        const bandInputBase: ResistorBandsFormValue = {
           bandCount: input.bandCount,
           digit1: this.colorForDigit(digits[0]),
           digit2: this.colorForDigit(digits[1]),
@@ -181,7 +181,7 @@ export class ResistorService {
 
           for (const tcrColor of tcrColors) {
             const tcrPpm = tcrRelevant ? (TCR_BY_COLOR[tcrColor] ?? null) : null;
-            const bands: ResistorBandsInput = {
+            const bands: ResistorBandsFormValue = {
               ...bandInputBase,
               tolerance: toleranceColor,
               tcr: tcrColor,
@@ -231,7 +231,7 @@ export class ResistorService {
     };
   }
 
-  private emptyResistanceResult(): ResistanceResult {
+  private emptyResistanceData(): ResistanceData {
     return { ohms: 0, tolerancePct: null, tcrPpm: null };
   }
 

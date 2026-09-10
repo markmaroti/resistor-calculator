@@ -3,7 +3,7 @@ import { FieldTree, FormField } from '@angular/forms/signals';
 
 import { SelectComponent } from '@shared/select/select.component';
 
-import { Color, ResistorBandsInput } from '@resistor/resistor.model';
+import { Color, ResistorBandsFormValue } from '@resistor/resistor.model';
 import { ResistorViewModel } from '@resistor/state/resistor.mappers';
 import { ResistorPreviewComponent } from '@resistor/components/resistor-preview/resistor-preview.component';
 
@@ -15,7 +15,7 @@ import { ResistorPreviewComponent } from '@resistor/components/resistor-preview/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForwardFormComponent {
-  public readonly form = input.required<FieldTree<ResistorBandsInput>>();
+  public readonly form = input.required<FieldTree<ResistorBandsFormValue>>();
   public readonly viewModel = input.required<ResistorViewModel>();
   public readonly digitColors = input.required<readonly Color[]>();
   public readonly multiplierColors = input.required<readonly Color[]>();

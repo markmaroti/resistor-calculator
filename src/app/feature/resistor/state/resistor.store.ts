@@ -8,7 +8,7 @@ import {
   BAND_COLOR_KEY,
   Color,
   DEFAULT_BAND_COUNT,
-  ResistorBandsInput,
+  ResistorBandsFormValue,
   ReverseCandidate,
   ReverseFormValue,
   ReverseMode,
@@ -38,7 +38,7 @@ export class ResistorStore {
     error: null,
   };
 
-  private readonly defaultBandsInput: ResistorBandsInput = {
+  private readonly defaultBandsInput: ResistorBandsFormValue = {
     bandCount: DEFAULT_BAND_COUNT,
     digit1: Color.Brown,
     digit2: Color.Black,
@@ -48,7 +48,7 @@ export class ResistorStore {
     tcr: Color.Brown,
   };
 
-  private readonly formModel = signal<ResistorBandsInput>({ ...this.defaultBandsInput });
+  private readonly formModel = signal<ResistorBandsFormValue>({ ...this.defaultBandsInput });
 
   public readonly form = form(this.formModel, (path) => {
     apply(path, resistorBandsSchema);
@@ -154,9 +154,9 @@ export class ResistorStore {
 
   private toForwardFormPatch(
     state: ResistorUrlState['forward'],
-    current: ResistorBandsInput,
-  ): Partial<ResistorBandsInput> {
-    const patch: Partial<ResistorBandsInput> = {};
+    current: ResistorBandsFormValue,
+  ): Partial<ResistorBandsFormValue> {
+    const patch: Partial<ResistorBandsFormValue> = {};
 
     const bandCount = this.toOptionalBandCount(state?.bandCount);
     this.setPatchValueIfChanged(patch, current, 'bandCount', bandCount);

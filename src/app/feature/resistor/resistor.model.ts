@@ -154,7 +154,7 @@ export function buildBandColors(count: BandCount, colors: Record<BandColorKey, C
 
 export const DEFAULT_BAND_COUNT = 4;
 
-export type ResistorBandsInput = {
+export type ResistorBandsFormValue = {
   bandCount: BandCount;
   digit1: Color;
   digit2: Color;
@@ -164,7 +164,7 @@ export type ResistorBandsInput = {
   tcr: Color;
 };
 
-export type ResistanceResult = {
+export type ResistanceData = {
   ohms: number;
   tolerancePct: number | null;
   tcrPpm: number | null;
@@ -177,7 +177,7 @@ export const ResistanceErrorCode = {
 
 export type ResistanceErrorCode = (typeof ResistanceErrorCode)[keyof typeof ResistanceErrorCode];
 
-export type ResistanceCalculationResult = ServiceResult<ResistanceResult, ResistanceErrorCode>;
+export type ResistanceResult = ServiceResult<ResistanceData, ResistanceErrorCode>;
 
 export const ReverseMode = {
   Exact: 'EXACT',
@@ -203,7 +203,7 @@ export type ReverseFormValue = {
 };
 
 export type ReverseCandidate = {
-  bands: ResistorBandsInput;
+  bands: ResistorBandsFormValue;
   ohms: number;
   tolerancePct: number | null;
   tcrPpm: number | null;
@@ -219,8 +219,8 @@ export const ReverseErrorCode = {
 
 export type ReverseErrorCode = (typeof ReverseErrorCode)[keyof typeof ReverseErrorCode];
 
-export type ReverseResultData = {
+export type ReverseData = {
   candidates: ReverseCandidate[];
 };
 
-export type ReverseResult = ServiceResult<ReverseResultData, ReverseErrorCode>;
+export type ReverseResult = ServiceResult<ReverseData, ReverseErrorCode>;

@@ -1,4 +1,4 @@
-import { ReverseFormValue, ResistorBandsInput } from '@resistor/resistor.model';
+import { ReverseFormValue, ResistorBandsFormValue } from '@resistor/resistor.model';
 
 import { ResistorUrlState, UrlBandCountValue } from './url-state.model';
 
@@ -6,7 +6,7 @@ export type CalculatorMode = 'forward' | 'reverse';
 
 export function toResistorUrlState(
   mode: CalculatorMode,
-  forward: ResistorBandsInput,
+  forward: ResistorBandsFormValue,
   reverse: ReverseFormValue,
 ): ResistorUrlState {
   return {

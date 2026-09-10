@@ -8,8 +8,8 @@ import {
   ReverseInput,
   ReverseResult,
   ReverseErrorCode,
-  ResistanceCalculationResult,
-  ResistorBandsInput,
+  ResistanceResult,
+  ResistorBandsFormValue,
   ServiceError,
   ResistanceErrorCode,
   BAND_COLOR_KEY,
@@ -17,13 +17,13 @@ import {
 } from '@resistor/resistor.model';
 
 export type ResistorViewModel = {
-  bandCount: ResistorBandsInput['bandCount'];
-  digit1: ResistorBandsInput['digit1'];
-  digit2: ResistorBandsInput['digit2'];
-  digit3: ResistorBandsInput['digit3'];
-  multiplier: ResistorBandsInput['multiplier'];
-  tolerance: ResistorBandsInput['tolerance'];
-  tcr: ResistorBandsInput['tcr'];
+  bandCount: ResistorBandsFormValue['bandCount'];
+  digit1: ResistorBandsFormValue['digit1'];
+  digit2: ResistorBandsFormValue['digit2'];
+  digit3: ResistorBandsFormValue['digit3'];
+  multiplier: ResistorBandsFormValue['multiplier'];
+  tolerance: ResistorBandsFormValue['tolerance'];
+  tcr: ResistorBandsFormValue['tcr'];
   ohms: number;
   tolerancePct: number | null;
   tcrPpm: number | null;
@@ -47,8 +47,8 @@ export type ReverseViewModel = {
 };
 
 export function toViewModel(
-  input: ResistorBandsInput,
-  result: ResistanceCalculationResult,
+  input: ResistorBandsFormValue,
+  result: ResistanceResult,
 ): ResistorViewModel {
   return {
     bandCount: input.bandCount,

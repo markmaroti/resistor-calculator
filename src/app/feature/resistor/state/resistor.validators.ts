@@ -10,7 +10,7 @@ import {
   BandCount,
   Color,
   ResistanceErrorCode,
-  ResistorBandsInput,
+  ResistorBandsFormValue,
   isDigitColor,
 } from '@resistor/resistor.model';
 
@@ -68,7 +68,7 @@ const REQUIRED_TARGET_MESSAGE = getReverseParseValidationMessage(
   ResistanceValueErrorCode.EmptyInput,
 );
 
-export const resistorBandsSchema = schema<ResistorBandsInput>((path) => {
+export const resistorBandsSchema = schema<ResistorBandsFormValue>((path) => {
   validate(path.digit1, ({ value }) =>
     toValidationError(validateDigitColor(value()), getResistanceValidationMessage),
   );

@@ -8,14 +8,14 @@ import {
   ReverseFormValue,
   ReverseMode,
   ReverseResult,
-  ResistanceCalculationResult,
+  ResistanceResult,
   ResistanceErrorCode,
-  ResistorBandsInput,
+  ResistorBandsFormValue,
 } from '@resistor/resistor.model';
 
 import { toReverseInput, toReverseViewModel, toViewModel } from './resistor.mappers';
 
-const input: ResistorBandsInput = {
+const input: ResistorBandsFormValue = {
   bandCount: 6,
   digit1: Color.Orange,
   digit2: Color.Orange,
@@ -35,7 +35,7 @@ const reverseFormValue: ReverseFormValue = {
 
 describe('resistor mappers', () => {
   it('toViewModel maps calculated result into UI view model', () => {
-    const result: ResistanceCalculationResult = {
+    const result: ResistanceResult = {
       data: {
         ohms: 3_300,
         tolerancePct: 1,
@@ -55,7 +55,7 @@ describe('resistor mappers', () => {
   });
 
   it('toViewModel carries calculation error through', () => {
-    const result: ResistanceCalculationResult = {
+    const result: ResistanceResult = {
       data: {
         ohms: 0,
         tolerancePct: null,

@@ -4,14 +4,14 @@ import {
   Color,
   ReverseMode,
   type ReverseFormValue,
-  type ResistorBandsInput,
+  type ResistorBandsFormValue,
 } from '@resistor/resistor.model';
 
 import { toResistorUrlState } from './resistor-url-state.mappers';
 
 describe('toResistorUrlState', () => {
   it('maps forward and reverse forms to URL state', () => {
-    const forward: ResistorBandsInput = {
+    const forward: ResistorBandsFormValue = {
       bandCount: 6,
       digit1: Color.Red,
       digit2: Color.Violet,
@@ -51,7 +51,7 @@ describe('toResistorUrlState', () => {
   });
 
   it('keeps nullable reverse values undefined in URL state', () => {
-    const forward: ResistorBandsInput = {
+    const forward: ResistorBandsFormValue = {
       bandCount: 4,
       digit1: Color.Brown,
       digit2: Color.Black,
