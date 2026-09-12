@@ -1,28 +1,21 @@
 import { Injectable, OnDestroy, signal } from '@angular/core';
 
-import { copyTextToClipboard } from '@shared/utils/clipboard.util';
+import { ClipboardCopyState, copyTextToClipboard } from '@shared/utils/clipboard.util';
 import { ResettableTimer } from '@shared/utils/resettable-timer.util';
 
 import { buildResistanceCopyText } from '@resistor/utils/resistance-copy-text.util';
+import { ResistanceData } from '@resistor/resistor.model';
 
 const COPY_STATE_RESET_MS = 1500;
-
-export type ClipboardCopyState = 'idle' | 'success' | 'error';
-
-export type ResistanceCopyInput = {
-  ohms: number;
-  tolerancePct: number | null;
-  tcrPpm: number | null;
-};
 
 class TransientCopyState {
   private readonly resetTimer = new ResettableTimer();
 
-  public readonly state = signal<ClipboardCopyState>('idle');
+  public readonly state = signal<ClipboardCopyState>(ClipboardCopyState.Idle);
 
   public trigger(copied: boolean): void {
-    this.state.set(copied ? 'success' : 'error');
-    this.resetTimer.schedule(() => this.state.set('idle'), COPY_STATE_RESET_MS);
+    this.state.set(copied ? ClipboardCopyState.Success : ClipboardCopyState.Error);
+    this.resetTimer.schedule(() => this.state.set(ClipboardCopyState.Idle), COPY_STATE_RESET_MS);
   }
 
   public clearTimer(): void {
@@ -43,7 +36,7 @@ export class ResistorClipboardService implements OnDestroy {
     this.shareLinkCopy.clearTimer();
   }
 
-  public async copyResistanceResult(input: ResistanceCopyInput): Promise<void> {
+  public async copyResistanceResult(input: ResistanceData): Promise<void> {
     const copied = await copyTextToClipboard(buildResistanceCopyText(input));
     this.resultCopy.trigger(copied);
   }

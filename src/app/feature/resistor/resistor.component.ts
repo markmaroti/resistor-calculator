@@ -8,13 +8,11 @@ import {
 } from '@angular/core';
 
 import { ResettableTimer } from '@shared/utils/resettable-timer.util';
+import { ClipboardCopyState } from '@shared/utils/clipboard.util';
 
 import { ResistorClipboardService } from '@resistor/services/resistor-clipboard.service';
 import { ResistorStore } from '@resistor/state/resistor.store';
-import {
-  toResistorUrlState,
-  type CalculatorMode,
-} from '@resistor/state/resistor-url-state.mappers';
+import { toResistorUrlState } from '@resistor/state/resistor-url-state.mappers';
 import {
   ModeOption,
   ModeToggleComponent,
@@ -32,6 +30,7 @@ import {
   TCR_BY_COLOR,
   TOLERANCE_BY_COLOR,
   BAND_COUNTS,
+  CalculatorMode,
   ReverseMode,
   ReverseCandidate,
   isDigitColor,
@@ -52,6 +51,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResistorComponent implements OnDestroy {
+  protected readonly CalculatorMode = CalculatorMode;
+  protected readonly ClipboardCopyState = ClipboardCopyState;
+
   private readonly store = inject(ResistorStore);
   private readonly clipboardService = inject(ResistorClipboardService);
   private readonly urlStateService = inject(ResistorUrlStateService);
@@ -76,11 +78,11 @@ export class ResistorComponent implements OnDestroy {
   public readonly copyState = this.clipboardService.resultCopyState;
   public readonly shareLinkCopyState = this.clipboardService.shareLinkCopyState;
   public readonly applyFeedback = signal('');
-  public readonly mode = signal<CalculatorMode>('forward');
+  public readonly mode = signal<CalculatorMode>(CalculatorMode.Forward);
 
   public readonly calculatorModes: ReadonlyArray<ModeOption<CalculatorMode>> = [
-    { key: 'forward', label: 'Band -> Value' },
-    { key: 'reverse', label: 'Value -> Band' },
+    { key: CalculatorMode.Forward, label: 'Band -> Value' },
+    { key: CalculatorMode.Reverse, label: 'Value -> Band' },
   ];
 
   public readonly isCopyEnabled = computed(() => this.viewModel().ohms > 0);
@@ -118,7 +120,7 @@ export class ResistorComponent implements OnDestroy {
 
   public setMode(mode: CalculatorMode): void {
     this.mode.set(mode);
-    if (mode === 'reverse') {
+    if (mode === CalculatorMode.Reverse) {
       this.applyFeedback.set('');
     }
   }
@@ -129,7 +131,7 @@ export class ResistorComponent implements OnDestroy {
 
   public applyCandidate(candidate: ReverseCandidate): void {
     this.store.applyCandidate(candidate);
-    this.setMode('forward');
+    this.setMode(CalculatorMode.Forward);
     this.applyFeedback.set('Candidate applied to band form.');
     this.applyFeedbackTimer.schedule(() => this.applyFeedback.set(''), 1500);
     this.focusTimer.schedule(() => this.focusForwardPrimaryControl(), 0);

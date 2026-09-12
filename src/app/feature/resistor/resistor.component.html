@@ -19,15 +19,15 @@
     class="share-link-feedback"
     aria-live="polite"
   >
-    @if (shareLinkCopyState() === 'success') {
+    @if (shareLinkCopyState() === ClipboardCopyState.Success) {
       Link copied.
-    } @else if (shareLinkCopyState() === 'error') {
+    } @else if (shareLinkCopyState() === ClipboardCopyState.Error) {
       Copy failed.
     }
   </span>
 </div>
 
-@if (mode() === 'forward') {
+@if (mode() === CalculatorMode.Forward) {
   <app-forward-form
     [form]="form"
     [viewModel]="vm"

@@ -179,6 +179,13 @@ export type ResistanceErrorCode = (typeof ResistanceErrorCode)[keyof typeof Resi
 
 export type ResistanceResult = ServiceResult<ResistanceData, ResistanceErrorCode>;
 
+export const CalculatorMode = {
+  Forward: 'forward',
+  Reverse: 'reverse',
+} as const;
+
+export type CalculatorMode = (typeof CalculatorMode)[keyof typeof CalculatorMode];
+
 export const ReverseMode = {
   Exact: 'EXACT',
   Nearest: 'NEAREST',

@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
-import { URL_CALCULATOR_MODE, URL_STATE_PARAM_KEY, URL_STATE_PARAM_ORDER } from './url-state.model';
+import { CalculatorMode } from '@resistor/resistor.model';
+
+import { URL_STATE_PARAM_KEY, URL_STATE_PARAM_ORDER } from './url-state.model';
 import { fromQueryParams, toQueryParams } from './url-state.mapper';
 
 describe('url state mapper', () => {
   it('serializes forward mode with stable key order and relevant fields only', () => {
     const params = toQueryParams({
-      mode: URL_CALCULATOR_MODE.Forward,
+      mode: CalculatorMode.Forward,
       forward: {
         bandCount: '4',
         digit1: 'Brown',
@@ -40,7 +42,7 @@ describe('url state mapper', () => {
 
   it('serializes reverse mode including reverse fields', () => {
     const params = toQueryParams({
-      mode: URL_CALCULATOR_MODE.Reverse,
+      mode: CalculatorMode.Reverse,
       forward: {
         bandCount: '6',
         digit1: 'Red',
@@ -78,7 +80,7 @@ describe('url state mapper', () => {
 
   it('keeps canonical query params stable through round-trip serialization', () => {
     const first = toQueryParams({
-      mode: URL_CALCULATOR_MODE.Reverse,
+      mode: CalculatorMode.Reverse,
       forward: {
         bandCount: '6',
         digit1: 'Red',

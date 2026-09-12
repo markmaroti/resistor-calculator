@@ -33,9 +33,9 @@
       class="copy-feedback"
       aria-live="polite"
     >
-      @if (copyState() === 'success') {
+      @if (copyState() === ClipboardCopyState.Success) {
         Copied to clipboard.
-      } @else if (copyState() === 'error') {
+      } @else if (copyState() === ClipboardCopyState.Error) {
         Copy failed.
       }
     </span>

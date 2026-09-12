@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 import { OhmsPipe } from '@shared/pipes/ohms.pipe';
-
-export type CopyState = 'idle' | 'success' | 'error';
+import { ClipboardCopyState } from '@shared/utils/clipboard.util';
 
 @Component({
   selector: 'app-result-card',
@@ -12,10 +11,12 @@ export type CopyState = 'idle' | 'success' | 'error';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResultCardComponent {
+  protected readonly ClipboardCopyState = ClipboardCopyState;
+
   public readonly ohms = input.required<number>();
   public readonly tolerancePct = input<number | null>(null);
   public readonly tcrPpm = input<number | null>(null);
-  public readonly copyState = input<CopyState>('idle');
+  public readonly copyState = input<ClipboardCopyState>(ClipboardCopyState.Idle);
   public readonly isCopyEnabled = input<boolean>(false);
   public readonly validationMessage = input<string>('');
 

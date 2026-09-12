@@ -1,12 +1,8 @@
 import { formatOhms } from '@shared/utils/format-value.util';
 
-type ResistanceCopyTextInput = {
-  ohms: number;
-  tolerancePct: number | null;
-  tcrPpm: number | null;
-};
+import { ResistanceData } from '@resistor/resistor.model';
 
-export function buildResistanceCopyText(input: ResistanceCopyTextInput): string {
+export function buildResistanceCopyText(input: ResistanceData): string {
   const parts: string[] = [formatOhms(input.ohms)];
 
   if (input.tolerancePct !== null) {

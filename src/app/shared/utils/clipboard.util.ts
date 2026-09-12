@@ -1,3 +1,11 @@
+export const ClipboardCopyState = {
+  Idle: 'idle',
+  Success: 'success',
+  Error: 'error',
+} as const;
+
+export type ClipboardCopyState = (typeof ClipboardCopyState)[keyof typeof ClipboardCopyState];
+
 export async function copyTextToClipboard(text: string): Promise<boolean> {
   try {
     if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {

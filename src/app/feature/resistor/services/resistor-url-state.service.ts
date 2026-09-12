@@ -3,13 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ResettableTimer } from '@shared/utils/resettable-timer.util';
 
+import { CalculatorMode } from '@resistor/resistor.model';
 import { ResistorStore } from '@resistor/state/resistor.store';
 import { fromQueryParams, toQueryParams } from '@resistor/state/url-state.mapper';
 import {
   ResistorUrlQueryParamMap,
   ResistorUrlState,
   URL_STATE_PARAM_ORDER,
-  UrlCalculatorMode,
 } from '@resistor/state/url-state.model';
 
 const URL_SYNC_DEBOUNCE_MS = 250;
@@ -41,7 +41,7 @@ export class ResistorUrlStateService implements OnDestroy {
     this.urlSyncEffectRef = null;
   }
 
-  public hydrateStoreFromUrlState(): UrlCalculatorMode | undefined {
+  public hydrateStoreFromUrlState(): CalculatorMode | undefined {
     const state = fromQueryParams(this.getCurrentQueryParams());
     this.store.hydrateFromUrlState(state);
     return state.mode;

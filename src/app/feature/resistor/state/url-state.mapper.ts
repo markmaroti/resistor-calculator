@@ -2,8 +2,10 @@ import {
   BAND_COLOR_KEY,
   BAND_COUNTS,
   BandColorKey,
+  CalculatorMode,
   DIGIT_BY_COLOR,
   MULTIPLIER_BY_COLOR,
+  ReverseMode,
   TCR_BY_COLOR,
   TOLERANCE_BY_COLOR,
   isBandColorRelevant,
@@ -14,18 +16,15 @@ import {
   ResistorUrlQueryParamMap,
   ResistorUrlState,
   ReverseUrlState,
-  URL_CALCULATOR_MODE,
-  URL_REVERSE_MODE,
   URL_STATE_PARAM_KEY,
   URL_STATE_PARAM_ORDER,
   UrlBandCountValue,
-  UrlCalculatorMode,
   UrlStateParamKey,
-  UrlReverseMode,
   toBandCount,
+  toUrlBandCountValue,
 } from './url-state.model';
 
-const BAND_COUNT_VALUES = new Set(BAND_COUNTS.map((count) => String(count)));
+const BAND_COUNT_VALUES: ReadonlySet<string> = new Set(BAND_COUNTS.map(toUrlBandCountValue));
 const DIGIT_COLORS = new Set(
   Object.entries(DIGIT_BY_COLOR)
     .filter(([, digit]) => digit !== null)
@@ -57,21 +56,17 @@ export function toQueryParams(state: ResistorUrlState): ResistorUrlQueryParamMap
         ? normalizeTcrColor(forward?.tcr)
         : undefined,
     [URL_STATE_PARAM_KEY.ReverseTargetInput]:
-      mode === URL_CALCULATOR_MODE.Reverse
-        ? normalizeTrimmedValue(reverse?.targetInput)
-        : undefined,
+      mode === CalculatorMode.Reverse ? normalizeTrimmedValue(reverse?.targetInput) : undefined,
     [URL_STATE_PARAM_KEY.ReverseBandCount]:
-      mode === URL_CALCULATOR_MODE.Reverse ? normalizeBandCount(reverse?.bandCount) : undefined,
+      mode === CalculatorMode.Reverse ? normalizeBandCount(reverse?.bandCount) : undefined,
     [URL_STATE_PARAM_KEY.ReverseTolerancePct]:
-      mode === URL_CALCULATOR_MODE.Reverse
+      mode === CalculatorMode.Reverse
         ? normalizePositiveNumericString(reverse?.tolerancePct)
         : undefined,
     [URL_STATE_PARAM_KEY.ReverseTcrPpm]:
-      mode === URL_CALCULATOR_MODE.Reverse
-        ? normalizePositiveNumericString(reverse?.tcrPpm)
-        : undefined,
+      mode === CalculatorMode.Reverse ? normalizePositiveNumericString(reverse?.tcrPpm) : undefined,
     [URL_STATE_PARAM_KEY.ReverseMode]:
-      mode === URL_CALCULATOR_MODE.Reverse ? normalizeReverseMode(reverse?.mode) : undefined,
+      mode === CalculatorMode.Reverse ? normalizeReverseMode(reverse?.mode) : undefined,
   };
 
   return URL_STATE_PARAM_ORDER.reduce<ResistorUrlQueryParamMap>((params, key) => {
@@ -111,7 +106,7 @@ export function fromQueryParams(
   });
 
   const reverse =
-    mode === URL_CALCULATOR_MODE.Reverse
+    mode === CalculatorMode.Reverse
       ? compactObject<ReverseUrlState>({
           targetInput: normalizeTrimmedValue(
             getSingleQueryValue(query, URL_STATE_PARAM_KEY.ReverseTargetInput),
@@ -155,11 +150,11 @@ function getSingleQueryValue(
   return typeof value === 'string' ? value : undefined;
 }
 
-function normalizeCalculatorMode(value: string | undefined): UrlCalculatorMode | undefined {
+function normalizeCalculatorMode(value: string | undefined): CalculatorMode | undefined {
   return isCalculatorMode(value) ? value : undefined;
 }
 
-function normalizeReverseMode(value: string | undefined): UrlReverseMode | undefined {
+function normalizeReverseMode(value: string | undefined): ReverseMode | undefined {
   return isReverseMode(value) ? value : undefined;
 }
 
@@ -217,12 +212,12 @@ function normalizePositiveNumericString(value: string | undefined): string | und
   return normalized;
 }
 
-function isCalculatorMode(value: unknown): value is UrlCalculatorMode {
-  return value === URL_CALCULATOR_MODE.Forward || value === URL_CALCULATOR_MODE.Reverse;
+function isCalculatorMode(value: unknown): value is CalculatorMode {
+  return value === CalculatorMode.Forward || value === CalculatorMode.Reverse;
 }
 
-function isReverseMode(value: unknown): value is UrlReverseMode {
-  return value === URL_REVERSE_MODE.Exact || value === URL_REVERSE_MODE.Nearest;
+function isReverseMode(value: unknown): value is ReverseMode {
+  return value === ReverseMode.Exact || value === ReverseMode.Nearest;
 }
 
 function isBandCountValue(value: unknown): value is UrlBandCountValue {
